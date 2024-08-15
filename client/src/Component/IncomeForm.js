@@ -7,10 +7,13 @@ import {
   Typography,
   Grid,
   IconButton,
+  Alert,
 } from '@mui/material';
-import { DateTimePicker } from '@mui/x-date-pickers';
 import DeleteIcon from '@mui/icons-material/Delete';
 import dayjs from 'dayjs';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+
 
 const IncomeForm = () => {
   const [date, setDate] = useState(dayjs());
@@ -22,6 +25,7 @@ const IncomeForm = () => {
   ]);
   
   const [newItem, setNewItem] = useState({ label: '', amount: '', comment: '' });
+  const [alertOpen, setAlertOpen] = useState(false);
 
   const handleAmountChange = (index, value) => {
     const updatedItems = [...incomeItems];
@@ -48,18 +52,20 @@ const IncomeForm = () => {
   };
 
   const handleSave = async () => {
+    const formattedDate = date.toISOString().split('T')[0];
+    console.log(formattedDate);
     // บันทึกรายการทั้งหมดไปยัง save-income
     const response = await fetch('http://localhost:5002/api/save-income', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ date, incomeItems }),
+      body: JSON.stringify({ date: formattedDate, incomeItems }),
     });
 
     if (response.ok) {
+      setAlertOpen(true);
       // เคลียร์ฟอร์มและรีโหลดฟอร์ม
-      setDate(new Date());
       setIncomeItems([
         { label: 'เงินเดือน', amount: '', comment: '' },
         { label: 'รายได้จากขายสินค้า', amount: '', comment: '' },
@@ -85,25 +91,28 @@ const IncomeForm = () => {
     fetchIncomeData();
   }, []);
 
+  const handleCloseAlert = () => {
+    setAlertOpen(false); // ปิด Alert
+  };
+  
   return (
     <Box sx={{ padding: 2 }}>
       <Typography variant="h6" gutterBottom>
         บันทึกรายได้
       </Typography>
-
-      <DateTimePicker
-        label="เลือกวันที่"
-        value={date}
-        onChange={(newValue) => setDate(newValue)}
-        renderInput={(params) => <TextField {...params} fullWidth />}
-      />
-
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DatePicker value={date} onChange={(newValue) => setDate(newValue)} />
+      </LocalizationProvider>
+      {alertOpen && ( // แสดง Alert เมื่อบันทึกสำเร็จ
+        <Alert severity="success" onClose={handleCloseAlert}>
+          บันทึกรายการสำเร็จ!
+        </Alert>
+      )}
       {incomeItems.map((item, index) => (
         <Grid container spacing={2} key={index} sx={{ marginTop: 2 }}>
           <Grid item xs={6}>
             <TextField
               label={item.label}
-              value={item.amount.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} // Format amount with commas
               onChange={(e) => handleAmountChange(index, e.target.value)}
               fullWidth
               disabled

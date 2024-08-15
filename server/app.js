@@ -70,13 +70,19 @@ app.post('/api/save-income', async (req, res) => {
   const { date, incomeItems } = req.body;
 
   try {
+    const items = incomeItems.map((item) => {
+      const amount = item.amount; // ไม่ต้องแปลงเป็นจำนวน
+
+      return {
+        label: item.label,
+        amount: amount === undefined || amount === null ? '' : amount, // ถ้า amount เป็น undefined หรือ null ให้ใช้ string ว่าง
+        comment: item.comment,
+      };
+    });
+
     const newIncome = new Income({
       date,
-      items: incomeItems.map(item => ({
-        label: item.label,
-        amount: parseFloat(item.amount), // แปลงเป็นจำนวน
-        comment: item.comment,
-      })),
+      items,
     });
 
     await newIncome.save();

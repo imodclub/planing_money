@@ -1,4 +1,3 @@
-// models/Income.js
 const mongoose = require('mongoose');
 
 const incomeSchema = new mongoose.Schema({
@@ -13,17 +12,17 @@ const incomeSchema = new mongoose.Schema({
         required: true,
       },
       amount: {
-        type: Number,
-        required: true,
+        type: String, // เปลี่ยนเป็น String แทนที่จะเป็น Number
+        required: false, // ไม่ต้องการค่า (optional)
+        default: '', // กำหนดค่าเริ่มต้นเป็น string ว่าง
       },
       comment: {
         type: String,
-        default: '',
+        required: false,
       },
     },
   ],
 });
 
 const Income = mongoose.model('Income', incomeSchema);
-
 module.exports = Income;
