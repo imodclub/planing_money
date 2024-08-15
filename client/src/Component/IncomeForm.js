@@ -8,11 +8,12 @@ import {
   Grid,
   IconButton,
 } from '@mui/material';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DateTimePicker } from '@mui/x-date-pickers';
 import DeleteIcon from '@mui/icons-material/Delete';
+import dayjs from 'dayjs';
 
 const IncomeForm = () => {
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(dayjs());
   const [incomeItems, setIncomeItems] = useState([
     { label: 'เงินเดือน', amount: '', comment: '' },
     { label: 'รายได้จากขายสินค้า', amount: '', comment: '' },
@@ -48,7 +49,7 @@ const IncomeForm = () => {
 
   const handleSave = async () => {
     // บันทึกรายการทั้งหมดไปยัง save-income
-    const response = await fetch('http://localhost:5000/api/save-income', {
+    const response = await fetch('http://localhost:5002/api/save-income', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -71,7 +72,7 @@ const IncomeForm = () => {
   useEffect(() => {
     // ดึงข้อมูลจากฐานข้อมูลเมื่อผู้ใช้งาน Sign In
     const fetchIncomeData = async () => {
-      const response = await fetch('http://localhost:5000/api/income-data');
+      const response = await fetch('http://localhost:5002/api/income-data');
       const data = await response.json();
       // ตรวจสอบและรวมข้อมูลที่มีอยู่
       const combinedItems = incomeItems.map(item => {
@@ -89,7 +90,7 @@ const IncomeForm = () => {
       <Typography variant="h6" gutterBottom>
         บันทึกรายได้
       </Typography>
-      
+
       <DateTimePicker
         label="เลือกวันที่"
         value={date}
@@ -102,7 +103,7 @@ const IncomeForm = () => {
           <Grid item xs={6}>
             <TextField
               label={item.label}
-              value={item.amount.replace(/\B(?=(\d{3})+(?!\d))/g, ",")} // Format amount with commas
+              value={item.amount.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} // Format amount with commas
               onChange={(e) => handleAmountChange(index, e.target.value)}
               fullWidth
               disabled
@@ -111,7 +112,7 @@ const IncomeForm = () => {
           <Grid item xs={4}>
             <TextField
               label="จำนวนเงิน"
-              value={item.amount.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+              value={item.amount.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
               onChange={(e) => handleAmountChange(index, e.target.value)}
               fullWidth
             />
@@ -153,7 +154,9 @@ const IncomeForm = () => {
           <TextField
             label="หมายเหตุ"
             value={newItem.comment}
-            onChange={(e) => setNewItem({ ...newItem, comment: e.target.value })}
+            onChange={(e) =>
+              setNewItem({ ...newItem, comment: e.target.value })
+            }
             fullWidth
           />
         </Grid>
@@ -164,7 +167,12 @@ const IncomeForm = () => {
         </Grid>
       </Grid>
 
-      <Button variant="contained" color="primary" onClick={handleSave} sx={{ marginTop: 2 }}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleSave}
+        sx={{ marginTop: 2 }}
+      >
         บันทึกรายการ
       </Button>
     </Box>

@@ -1,6 +1,6 @@
-// components/Dashboard.js
+// src/components/Dashboard.js
 import * as React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react'; // นำเข้า useState
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
@@ -15,15 +15,13 @@ import Badge from '@mui/material/Badge';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { mainListItems, secondaryListItems } from './Component/listItems'; // นำเข้ารายการเมนู
-
+import { MainListItems, SecondaryListItems } from './Component/listItems'; // นำเข้า MainListItems และ SecondaryListItems
+import IncomeForm from './Component/IncomeForm';
 
 const drawerWidth = 240;
-
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -71,44 +69,41 @@ const Drawer = styled(MuiDrawer, {
 
 const defaultTheme = createTheme();
 
-
-
 export default function Dashboard() {
-    const [open, setOpen] = React.useState(true);
-    const [name, setName] = React.useState('');
+  const [open, setOpen] = React.useState(true);
+  const [name, setName] = React.useState('');
+  const [showIncomeForm, setShowIncomeForm] = useState(false); // สถานะสำหรับการแสดง IncomeForm
+
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
-    useEffect(() => {
-      // ดึง userID จาก LocalStorage และ console.log
-      const userId = localStorage.getItem('userId');
-      const nameFromLocalStorage = localStorage.getItem('name');
-      setName(nameFromLocalStorage); 
+  useEffect(() => {
+    // ดึง userID จาก LocalStorage และ console.log
+    const userId = localStorage.getItem('userId');
+    const nameFromLocalStorage = localStorage.getItem('name');
+    setName(nameFromLocalStorage);
 
-      console.log('userID:', userId);
-      console.log('Name :', name);
-    }, []);
+    console.log('userID:', userId);
+    console.log('Name :', nameFromLocalStorage);
+  }, []);
+
+  const handleUserIncomeFormClick = () => {
+    setShowIncomeForm(true); // แสดง IncomeForm เมื่อคลิกที่ Dashboard
+  };
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
         <AppBar position="absolute" open={open}>
-          <Toolbar
-            sx={{
-              pr: '24px', // keep right padding when drawer closed
-            }}
-          >
+          <Toolbar sx={{ pr: '24px' }}>
             <IconButton
               edge="start"
               color="inherit"
               aria-label="open drawer"
               onClick={toggleDrawer}
-              sx={{
-                marginRight: '36px',
-                ...(open && { display: 'none' }),
-              }}
+              sx={{ marginRight: '36px', ...(open && { display: 'none' }) }}
             >
               <MenuIcon />
             </IconButton>
@@ -143,9 +138,9 @@ export default function Dashboard() {
           </Toolbar>
           <Divider />
           <List component="nav">
-            {mainListItems}
+            <MainListItems onUserIncomeFormClick={handleUserIncomeFormClick} />
             <Divider sx={{ my: 1 }} />
-            {secondaryListItems}
+            <SecondaryListItems />
           </List>
         </Drawer>
         <Box
@@ -163,13 +158,13 @@ export default function Dashboard() {
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
-              {/* เพิ่มเนื้อหาของ Dashboard ที่นี่ */}
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                   <Typography variant="h6">
                     Welcome to your Dashboard!
                   </Typography>
-                  {/* สามารถเพิ่มเนื้อหาหรือกราฟที่ต้องการได้ที่นี่ */}
+                  {showIncomeForm && <IncomeForm />}{' '}
+                  {/* แสดง IncomeForm ถ้าสถานะเป็น true */}
                 </Paper>
               </Grid>
             </Grid>

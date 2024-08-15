@@ -2,6 +2,7 @@
 import React from 'react';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
+import { useNavigate } from 'react-router-dom'; // นำเข้า useNavigate
 
 const handleSignOut = () => {
   // ลบ Cookie และ session
@@ -13,28 +14,32 @@ const handleSignOut = () => {
   localStorage.removeItem('userId'); // ลบ userId จาก LocalStorage
   localStorage.removeItem('name'); // ลบ name จาก LocalStorage
 
-  // คุณสามารถเพิ่มการนำทางไปยังหน้าลงชื่อเข้าใช้งานที่นี่
-  window.location.href = '/'; // เปลี่ยนเส้นทางไปยังหน้าลงชื่อเข้าใช้งาน
+  // เปลี่ยนเส้นทางไปยังหน้าลงชื่อเข้าใช้งาน
+  window.location.href = '/';
 };
 
-export const mainListItems = (
-  <div>
-    <ListItem button>
-      <ListItemText primary="Dashboard" />
-    </ListItem>
-    <ListItem button>
-      <ListItemText primary="Profile" />
-    </ListItem>
-    <ListItem button>
-      <ListItemText primary="Income" />
-    </ListItem>
-    <ListItem button>
-      <ListItemText primary="Settings" />
-    </ListItem>
-  </div>
-);
+export const MainListItems = ({ onUserIncomeFormClick }) => {
+  const navigate = useNavigate(); // ใช้ useNavigate
 
-export const secondaryListItems = (
+  return (
+    <div>
+      <ListItem button onClick={onUserIncomeFormClick}>
+        <ListItemText primary="บันทึกรายรับ" />
+      </ListItem>
+      <ListItem button onClick={() => navigate('/profile')}>
+        <ListItemText primary="Profile" />
+      </ListItem>
+      <ListItem button onClick={() => navigate('/income')}>
+        <ListItemText primary="Income" />
+      </ListItem>
+      <ListItem button onClick={() => navigate('/settings')}>
+        <ListItemText primary="Settings" />
+      </ListItem>
+    </div>
+  );
+};
+
+export const SecondaryListItems = () => (
   <div>
     <ListItem button onClick={handleSignOut}>
       <ListItemText primary="ออกจากระบบ" />
