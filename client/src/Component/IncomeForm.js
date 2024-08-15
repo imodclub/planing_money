@@ -10,10 +10,10 @@ import {
   Alert,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
-
 
 const IncomeForm = () => {
   const [date, setDate] = useState(dayjs());
@@ -23,8 +23,12 @@ const IncomeForm = () => {
     { label: 'รายได้จากค่าเช่า', amount: '', comment: '' },
     { label: 'ดอกเบี้ยและเงินปันผล', amount: '', comment: '' },
   ]);
-  
-  const [newItem, setNewItem] = useState({ label: '', amount: '', comment: '' });
+
+  const [newItem, setNewItem] = useState({
+    label: '',
+    amount: '',
+    comment: '',
+  });
   const [alertOpen, setAlertOpen] = useState(false);
 
   const handleAmountChange = (index, value) => {
@@ -40,9 +44,10 @@ const IncomeForm = () => {
   };
 
   const handleAddItem = () => {
+    // ตรวจสอบว่ารายการใหม่ไม่ว่างเปล่า
     if (newItem.label && newItem.amount) {
       setIncomeItems([...incomeItems, newItem]);
-      setNewItem({ label: '', amount: '', comment: '' });
+      setNewItem({ label: '', amount: '', comment: '' }); // เคลียร์ฟอร์ม
     }
   };
 
@@ -53,8 +58,6 @@ const IncomeForm = () => {
 
   const handleSave = async () => {
     const formattedDate = date.toISOString().split('T')[0];
-    console.log(formattedDate);
-    // บันทึกรายการทั้งหมดไปยัง save-income
     const response = await fetch('http://localhost:5002/api/save-income', {
       method: 'POST',
       headers: {
@@ -76,14 +79,14 @@ const IncomeForm = () => {
   };
 
   useEffect(() => {
-    // ดึงข้อมูลจากฐานข้อมูลเมื่อผู้ใช้งาน Sign In
     const fetchIncomeData = async () => {
       const response = await fetch('http://localhost:5002/api/income-data');
       const data = await response.json();
-      // ตรวจสอบและรวมข้อมูลที่มีอยู่
-      const combinedItems = incomeItems.map(item => {
-        const found = data.find(d => d.label === item.label);
-        return found ? { ...item, amount: found.amount, comment: found.comment } : item;
+      const combinedItems = incomeItems.map((item) => {
+        const found = data.find((d) => d.label === item.label);
+        return found
+          ? { ...item, amount: found.amount, comment: found.comment }
+          : item;
       });
       setIncomeItems(combinedItems);
     };
@@ -94,7 +97,7 @@ const IncomeForm = () => {
   const handleCloseAlert = () => {
     setAlertOpen(false); // ปิด Alert
   };
-  
+
   return (
     <Box sx={{ padding: 2 }}>
       <Typography variant="h6" gutterBottom>
@@ -103,32 +106,29 @@ const IncomeForm = () => {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker value={date} onChange={(newValue) => setDate(newValue)} />
       </LocalizationProvider>
-      {alertOpen && ( // แสดง Alert เมื่อบันทึกสำเร็จ
+      {alertOpen && (
         <Alert severity="success" onClose={handleCloseAlert}>
           บันทึกรายการสำเร็จ!
         </Alert>
       )}
       {incomeItems.map((item, index) => (
         <Grid container spacing={2} key={index} sx={{ marginTop: 2 }}>
-          <Grid item xs={6}>
+          <Grid item xs={3}>
+            <Typography variant="body1" color="black">
+              {item.label}
+            </Typography>
+          </Grid>
+          <Grid item xs={3}>
             <TextField
-              label={item.label}
+              label="จำนวนเงิน"
+              value={item.amount}
               onChange={(e) => handleAmountChange(index, e.target.value)}
               fullWidth
-              disabled
             />
           </Grid>
           <Grid item xs={4}>
             <TextField
-              label="จำนวนเงิน"
-              value={item.amount.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-              onChange={(e) => handleAmountChange(index, e.target.value)}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={8}>
-            <TextField
-              label="หมายเหตุ"
+              label="รายละเอียดเพิ่มเติม"
               value={item.comment}
               onChange={(e) => handleCommentChange(index, e.target.value)}
               fullWidth
@@ -143,7 +143,7 @@ const IncomeForm = () => {
       ))}
 
       <Grid container spacing={2} sx={{ marginTop: 2 }}>
-        <Grid item xs={6}>
+        <Grid item xs={3}>
           <TextField
             label="รายการใหม่"
             value={newItem.label}
@@ -151,7 +151,7 @@ const IncomeForm = () => {
             fullWidth
           />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <TextField
             label="จำนวนเงิน"
             value={newItem.amount}
@@ -159,9 +159,9 @@ const IncomeForm = () => {
             fullWidth
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
           <TextField
-            label="หมายเหตุ"
+            label="รายละเอียดเพิ่มเติม"
             value={newItem.comment}
             onChange={(e) =>
               setNewItem({ ...newItem, comment: e.target.value })
@@ -170,8 +170,14 @@ const IncomeForm = () => {
           />
         </Grid>
         <Grid item xs={2}>
-          <Button variant="contained" onClick={handleAddItem} fullWidth>
-            เพิ่มรายการ
+          <Button
+            variant="contained"
+            onClick={handleAddItem}
+            color="success"
+            startIcon={<AddCircleIcon />}
+            fullWidth
+          >
+            
           </Button>
         </Grid>
       </Grid>
