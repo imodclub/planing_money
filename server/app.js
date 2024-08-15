@@ -5,18 +5,20 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const User = require('./models/user.model'); // นำเข้า User model
 const Income = require('./models/Income');
+const cookieParser = require('cookie-parser');
 
 require('dotenv').config();
 const connectDB = require('./config/connectDB');
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5002;
 
 connectDB();
 
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 // Route สำหรับการลงทะเบียน
 app.post('/api/signup', async (req, res) => {
@@ -30,22 +32,13 @@ app.post('/api/signup', async (req, res) => {
   }
 });
 
-//Route สำหรับเข้าใช้งานระบบ
-app.post('api/signin', async (req,res)=>{
-  const {username, password} = req.body;
-  try{
-    
-  }catch(error){
-
-  }
-});
 
 // server/app.js
 app.post('/api/signin', async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const user = await User.findOne({ name: username }); // ค้นหาผู้ใช้ในฐานข้อมูล
+    const user = await User.findOne({ name: username });
     if (!user) {
       return res.status(400).json({ message: 'ไม่พบผู้ใช้' });
     }
@@ -55,7 +48,13 @@ app.post('/api/signin', async (req, res) => {
       return res.status(400).json({ message: 'รหัสผ่านไม่ถูกต้อง' });
     }
 
-    res.status(200).json({ message: 'ลงชื่อใช้งานสำเร็จ' });
+    // สร้าง Session Cookie
+    const userId = user._id.toString();
+    res.cookie('session', userId, {
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      httpOnly: true,
+    }); // สร้าง Cookie ที่หมดอายุใน 7 วัน และตั้งค่า httpOnly
+    res.status(200).json({ message: 'ลงชื่อใช้งานสำเร็จ', userId }); // ส่ง userId กลับไปยัง Client
   } catch (error) {
     res.status(500).json({ message: 'เกิดข้อผิดพลาดในการลงชื่อใช้งาน' });
     console.error(error);

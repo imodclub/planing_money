@@ -1,6 +1,14 @@
-// components/SignIn.js
 import React, { useState } from 'react';
-import { Box, TextField, Button, Typography, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from '@mui/material';
 
 const SignIn = ({ onSuccess }) => {
   const [username, setUsername] = useState('');
@@ -13,7 +21,7 @@ const SignIn = ({ onSuccess }) => {
     console.log('Submitting:', { username, password });
 
     try {
-      const response = await fetch('http://localhost:5000/api/signin', {
+      const response = await fetch('http://localhost:5002/api/signin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -25,6 +33,12 @@ const SignIn = ({ onSuccess }) => {
         const data = await response.json();
         setMessage(data.message);
         onSuccess(data.message); // ส่งข้อความสำเร็จไปยัง Home
+        window.location.href='../UserDashboard'
+
+        // บันทึก UserId ลง LocalStorage
+        const userId = data.userId; // สมมติว่าเซิร์ฟเวอร์ส่งกลับ userId
+        localStorage.setItem('userId', userId); // บันทึก UserId ลง LocalStorage
+
         setUsername(''); // เคลียร์ฟอร์ม
         setPassword('');
         setOpen(true); // เปิด Dialog
@@ -46,7 +60,6 @@ const SignIn = ({ onSuccess }) => {
 
   return (
     <Box component="form" noValidate autoComplete="off" onSubmit={handleSubmit}>
-     
       <TextField
         margin="normal"
         required

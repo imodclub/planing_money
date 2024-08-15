@@ -10,7 +10,7 @@ const Signup = ({ onSuccess }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/signup', {
+      const response = await fetch('http://localhost:5002/api/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
