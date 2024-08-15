@@ -46,10 +46,7 @@ const SignIn = ({ onSuccess }) => {
 
   return (
     <Box component="form" noValidate autoComplete="off" onSubmit={handleSubmit}>
-      <Typography variant="h5" gutterBottom>
-        Sign In
-      </Typography>
-
+     
       <TextField
         margin="normal"
         required

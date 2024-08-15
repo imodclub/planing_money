@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const User = require('./models/user.model'); // นำเข้า User model
+const Income = require('./models/Income');
 
 require('dotenv').config();
 const connectDB = require('./config/connectDB');
@@ -61,7 +62,38 @@ app.post('/api/signin', async (req, res) => {
   }
 });
 
+// Endpoint สำหรับบันทึกรายการรายได้
+app.post('/api/save-income', async (req, res) => {
+  const { date, incomeItems } = req.body;
 
+  try {
+    const newIncome = new Income({
+      date,
+      items: incomeItems.map(item => ({
+        label: item.label,
+        amount: parseFloat(item.amount), // แปลงเป็นจำนวน
+        comment: item.comment,
+      })),
+    });
+
+    await newIncome.save();
+    res.status(201).json({ message: 'บันทึกรายการสำเร็จ' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'เกิดข้อผิดพลาดในการบันทึกรายการ' });
+  }
+});
+
+// Endpoint สำหรับดึงข้อมูลรายได้
+app.get('/api/income-data', async (req, res) => {
+  try {
+    const incomes = await Income.find({});
+    res.status(200).json(incomes);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'เกิดข้อผิดพลาดในการดึงข้อมูล' });
+  }
+});
 
 
 app.listen(PORT, () => {
