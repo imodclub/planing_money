@@ -54,7 +54,11 @@ app.post('/api/signin', async (req, res) => {
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       httpOnly: true,
     }); // สร้าง Cookie ที่หมดอายุใน 7 วัน และตั้งค่า httpOnly
-    res.status(200).json({ message: 'ลงชื่อใช้งานสำเร็จ', userId }); // ส่ง userId กลับไปยัง Client
+    res.status(200).json({
+      message: 'ลงชื่อใช้งานสำเร็จ',
+      userId, //ส่งค่า userID กลับไปยัง Client
+      name: user.name, // ส่งค่า name กลับไปด้วย
+    });
   } catch (error) {
     res.status(500).json({ message: 'เกิดข้อผิดพลาดในการลงชื่อใช้งาน' });
     console.error(error);

@@ -33,11 +33,13 @@ const SignIn = ({ onSuccess }) => {
         const data = await response.json();
         setMessage(data.message);
         onSuccess(data.message); // ส่งข้อความสำเร็จไปยัง Home
-        window.location.href='../UserDashboard'
+        window.location.href = '../UserDashboard';
 
         // บันทึก UserId ลง LocalStorage
         const userId = data.userId; // สมมติว่าเซิร์ฟเวอร์ส่งกลับ userId
+        const name = data.name;
         localStorage.setItem('userId', userId); // บันทึก UserId ลง LocalStorage
+        localStorage.setItem('name', name); // บันทึก UserId ลง LocalStorage
 
         setUsername(''); // เคลียร์ฟอร์ม
         setPassword('');

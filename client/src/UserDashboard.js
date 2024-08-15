@@ -74,7 +74,8 @@ const defaultTheme = createTheme();
 
 
 export default function Dashboard() {
-  const [open, setOpen] = React.useState(true);
+    const [open, setOpen] = React.useState(true);
+    const [name, setName] = React.useState('');
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -82,9 +83,13 @@ export default function Dashboard() {
     useEffect(() => {
       // ดึง userID จาก LocalStorage และ console.log
       const userId = localStorage.getItem('userId');
+      const nameFromLocalStorage = localStorage.getItem('name');
+      setName(nameFromLocalStorage); 
+
       console.log('userID:', userId);
+      console.log('Name :', name);
     }, []);
-    
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Box sx={{ display: 'flex' }}>
@@ -114,7 +119,7 @@ export default function Dashboard() {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              User Dashboard
+              สวัสดี คุณ {name}
             </Typography>
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
