@@ -119,6 +119,31 @@ app.get('/api/income-data/:userId', async (req, res) => {
   }
 });
 
+//API สำหรับรายจ่าย
+// Endpoint สำหรับบันทึกรายจ่าย
+app.post('/api/save-expenses', async (req, res) => {
+  const { date, expenseItems, userId, timestamp } = req.body;
+
+  try {
+    const newExpense = new Expense({
+      userId,
+      date,
+      timestamp,
+      items: expenseItems.map(item => ({
+        label: item.label,
+        amount: item.amount,
+        comment: item.comment,
+      })),
+    });
+
+    await newExpense.save();
+    res.status(201).json({ message: 'บันทึกรายการสำเร็จ' });
+  } catch (error) {
+    console.error('Error saving expense:', error);
+    res.status(500).json({ message: 'เกิดข้อผิดพลาดในการบันทึกรายการ' });
+  }
+});
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

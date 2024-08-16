@@ -1,0 +1,233 @@
+import React, { useState, useEffect } from 'react';
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Grid,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import dayjs from 'dayjs';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+
+const ExpensesForm = () => {
+  const [date, setDate] = useState(dayjs());
+  const [expensesItems, setExpensesItems] = useState([
+    { label: 'ค่าผ่อนบ้าน', amount: '', comment: '' },
+    { label: 'ค่าผ่อนรถ', amount: '', comment: '' },
+    { label: 'ค่าผ่อนสหกรณ์', amount: '', comment: '' },
+    { label: 'ค่าบัตรเครดิตสินเชื่อเงินสด', amount: '', comment: '' },
+    { label: 'ค่าผ่อนสินค้า', amount: '', comment: '' },
+    { label: 'ค่าไฟฟ้า', amount: '', comment: '' },
+    { label: 'ค่าอินเตอร์เน็ตบ้าน', amount: '', comment: '' },
+    { label: 'ค่าโทรศัพท์มือถือ', amount: '', comment: '' },
+    { label: 'จ่ายลูกไปโรงเรียน', amount: '', comment: '' },
+    { label: 'ค่าน้ำมัน', amount: '', comment: '' },
+  ]);
+
+  const [newItem, setNewItem] = useState({
+    label: '',
+    amount: '',
+    comment: '',
+  });
+  const [dialogOpen, setDialogOpen] = useState(false); // State สำหรับ Dialog
+  const [successDialogOpen, setSuccessDialogOpen] = useState(false); // State สำหรับ Dialog บันทึกสำเร็จ
+
+  const handleAmountChange = (index, value) => {
+    const updatedItems = [...expensesItems];
+    updatedItems[index].amount = value.replace(/,/g, ''); // Remove commas for processing
+    setExpensesItems(updatedItems);
+  };
+
+  const formatAmount = (amount) => {
+    return amount ? amount.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : ''; // ตรวจสอบว่า amount มีค่า
+  };
+
+  const handleCommentChange = (index, value) => {
+    const updatedItems = [...expensesItems];
+    updatedItems[index].comment = value;
+    setExpensesItems(updatedItems);
+  };
+
+  const handleAddItem = () => {
+    if (newItem.label && newItem.amount) {
+      setExpensesItems([...expensesItems, newItem]);
+      setNewItem({ label: '', amount: '', comment: '' }); // เคลียร์ฟอร์ม
+    }
+  };
+
+  const handleDeleteItem = (index) => {
+    const updatedItems = expensesItems.filter((_, i) => i !== index);
+    setExpensesItems(updatedItems);
+  };
+
+  const handleSave = async () => {
+    const userId = localStorage.getItem('userId'); // ดึง userId จาก LocalStorage
+
+    if (!userId) {
+      setDialogOpen(true); // เปิด Dialog หากไม่พบ userId
+      return;
+    }
+
+    const formattedDate = date.toISOString().split('T')[0];
+    const timestamp = new Date().toISOString();
+
+    const response = await fetch('http://localhost:5002/api/save-expenses', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ date: formattedDate, expensesItems, userId, timestamp }), // ส่ง userId ไปด้วย
+    });
+
+    if (response.ok) {
+      setSuccessDialogOpen(true); // เปิด Dialog บันทึกสำเร็จ
+      // เคลียร์ฟอร์มและรีโหลดฟอร์ม
+      setExpensesItems([
+        { label: 'ค่าผ่อนบ้าน', amount: '', comment: '' },
+        { label: 'ค่าผ่อนรถ', amount: '', comment: '' },
+        { label: 'ค่าผ่อนสหกรณ์', amount: '', comment: '' },
+        { label: 'ค่าบัตรเครดิตสินเชื่อเงินสด', amount: '', comment: '' },
+        { label: 'ค่าผ่อนสินค้า', amount: '', comment: '' },
+        { label: 'ค่าไฟฟ้า', amount: '', comment: '' },
+        { label: 'ค่าอินเตอร์เน็ตบ้าน', amount: '', comment: '' },
+        { label: 'ค่าโทรศัพท์มือถือ', amount: '', comment: '' },
+        { label: 'จ่ายลูกไปโรงเรียน', amount: '', comment: '' },
+        { label: 'ค่าน้ำมัน', amount: '', comment: '' },
+      ]);
+    }
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false); // ปิด Dialog
+  };
+
+  const handleCloseSuccessDialog = () => {
+    setSuccessDialogOpen(false); // ปิด Dialog บันทึกสำเร็จ
+  };
+
+  return (
+    <Box sx={{ padding: 2 }}>
+      <Typography variant="h6" gutterBottom>
+        บันทึกรายจ่าย
+      </Typography>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DatePicker value={date} onChange={(newValue) => setDate(newValue)} />
+      </LocalizationProvider>
+      {expensesItems.map((item, index) => (
+        <Grid container spacing={2} key={index} sx={{ marginTop: 2 }}>
+          <Grid item xs={3}>
+            <Typography variant="body1" color="black">
+              {item.label}
+            </Typography>
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              label="จำนวนเงิน"
+              value={formatAmount(item.amount)} // แสดงจำนวนเงินที่มีคอมม่า
+              onChange={(e) => handleAmountChange(index, e.target.value)}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              label="รายละเอียดเพิ่มเติม"
+              value={item.comment}
+              onChange={(e) => handleCommentChange(index, e.target.value)}
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <IconButton onClick={() => handleDeleteItem(index)} color="error">
+              <DeleteIcon />
+            </IconButton>
+          </Grid>
+        </Grid>
+      ))}
+
+      <Grid container spacing={2} sx={{ marginTop: 2 }}>
+        <Grid item xs={3}>
+          <TextField
+            label="รายการใหม่"
+            value={newItem.label}
+            onChange={(e) => setNewItem({ ...newItem, label: e.target.value })}
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={3}>
+          <TextField
+            label="จำนวนเงิน"
+            value={newItem.amount}
+            onChange={(e) => setNewItem({ ...newItem, amount: e.target.value })}
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <TextField
+            label="รายละเอียดเพิ่มเติม"
+            value={newItem.comment}
+            onChange={(e) =>
+              setNewItem({ ...newItem, comment: e.target.value })
+            }
+            fullWidth
+          />
+        </Grid>
+        <Grid item xs={2}>
+          <Button
+            variant="contained"
+            onClick={handleAddItem}
+            color="success"
+            startIcon={<AddCircleIcon />}
+            fullWidth
+          >
+            เพิ่มรายการ
+          </Button>
+        </Grid>
+      </Grid>
+
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleSave}
+        sx={{ marginTop: 2 }}
+      >
+        บันทึกรายการ
+      </Button>
+
+      {/* Dialog สำหรับแจ้งเตือนเมื่อไม่พบ userId */}
+      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+        <DialogTitle>ข้อผิดพลาด</DialogTitle>
+        <DialogContent>
+          <Typography>ไม่พบ userId กรุณาลงชื่อเข้าใช้ใหม่</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            ตกลง
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Dialog สำหรับบันทึกข้อมูลสำเร็จ */}
+      <Dialog open={successDialogOpen} onClose={handleCloseSuccessDialog}>
+        <DialogTitle>บันทึกสำเร็จ</DialogTitle>
+        <DialogContent>
+          <Typography>บันทึกข้อมูลรายจ่ายสำเร็จ!</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseSuccessDialog} color="primary">
+            ตกลง
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
+  );
+};
+
+export default ExpensesForm;
