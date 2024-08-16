@@ -84,8 +84,6 @@ export default function Dashboard() {
     const nameFromLocalStorage = localStorage.getItem('name');
     setName(nameFromLocalStorage);
 
-    console.log('userID:', userId);
-    console.log('Name :', nameFromLocalStorage);
   }, []);
 
   const handleUserIncomeFormClick = () => {

@@ -109,13 +109,11 @@ const IncomeForm = () => {
         if (response.ok) {
           const data = await response.json();
           // แสดงค่าที่ดึงมาจาก MongoDB ใน Console
-          console.log('Fetched income data from MongoDB:', data);
   
           // ตรวจสอบว่ามีเอกสารหรือไม่
           if (data.length > 0) {
             // ดึงข้อมูลเอกสารล่าสุด
             const latestDocument = data[data.length - 1]; // สมมติว่าข้อมูลเรียงตามวันที่
-            console.log('Latest document labels:', latestDocument.items.map(item => item.label)); // แสดง label ของเอกสารล่าสุด
   
             // สร้าง incomeItems ใหม่จาก label ที่มีอยู่ในฐานข้อมูล
             const newIncomeItems = latestDocument.items.map(item => ({
