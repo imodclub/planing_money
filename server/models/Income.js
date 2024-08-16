@@ -2,28 +2,34 @@ const mongoose = require('mongoose');
 
 const incomeSchema = new mongoose.Schema({
   userId: {
-    type: mongoose.Schema.Types.ObjectId, // ใช้ ObjectId เพื่อเก็บ userId
-    required: true, // ต้องการค่า (required)
-    ref: 'users', // ชี้ไปที่โมเดล User
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'User',
   },
   date: {
     type: Date,
     required: true,
+  },
+  timestamp: {
+    type: Date,
+    default: Date.now,
   },
   items: [
     {
       label: {
         type: String,
         required: true,
+        default: '', // กำหนดค่าเริ่มต้นเป็นสตริงว่าง
       },
       amount: {
-        type: String, // เปลี่ยนเป็น String แทนที่จะเป็น Number
-        required: false, // ไม่ต้องการค่า (optional)
-        default: '', // กำหนดค่าเริ่มต้นเป็น string ว่าง
+        type: String,
+        required: false,
+        default: '',
       },
       comment: {
         type: String,
         required: false,
+        default: '',
       },
     },
   ],

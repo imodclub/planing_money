@@ -43,7 +43,7 @@ const IncomeForm = () => {
 
   const formatAmount = (amount) => {
     // ฟังก์ชันสำหรับจัดรูปแบบจำนวนเงินด้วยคอมม่า
-    return amount.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return amount ? amount.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : ''; // ตรวจสอบว่า amount มีค่า
   };
 
   const handleCommentChange = (index, value) => {
@@ -74,12 +74,13 @@ const IncomeForm = () => {
     }
 
     const formattedDate = date.toISOString().split('T')[0];
+    const timestamp = new Date().toISOString();
     const response = await fetch('http://localhost:5002/api/save-income', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ date: formattedDate, incomeItems, userId }), // ส่ง userId ไปด้วย
+      body: JSON.stringify({ date: formattedDate, incomeItems, userId, timestamp }), 
     });
 
     if (response.ok) {
@@ -96,17 +97,50 @@ const IncomeForm = () => {
 
   useEffect(() => {
     const fetchIncomeData = async () => {
-      const response = await fetch('http://localhost:5002/api/income-data');
-      const data = await response.json();
-      const combinedItems = incomeItems.map((item) => {
-        const found = data.find((d) => d.label === item.label);
-        return found
-          ? { ...item, amount: found.amount, comment: found.comment }
-          : item;
-      });
-      setIncomeItems(combinedItems);
+      const userId = localStorage.getItem('userId'); // ดึง userId จาก LocalStorage
+  
+      if (!userId) {
+        console.error('No userId found in LocalStorage');
+        return;
+      }
+  
+      try {
+        const response = await fetch(`http://localhost:5002/api/income-data/${userId}`); // ดึงข้อมูลตาม userId
+        if (response.ok) {
+          const data = await response.json();
+          // แสดงค่าที่ดึงมาจาก MongoDB ใน Console
+          console.log('Fetched income data from MongoDB:', data);
+  
+          // ตรวจสอบว่ามีเอกสารหรือไม่
+          if (data.length > 0) {
+            // ดึงข้อมูลเอกสารล่าสุด
+            const latestDocument = data[data.length - 1]; // สมมติว่าข้อมูลเรียงตามวันที่
+            console.log('Latest document labels:', latestDocument.items.map(item => item.label)); // แสดง label ของเอกสารล่าสุด
+  
+            // สร้าง incomeItems ใหม่จาก label ที่มีอยู่ในฐานข้อมูล
+            const newIncomeItems = latestDocument.items.map(item => ({
+              label: item.label,
+              amount: '',
+              comment: '',
+            }));
+  
+            // ตรวจสอบว่ามี label ใดที่ไม่ซ้ำกับที่มีอยู่แล้ว
+            const existingLabels = incomeItems.map(item => item.label);
+            const uniqueItems = newIncomeItems.filter(item => !existingLabels.includes(item.label));
+  
+            // รวม incomeItems ที่มีอยู่แล้วกับ uniqueItems
+            setIncomeItems([...incomeItems, ...uniqueItems]);
+          } else {
+            console.log('No documents found for this userId.');
+          }
+        } else {
+          console.error('Error fetching income data:', response.status);
+        }
+      } catch (error) {
+        console.error('Error fetching income data:', error);
+      }
     };
-
+  
     fetchIncomeData();
   }, []);
 

@@ -67,7 +67,7 @@ app.post('/api/signin', async (req, res) => {
 
 // Endpoint สำหรับบันทึกรายการรายได้
 app.post('/api/save-income', async (req, res) => {
-  const { date, incomeItems, userId } = req.body;
+  const { date, incomeItems, userId, timestamp } = req.body;
 
   try {
     const items = incomeItems.map((item) => {
@@ -83,6 +83,7 @@ app.post('/api/save-income', async (req, res) => {
     const newIncome = new Income({
       userId,
       date,
+      timestamp,
       items,
     });
 
@@ -102,6 +103,19 @@ app.get('/api/income-data', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'เกิดข้อผิดพลาดในการดึงข้อมูล' });
+  }
+});
+
+//สำหรับ Fetch user data
+app.get('/api/income-data/:userId', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const incomes = await Income.find({ userId: userId }); // ค้นหาข้อมูลตาม userId
+    res.json(incomes);
+  } catch (error) {
+    console.error('Error fetching income data:', error);
+    res.status(500).json({ message: 'Error fetching income data' });
   }
 });
 
