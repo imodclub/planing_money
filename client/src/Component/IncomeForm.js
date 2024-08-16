@@ -7,7 +7,10 @@ import {
   Typography,
   Grid,
   IconButton,
-  Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -29,12 +32,18 @@ const IncomeForm = () => {
     amount: '',
     comment: '',
   });
-  const [alertOpen, setAlertOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false); // State สำหรับ Dialog
+  const [successDialogOpen, setSuccessDialogOpen] = useState(false); // State สำหรับ Dialog บันทึกสำเร็จ
 
   const handleAmountChange = (index, value) => {
     const updatedItems = [...incomeItems];
     updatedItems[index].amount = value.replace(/,/g, ''); // Remove commas for processing
     setIncomeItems(updatedItems);
+  };
+
+  const formatAmount = (amount) => {
+    // ฟังก์ชันสำหรับจัดรูปแบบจำนวนเงินด้วยคอมม่า
+    return amount.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
 
   const handleCommentChange = (index, value) => {
@@ -57,17 +66,24 @@ const IncomeForm = () => {
   };
 
   const handleSave = async () => {
+    const userId = localStorage.getItem('userId'); // ดึง userId จาก LocalStorage
+
+    if (!userId) {
+      setDialogOpen(true); // เปิด Dialog หากไม่พบ userId
+      return;
+    }
+
     const formattedDate = date.toISOString().split('T')[0];
     const response = await fetch('http://localhost:5002/api/save-income', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ date: formattedDate, incomeItems }),
+      body: JSON.stringify({ date: formattedDate, incomeItems, userId }), // ส่ง userId ไปด้วย
     });
 
     if (response.ok) {
-      setAlertOpen(true);
+      setSuccessDialogOpen(true); // เปิด Dialog บันทึกสำเร็จ
       // เคลียร์ฟอร์มและรีโหลดฟอร์ม
       setIncomeItems([
         { label: 'เงินเดือน', amount: '', comment: '' },
@@ -94,8 +110,12 @@ const IncomeForm = () => {
     fetchIncomeData();
   }, []);
 
-  const handleCloseAlert = () => {
-    setAlertOpen(false); // ปิด Alert
+  const handleCloseDialog = () => {
+    setDialogOpen(false); // ปิด Dialog
+  };
+
+  const handleCloseSuccessDialog = () => {
+    setSuccessDialogOpen(false); // ปิด Dialog บันทึกสำเร็จ
   };
 
   return (
@@ -106,11 +126,6 @@ const IncomeForm = () => {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker value={date} onChange={(newValue) => setDate(newValue)} />
       </LocalizationProvider>
-      {alertOpen && (
-        <Alert severity="success" onClose={handleCloseAlert}>
-          บันทึกรายการสำเร็จ!
-        </Alert>
-      )}
       {incomeItems.map((item, index) => (
         <Grid container spacing={2} key={index} sx={{ marginTop: 2 }}>
           <Grid item xs={3}>
@@ -121,7 +136,7 @@ const IncomeForm = () => {
           <Grid item xs={3}>
             <TextField
               label="จำนวนเงิน"
-              value={item.amount}
+              value={formatAmount(item.amount)} // แสดงจำนวนเงินที่มีคอมม่า
               onChange={(e) => handleAmountChange(index, e.target.value)}
               fullWidth
             />
@@ -177,7 +192,7 @@ const IncomeForm = () => {
             startIcon={<AddCircleIcon />}
             fullWidth
           >
-            
+            เพิ่มรายการ
           </Button>
         </Grid>
       </Grid>
@@ -190,6 +205,32 @@ const IncomeForm = () => {
       >
         บันทึกรายการ
       </Button>
+
+      {/* Dialog สำหรับแจ้งเตือนเมื่อไม่พบ userId */}
+      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+        <DialogTitle>ข้อผิดพลาด</DialogTitle>
+        <DialogContent>
+          <Typography>ไม่พบ userId กรุณาลงชื่อเข้าใช้ใหม่</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            ตกลง
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Dialog สำหรับบันทึกข้อมูลสำเร็จ */}
+      <Dialog open={successDialogOpen} onClose={handleCloseSuccessDialog}>
+        <DialogTitle>บันทึกสำเร็จ</DialogTitle>
+        <DialogContent>
+          <Typography>บันทึกข้อมูลรายได้สำเร็จ!</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseSuccessDialog} color="primary">
+            ตกลง
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

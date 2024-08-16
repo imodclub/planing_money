@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const incomeSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId, // ใช้ ObjectId เพื่อเก็บ userId
+    required: true, // ต้องการค่า (required)
+    ref: 'users', // ชี้ไปที่โมเดล User
+  },
   date: {
     type: Date,
     required: true,

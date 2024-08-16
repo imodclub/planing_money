@@ -67,7 +67,7 @@ app.post('/api/signin', async (req, res) => {
 
 // Endpoint สำหรับบันทึกรายการรายได้
 app.post('/api/save-income', async (req, res) => {
-  const { date, incomeItems } = req.body;
+  const { date, incomeItems, userId } = req.body;
 
   try {
     const items = incomeItems.map((item) => {
@@ -81,6 +81,7 @@ app.post('/api/save-income', async (req, res) => {
     });
 
     const newIncome = new Income({
+      userId,
       date,
       items,
     });
