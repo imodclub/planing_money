@@ -19,7 +19,8 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import { MainListItems, SecondaryListItems } from './Component/listItems';
 import IncomeForm from './Component/IncomeForm';
 import ExpensesForm from './Component/ExpensesForm';
-import SavingsForm from './Component/SavingsForm'; // นำเข้า SavingsForm
+import SavingsForm from './Component/SavingsForm';
+import ReportVersion1 from './Component/ReportVersion1'; // นำเข้า ReportVersion1
 
 const drawerWidth = 240;
 
@@ -74,7 +75,8 @@ export default function Dashboard() {
   const [name, setName] = useState('');
   const [showIncomeForm, setShowIncomeForm] = useState(false);
   const [showExpensesForm, setShowExpensesForm] = useState(false);
-  const [showSavingsForm, setShowSavingsForm] = useState(false); // สถานะสำหรับการแสดง SavingsForm
+  const [showSavingsForm, setShowSavingsForm] = useState(false);
+  const [showReport, setShowReport] = useState(false); // สถานะสำหรับการแสดง ReportVersion1
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -88,19 +90,29 @@ export default function Dashboard() {
   const handleUserIncomeFormClick = () => {
     setShowIncomeForm(true);
     setShowExpensesForm(false);
-    setShowSavingsForm(false); // ซ่อน SavingsForm เมื่อแสดง IncomeForm
+    setShowSavingsForm(false);
+    setShowReport(false); // ซ่อน ReportVersion1 เมื่อแสดง IncomeForm
   };
 
   const handleUserExpensesFormClick = () => {
     setShowExpensesForm(true);
     setShowIncomeForm(false);
-    setShowSavingsForm(false); // ซ่อน SavingsForm เมื่อแสดง ExpensesForm
+    setShowSavingsForm(false);
+    setShowReport(false); // ซ่อน ReportVersion1 เมื่อแสดง ExpensesForm
   };
 
   const handleUserSavingsFormClick = () => {
     setShowSavingsForm(true);
     setShowIncomeForm(false);
-    setShowExpensesForm(false); // ซ่อน IncomeForm และ ExpensesForm เมื่อแสดง SavingsForm
+    setShowExpensesForm(false);
+    setShowReport(false); // ซ่อน ReportVersion1 เมื่อแสดง SavingsForm
+  };
+
+  const handleUserReportClick = () => {
+    setShowReport(true);
+    setShowIncomeForm(false);
+    setShowExpensesForm(false);
+    setShowSavingsForm(false); // ซ่อนฟอร์มอื่นๆ เมื่อแสดง ReportVersion1
   };
 
   return (
@@ -153,6 +165,7 @@ export default function Dashboard() {
               onUserIncomeFormClick={handleUserIncomeFormClick}
               onUserExpensesFormClick={handleUserExpensesFormClick}
               onUserSavingsFormClick={handleUserSavingsFormClick}
+              onUserReportClick={handleUserReportClick}
             />
             <Divider sx={{ my: 1 }} />
             <SecondaryListItems />
@@ -175,9 +188,10 @@ export default function Dashboard() {
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <Typography variant="h6">
-                    Welcome to your Dashboard!
+                  <Typography variant="h4" gutterBottom>
+                    ข้อมูลทางการเงินของคุณ
                   </Typography>
+                  {showReport && <ReportVersion1 />}
                   {showIncomeForm && <IncomeForm />}
                   {showExpensesForm && <ExpensesForm />}
                   {showSavingsForm && <SavingsForm />}

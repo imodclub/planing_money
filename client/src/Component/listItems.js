@@ -17,9 +17,13 @@ export const MainListItems = ({
   onUserIncomeFormClick,
   onUserExpensesFormClick,
   onUserSavingsFormClick,
+  onUserReportClick,
 }) => {
   return (
     <div>
+      <ListItem button onClick={onUserReportClick}>
+        <ListItemText primary="ข้อมูลทางการเงินของคุณ" />
+      </ListItem>
       <ListItem button onClick={onUserIncomeFormClick}>
         <ListItemText primary="บันทึกรายรับ" />
       </ListItem>
