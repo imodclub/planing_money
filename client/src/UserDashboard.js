@@ -1,6 +1,4 @@
-// src/components/Dashboard.js
-import * as React from 'react';
-import { useEffect, useState } from 'react'; // นำเข้า useState
+import React, { useState, useEffect } from 'react';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
@@ -18,8 +16,10 @@ import Paper from '@mui/material/Paper';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { MainListItems, SecondaryListItems } from './Component/listItems'; // นำเข้า MainListItems และ SecondaryListItems
+import { MainListItems, SecondaryListItems } from './Component/listItems';
 import IncomeForm from './Component/IncomeForm';
+import ExpensesForm from './Component/ExpensesForm';
+import SavingsForm from './Component/SavingsForm'; // นำเข้า SavingsForm
 
 const drawerWidth = 240;
 
@@ -70,24 +70,37 @@ const Drawer = styled(MuiDrawer, {
 const defaultTheme = createTheme();
 
 export default function Dashboard() {
-  const [open, setOpen] = React.useState(true);
-  const [name, setName] = React.useState('');
-  const [showIncomeForm, setShowIncomeForm] = useState(false); // สถานะสำหรับการแสดง IncomeForm
+  const [open, setOpen] = useState(true);
+  const [name, setName] = useState('');
+  const [showIncomeForm, setShowIncomeForm] = useState(false);
+  const [showExpensesForm, setShowExpensesForm] = useState(false);
+  const [showSavingsForm, setShowSavingsForm] = useState(false); // สถานะสำหรับการแสดง SavingsForm
 
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
   useEffect(() => {
-    // ดึง userID จาก LocalStorage และ console.log
-    const userId = localStorage.getItem('userId');
     const nameFromLocalStorage = localStorage.getItem('name');
     setName(nameFromLocalStorage);
-
   }, []);
 
   const handleUserIncomeFormClick = () => {
-    setShowIncomeForm(true); // แสดง IncomeForm เมื่อคลิกที่ Dashboard
+    setShowIncomeForm(true);
+    setShowExpensesForm(false);
+    setShowSavingsForm(false); // ซ่อน SavingsForm เมื่อแสดง IncomeForm
+  };
+
+  const handleUserExpensesFormClick = () => {
+    setShowExpensesForm(true);
+    setShowIncomeForm(false);
+    setShowSavingsForm(false); // ซ่อน SavingsForm เมื่อแสดง ExpensesForm
+  };
+
+  const handleUserSavingsFormClick = () => {
+    setShowSavingsForm(true);
+    setShowIncomeForm(false);
+    setShowExpensesForm(false); // ซ่อน IncomeForm และ ExpensesForm เมื่อแสดง SavingsForm
   };
 
   return (
@@ -136,7 +149,11 @@ export default function Dashboard() {
           </Toolbar>
           <Divider />
           <List component="nav">
-            <MainListItems onUserIncomeFormClick={handleUserIncomeFormClick} />
+            <MainListItems
+              onUserIncomeFormClick={handleUserIncomeFormClick}
+              onUserExpensesFormClick={handleUserExpensesFormClick}
+              onUserSavingsFormClick={handleUserSavingsFormClick}
+            />
             <Divider sx={{ my: 1 }} />
             <SecondaryListItems />
           </List>
@@ -161,8 +178,9 @@ export default function Dashboard() {
                   <Typography variant="h6">
                     Welcome to your Dashboard!
                   </Typography>
-                  {showIncomeForm && <IncomeForm />}{' '}
-                  {/* แสดง IncomeForm ถ้าสถานะเป็น true */}
+                  {showIncomeForm && <IncomeForm />}
+                  {showExpensesForm && <ExpensesForm />}
+                  {showSavingsForm && <SavingsForm />}
                 </Paper>
               </Grid>
             </Grid>

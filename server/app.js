@@ -5,6 +5,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const User = require('./models/user.model'); // นำเข้า User model
 const Income = require('./models/Income');
+const Expense = require('./models/expenses.model');
+const Saving = require('./models/saving.model');
 const cookieParser = require('cookie-parser');
 
 require('dotenv').config();
@@ -106,7 +108,7 @@ app.get('/api/income-data', async (req, res) => {
   }
 });
 
-//สำหรับ Fetch user data
+//สำหรับ Fetch user data income
 app.get('/api/income-data/:userId', async (req, res) => {
   const { userId } = req.params;
 
@@ -119,17 +121,34 @@ app.get('/api/income-data/:userId', async (req, res) => {
   }
 });
 
+//สำหรับ Fetch user data expenses
+app.get('/api/expense-data/:userId', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const expense = await Expense.find({ userId: userId }); // ค้นหาข้อมูลตาม userId
+    res.json(expense);
+  } catch (error) {
+    console.error('Error fetching income data:', error);
+    res.status(500).json({ message: 'Error fetching income data' });
+  }
+});
+
 //API สำหรับรายจ่าย
 // Endpoint สำหรับบันทึกรายจ่าย
 app.post('/api/save-expenses', async (req, res) => {
   const { date, expenseItems, userId, timestamp } = req.body;
+
+  if (!expenseItems || !Array.isArray(expenseItems)) {
+    return res.status(400).json({ message: 'Invalid expense items' });
+  }
 
   try {
     const newExpense = new Expense({
       userId,
       date,
       timestamp,
-      items: expenseItems.map(item => ({
+      items: expenseItems.map((item) => ({
         label: item.label,
         amount: item.amount,
         comment: item.comment,
@@ -144,6 +163,47 @@ app.post('/api/save-expenses', async (req, res) => {
   }
 });
 
+//API สำหรับฟอร์มเงินออม
+app.post('/api/save-savings', async (req, res) => {
+  const { date, savingsItems, userId, timestamp } = req.body;
+
+  if (!savingsItems || !Array.isArray(savingsItems)) {
+    return res.status(400).json({ message: 'Invalid savings items' });
+  }
+
+  try {
+    const newSaving = new Saving({
+      userId,
+      date,
+      timestamp,
+      items: savingsItems.map((item) => ({
+        label: item.label,
+        amount: item.amount,
+        comment: item.comment,
+      })),
+    });
+
+    await newSaving.save();
+    res.status(201).json({ message: 'บันทึกรายการสำเร็จ' });
+  } catch (error) {
+    console.error('Error saving savings:', error);
+    res.status(500).json({ message: 'เกิดข้อผิดพลาดในการบันทึกรายการ' });
+  }
+});
+
+
+//API Fetch Data เงินออม
+app.get('/api/savings/:userId', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const savings = await Saving.find({ userId: userId }).sort({ date: -1 }); // ค้นหาข้อมูลตาม userId และเรียงลำดับตามวันที่
+    res.json(savings);
+  } catch (error) {
+    console.error('Error fetching savings data:', error);
+    res.status(500).json({ message: 'Error fetching savings data' });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

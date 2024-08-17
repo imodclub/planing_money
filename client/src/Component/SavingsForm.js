@@ -1,4 +1,3 @@
-// components/IncomeForm.js
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -18,13 +17,12 @@ import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 
-const IncomeForm = () => {
+const SavingsForm = () => {
   const [date, setDate] = useState(dayjs());
-  const [incomeItems, setIncomeItems] = useState([
-    { label: 'เงินเดือน', amount: '', comment: '' },
-    { label: 'รายได้จากขายสินค้า', amount: '', comment: '' },
-    { label: 'รายได้จากค่าเช่า', amount: '', comment: '' },
-    { label: 'ดอกเบี้ยและเงินปันผล', amount: '', comment: '' },
+  const [savingsItems, setSavingsItems] = useState([
+    { label: 'เงินฝาก', amount: '', comment: '' },
+    { label: 'ค่าหุ้น', amount: '', comment: '' },
+    { label: 'กองทุน', amount: '', comment: '' },
   ]);
 
   const [newItem, setNewItem] = useState({
@@ -32,133 +30,137 @@ const IncomeForm = () => {
     amount: '',
     comment: '',
   });
-  const [dialogOpen, setDialogOpen] = useState(false); // State สำหรับ Dialog
-  const [successDialogOpen, setSuccessDialogOpen] = useState(false); // State สำหรับ Dialog บันทึกสำเร็จ
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [successDialogOpen, setSuccessDialogOpen] = useState(false);
 
   const handleAmountChange = (index, value) => {
-    const updatedItems = [...incomeItems];
-    updatedItems[index].amount = value.replace(/,/g, ''); // Remove commas for processing
-    setIncomeItems(updatedItems);
+    const updatedItems = [...savingsItems];
+    updatedItems[index].amount = value.replace(/,/g, '');
+    setSavingsItems(updatedItems);
   };
 
   const formatAmount = (amount) => {
-    // ฟังก์ชันสำหรับจัดรูปแบบจำนวนเงินด้วยคอมม่า
-    return amount ? amount.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : ''; // ตรวจสอบว่า amount มีค่า
+    return amount ? amount.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
   };
 
   const handleCommentChange = (index, value) => {
-    const updatedItems = [...incomeItems];
+    const updatedItems = [...savingsItems];
     updatedItems[index].comment = value;
-    setIncomeItems(updatedItems);
+    setSavingsItems(updatedItems);
   };
 
   const handleAddItem = () => {
-    // ตรวจสอบว่ารายการใหม่ไม่ว่างเปล่า
     if (newItem.label && newItem.amount) {
-      setIncomeItems([...incomeItems, newItem]);
-      setNewItem({ label: '', amount: '', comment: '' }); // เคลียร์ฟอร์ม
+      setSavingsItems([...savingsItems, newItem]);
+      setNewItem({ label: '', amount: '', comment: '' });
     }
   };
 
   const handleDeleteItem = (index) => {
-    const updatedItems = incomeItems.filter((_, i) => i !== index);
-    setIncomeItems(updatedItems);
+    const updatedItems = savingsItems.filter((_, i) => i !== index);
+    setSavingsItems(updatedItems);
   };
 
   const handleSave = async () => {
-    const userId = localStorage.getItem('userId'); // ดึง userId จาก LocalStorage
+    const userId = localStorage.getItem('userId');
 
     if (!userId) {
-      setDialogOpen(true); // เปิด Dialog หากไม่พบ userId
+      setDialogOpen(true);
       return;
     }
 
     const formattedDate = date.toISOString().split('T')[0];
     const timestamp = new Date().toISOString();
-    const response = await fetch('http://localhost:5002/api/save-income', {
+
+    const response = await fetch('http://localhost:5002/api/save-savings', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ date: formattedDate, incomeItems, userId, timestamp }), 
+      body: JSON.stringify({
+        date: formattedDate,
+        savingsItems,
+        userId,
+        timestamp,
+      }),
     });
 
     if (response.ok) {
-      setSuccessDialogOpen(true); // เปิด Dialog บันทึกสำเร็จ
-      // เคลียร์ฟอร์มและรีโหลดฟอร์ม
-      setIncomeItems([
-        { label: 'เงินเดือน', amount: '', comment: '' },
-        { label: 'รายได้จากขายสินค้า', amount: '', comment: '' },
-        { label: 'รายได้จากค่าเช่า', amount: '', comment: '' },
-        { label: 'ดอกเบี้ยและเงินปันผล', amount: '', comment: '' },
+      setSuccessDialogOpen(true);
+      setSavingsItems([
+        { label: 'เงินฝาก', amount: '', comment: '' },
+        { label: 'ค่าหุ้น', amount: '', comment: '' },
+        { label: 'กองทุน', amount: '', comment: '' },
       ]);
     }
   };
 
   useEffect(() => {
-    const fetchIncomeData = async () => {
-      const userId = localStorage.getItem('userId'); // ดึง userId จาก LocalStorage
-  
+    const fetchSavingsData = async () => {
+      const userId = localStorage.getItem('userId');
+
       if (!userId) {
         console.error('No userId found in LocalStorage');
         return;
       }
-  
+
       try {
-        const response = await fetch(`http://localhost:5002/api/income-data/${userId}`); // ดึงข้อมูลตาม userId
+        const response = await fetch(
+          `http://localhost:5002/api/savings/${userId}`
+        );
         if (response.ok) {
           const data = await response.json();
-          // แสดงค่าที่ดึงมาจาก MongoDB ใน Console
-  
-          // ตรวจสอบว่ามีเอกสารหรือไม่
+
           if (data.length > 0) {
-            // ดึงข้อมูลเอกสารล่าสุด
-            const latestDocument = data[data.length - 1]; // สมมติว่าข้อมูลเรียงตามวันที่
-  
-            // สร้าง incomeItems ใหม่จาก label ที่มีอยู่ในฐานข้อมูล
-            const newIncomeItems = latestDocument.items.map(item => ({
+            const latestDocument = data[data.length - 1];
+            console.log(
+              'Latest document labels:',
+              latestDocument.items.map((item) => item.label)
+            );
+
+            const newSavingsItems = latestDocument.items.map((item) => ({
               label: item.label,
               amount: '',
               comment: '',
             }));
-  
-            // ตรวจสอบว่ามี label ใดที่ไม่ซ้ำกับที่มีอยู่แล้ว
-            const existingLabels = incomeItems.map(item => item.label);
-            const uniqueItems = newIncomeItems.filter(item => !existingLabels.includes(item.label));
-  
-            // รวม incomeItems ที่มีอยู่แล้วกับ uniqueItems
-            setIncomeItems([...incomeItems, ...uniqueItems]);
+
+            const existingLabels = savingsItems.map((item) => item.label);
+            const uniqueItems = newSavingsItems.filter(
+              (item) => !existingLabels.includes(item.label)
+            );
+
+            setSavingsItems([...savingsItems, ...uniqueItems]);
           } else {
             console.log('No documents found for this userId.');
           }
         } else {
-          console.error('Error fetching income data:', response.status);
+          console.error('Error fetching savings data:', response.status);
         }
       } catch (error) {
-        console.error('Error fetching income data:', error);
+        console.error('Error fetching savings data:', error);
       }
     };
-  
-    fetchIncomeData();
+
+    fetchSavingsData();
   }, []);
 
   const handleCloseDialog = () => {
-    setDialogOpen(false); // ปิด Dialog
+    setDialogOpen(false);
   };
 
   const handleCloseSuccessDialog = () => {
-    setSuccessDialogOpen(false); // ปิด Dialog บันทึกสำเร็จ
+    setSuccessDialogOpen(false);
   };
 
   return (
     <Box sx={{ padding: 2 }}>
       <Typography variant="h6" gutterBottom>
-        บันทึกรายได้
+        บันทึกเงินออม
       </Typography>
       <Grid container spacing={2} sx={{ marginTop: 2 }}>
         <Grid item xs={3}>
           <Typography variant="body1" color="black">
-            วันที่บันทึก
+             วันที่บันทึก
           </Typography>
         </Grid>
         <Grid item xs={3}>
@@ -170,7 +172,7 @@ const IncomeForm = () => {
           </LocalizationProvider>
         </Grid>
       </Grid>
-      {incomeItems.map((item, index) => (
+      {savingsItems.map((item, index) => (
         <Grid container spacing={2} key={index} sx={{ marginTop: 2 }}>
           <Grid item xs={3}>
             <Typography variant="body1" color="black">
@@ -180,7 +182,7 @@ const IncomeForm = () => {
           <Grid item xs={3}>
             <TextField
               label="จำนวนเงิน"
-              value={formatAmount(item.amount)} // แสดงจำนวนเงินที่มีคอมม่า
+              value={formatAmount(item.amount)}
               onChange={(e) => handleAmountChange(index, e.target.value)}
               fullWidth
             />
@@ -250,7 +252,6 @@ const IncomeForm = () => {
         บันทึกรายการ
       </Button>
 
-      {/* Dialog สำหรับแจ้งเตือนเมื่อไม่พบ userId */}
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>ข้อผิดพลาด</DialogTitle>
         <DialogContent>
@@ -263,11 +264,10 @@ const IncomeForm = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Dialog สำหรับบันทึกข้อมูลสำเร็จ */}
       <Dialog open={successDialogOpen} onClose={handleCloseSuccessDialog}>
         <DialogTitle>บันทึกสำเร็จ</DialogTitle>
         <DialogContent>
-          <Typography>บันทึกข้อมูลรายได้สำเร็จ!</Typography>
+          <Typography>บันทึกข้อมูลเงินออมสำเร็จ!</Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseSuccessDialog} color="primary">
@@ -279,4 +279,4 @@ const IncomeForm = () => {
   );
 };
 
-export default IncomeForm;
+export default SavingsForm;

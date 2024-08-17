@@ -19,7 +19,7 @@ import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 
 const ExpensesForm = () => {
   const [date, setDate] = useState(dayjs());
-  const [expensesItems, setExpensesItems] = useState([
+  const [expenseItems, setExpenseItems] = useState([
     { label: 'ค่าผ่อนบ้าน', amount: '', comment: '' },
     { label: 'ค่าผ่อนรถ', amount: '', comment: '' },
     { label: 'ค่าผ่อนสหกรณ์', amount: '', comment: '' },
@@ -37,42 +37,42 @@ const ExpensesForm = () => {
     amount: '',
     comment: '',
   });
-  const [dialogOpen, setDialogOpen] = useState(false); // State สำหรับ Dialog
-  const [successDialogOpen, setSuccessDialogOpen] = useState(false); // State สำหรับ Dialog บันทึกสำเร็จ
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [successDialogOpen, setSuccessDialogOpen] = useState(false);
 
   const handleAmountChange = (index, value) => {
-    const updatedItems = [...expensesItems];
-    updatedItems[index].amount = value.replace(/,/g, ''); // Remove commas for processing
-    setExpensesItems(updatedItems);
+    const updatedItems = [...expenseItems];
+    updatedItems[index].amount = value.replace(/,/g, '');
+    setExpenseItems(updatedItems);
   };
 
   const formatAmount = (amount) => {
-    return amount ? amount.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : ''; // ตรวจสอบว่า amount มีค่า
+    return amount ? amount.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '';
   };
 
   const handleCommentChange = (index, value) => {
-    const updatedItems = [...expensesItems];
+    const updatedItems = [...expenseItems];
     updatedItems[index].comment = value;
-    setExpensesItems(updatedItems);
+    setExpenseItems(updatedItems);
   };
 
   const handleAddItem = () => {
     if (newItem.label && newItem.amount) {
-      setExpensesItems([...expensesItems, newItem]);
-      setNewItem({ label: '', amount: '', comment: '' }); // เคลียร์ฟอร์ม
+      setExpenseItems([...expenseItems, newItem]);
+      setNewItem({ label: '', amount: '', comment: '' });
     }
   };
 
   const handleDeleteItem = (index) => {
-    const updatedItems = expensesItems.filter((_, i) => i !== index);
-    setExpensesItems(updatedItems);
+    const updatedItems = expenseItems.filter((_, i) => i !== index);
+    setExpenseItems(updatedItems);
   };
 
   const handleSave = async () => {
-    const userId = localStorage.getItem('userId'); // ดึง userId จาก LocalStorage
+    const userId = localStorage.getItem('userId');
 
     if (!userId) {
-      setDialogOpen(true); // เปิด Dialog หากไม่พบ userId
+      setDialogOpen(true);
       return;
     }
 
@@ -84,13 +84,17 @@ const ExpensesForm = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ date: formattedDate, expensesItems, userId, timestamp }), // ส่ง userId ไปด้วย
+      body: JSON.stringify({
+        date: formattedDate,
+        expenseItems,
+        userId,
+        timestamp,
+      }),
     });
 
     if (response.ok) {
-      setSuccessDialogOpen(true); // เปิด Dialog บันทึกสำเร็จ
-      // เคลียร์ฟอร์มและรีโหลดฟอร์ม
-      setExpensesItems([
+      setSuccessDialogOpen(true);
+      setExpenseItems([
         { label: 'ค่าผ่อนบ้าน', amount: '', comment: '' },
         { label: 'ค่าผ่อนรถ', amount: '', comment: '' },
         { label: 'ค่าผ่อนสหกรณ์', amount: '', comment: '' },
@@ -105,12 +109,61 @@ const ExpensesForm = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchExpenseData = async () => {
+      const userId = localStorage.getItem('userId');
+
+      if (!userId) {
+        console.error('No userId found in LocalStorage');
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `http://localhost:5002/api/expense-data/${userId}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+
+          if (data.length > 0) {
+            const latestDocument = data[data.length - 1];
+            console.log(
+              'Latest document labels:',
+              latestDocument.items.map((item) => item.label)
+            );
+
+            const newExpenseItems = latestDocument.items.map((item) => ({
+              label: item.label,
+              amount: '',
+              comment: '',
+            }));
+
+            const existingLabels = expenseItems.map((item) => item.label);
+            const uniqueItems = newExpenseItems.filter(
+              (item) => !existingLabels.includes(item.label)
+            );
+
+            setExpenseItems([...expenseItems, ...uniqueItems]);
+          } else {
+            console.log('No documents found for this userId.');
+          }
+        } else {
+          console.error('Error fetching expense data:', response.status);
+        }
+      } catch (error) {
+        console.error('Error fetching expense data:', error);
+      }
+    };
+
+    fetchExpenseData();
+  }, []);
+
   const handleCloseDialog = () => {
-    setDialogOpen(false); // ปิด Dialog
+    setDialogOpen(false);
   };
 
   const handleCloseSuccessDialog = () => {
-    setSuccessDialogOpen(false); // ปิด Dialog บันทึกสำเร็จ
+    setSuccessDialogOpen(false);
   };
 
   return (
@@ -118,10 +171,22 @@ const ExpensesForm = () => {
       <Typography variant="h6" gutterBottom>
         บันทึกรายจ่าย
       </Typography>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DatePicker value={date} onChange={(newValue) => setDate(newValue)} />
-      </LocalizationProvider>
-      {expensesItems.map((item, index) => (
+      <Grid container spacing={2} sx={{ marginTop: 2 }}>
+        <Grid item xs={3}>
+          <Typography variant="body1" color="black">
+            วันที่บันทึก
+          </Typography>
+        </Grid>
+        <Grid item xs={3}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              value={date}
+              onChange={(newValue) => setDate(newValue)}
+            />
+          </LocalizationProvider>
+        </Grid>
+      </Grid>
+      {expenseItems.map((item, index) => (
         <Grid container spacing={2} key={index} sx={{ marginTop: 2 }}>
           <Grid item xs={3}>
             <Typography variant="body1" color="black">
@@ -131,7 +196,7 @@ const ExpensesForm = () => {
           <Grid item xs={3}>
             <TextField
               label="จำนวนเงิน"
-              value={formatAmount(item.amount)} // แสดงจำนวนเงินที่มีคอมม่า
+              value={formatAmount(item.amount)}
               onChange={(e) => handleAmountChange(index, e.target.value)}
               fullWidth
             />
@@ -201,7 +266,6 @@ const ExpensesForm = () => {
         บันทึกรายการ
       </Button>
 
-      {/* Dialog สำหรับแจ้งเตือนเมื่อไม่พบ userId */}
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>ข้อผิดพลาด</DialogTitle>
         <DialogContent>
@@ -214,7 +278,6 @@ const ExpensesForm = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Dialog สำหรับบันทึกข้อมูลสำเร็จ */}
       <Dialog open={successDialogOpen} onClose={handleCloseSuccessDialog}>
         <DialogTitle>บันทึกสำเร็จ</DialogTitle>
         <DialogContent>
