@@ -18,7 +18,12 @@ const PORT = process.env.PORT || 5002;
 
 connectDB();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:3000', // หรือ URL ของ client ของคุณ
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(cookieParser());
