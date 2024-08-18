@@ -1,6 +1,13 @@
 import React from 'react';
-import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import MoneyOffIcon from '@mui/icons-material/MoneyOff';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 
 const handleSignOut = () => {
   document.cookie.split(';').forEach((c) => {
@@ -20,39 +27,44 @@ export const MainListItems = ({
   onUserReportClick,
 }) => {
   return (
-    <div>
-      <ListItem button onClick={onUserReportClick}>
-        <ListItemText primary="ข้อมูลทางการเงินของคุณ" />
-      </ListItem>
-      <ListItem button onClick={onUserIncomeFormClick}>
+    <React.Fragment>
+      <ListItemButton onClick={onUserReportClick}>
+        <ListItemIcon>
+          <AssessmentIcon />
+        </ListItemIcon>
+        <ListItemText primary="รายงานทางการเงินของคุณ" />
+      </ListItemButton>
+      <ListItemButton onClick={onUserIncomeFormClick}>
+        <ListItemIcon>
+          <AttachMoneyIcon />
+        </ListItemIcon>
         <ListItemText primary="บันทึกรายรับ" />
-      </ListItem>
-      <ListItem button onClick={onUserExpensesFormClick}>
+      </ListItemButton>
+      <ListItemButton onClick={onUserExpensesFormClick}>
+        <ListItemIcon>
+          <MoneyOffIcon />
+        </ListItemIcon>
         <ListItemText primary="บันทึกรายจ่าย" />
-      </ListItem>
-      <ListItem button onClick={onUserSavingsFormClick}>
+      </ListItemButton>
+      <ListItemButton onClick={onUserSavingsFormClick}>
+        <ListItemIcon>
+          <AccountBalanceIcon />
+        </ListItemIcon>
         <ListItemText primary="บันทึกเงินออม" />
-      </ListItem>
-      <ListItem button>
-        <ListItemText primary="Profile" />
-      </ListItem>
-      <ListItem button>
-        <ListItemText primary="Income" />
-      </ListItem>
-      <ListItem button>
-        <ListItemText primary="Settings" />
-      </ListItem>
-    </div>
+      </ListItemButton>
+    </React.Fragment>
   );
 };
 
-export const SecondaryListItems = () => (
-  <div>
-    <ListItem button onClick={handleSignOut}>
-      <ListItemText primary="ออกจากระบบ" />
-    </ListItem>
-    <ListItem button>
-      <ListItemText primary="Contact Us" />
-    </ListItem>
-  </div>
-);
+export const SecondaryListItems = () => {
+  return (
+    <React.Fragment>
+      <ListItemButton onClick={handleSignOut}>
+        <ListItemIcon>
+          <ExitToAppIcon />
+        </ListItemIcon>
+        <ListItemText primary="ออกจากระบบ" />
+      </ListItemButton>
+    </React.Fragment>
+  );
+};

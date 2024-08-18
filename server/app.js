@@ -205,6 +205,126 @@ app.get('/api/savings/:userId', async (req, res) => {
   }
 });
 
+//Report หรือ รายงาน
+//api/monthly-report ดึงข้อมูลผลรวมของแต่ละเดือน
+app.get('/api/monthly-report/:userId', async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const report = await Income.aggregate([
+      { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+      { $unwind: '$items' },
+      {
+        $group: {
+          _id: {
+            $dateToString: {
+              format: '%Y-%m',
+              date: '$date',
+            },
+          },
+          totalIncome: { $sum: '$items.amount' },
+        },
+      },
+      {
+        $lookup: {
+          from: 'expenses',
+          let: { userId: new mongoose.Types.ObjectId(userId), month: '$_id' },
+          pipeline: [
+            { $unwind: '$items' },
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$userId', '$$userId'] },
+                    {
+                      $eq: [
+                        {
+                          $dateToString: {
+                            format: '%Y-%m',
+                            date: '$date',
+                          },
+                        },
+                        '$$month',
+                      ],
+                    },
+                  ],
+                },
+              },
+            },
+            {
+              $group: {
+                _id: null,
+                totalExpense: { $sum: '$items.amount' },
+              },
+            },
+          ],
+          as: 'expenseData',
+        },
+      },
+      {
+        $lookup: {
+          from: 'savings',
+          let: { userId: new mongoose.Types.ObjectId(userId), month: '$_id' },
+          pipeline: [
+            { $unwind: '$items' },
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$userId', '$$userId'] },
+                    {
+                      $eq: [
+                        {
+                          $dateToString: {
+                            format: '%Y-%m',
+                            date: '$date',
+                          },
+                        },
+                        '$$month',
+                      ],
+                    },
+                  ],
+                },
+              },
+            },
+            {
+              $group: {
+                _id: null,
+                totalSaving: { $sum: '$items.amount' },
+              },
+            },
+          ],
+          as: 'savingData',
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          month: '$_id',
+          income: '$totalIncome',
+          expense: {
+            $ifNull: [{ $arrayElemAt: ['$expenseData.totalExpense', 0] }, 0],
+          },
+          saving: {
+            $ifNull: [{ $arrayElemAt: ['$savingData.totalSaving', 0] }, 0],
+          },
+        },
+      },
+      { $sort: { month: 1 } },
+    ]);
+
+    if (report.length === 0) {
+      return res.status(404).json({ message: 'No report data found' });
+    }
+
+    res.json(report);
+  } catch (error) {
+    console.error('Error fetching monthly report:', error);
+    res.status(500).json({ message: 'Error fetching monthly report' });
+  }
+});
+
+
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

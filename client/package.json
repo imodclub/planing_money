@@ -10,6 +10,7 @@
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",
     "@mui/x-charts": "^7.13.0",
     "@mui/x-data-grid": "^7.13.0",
+    "@mui/x-data-grid-generator": "^7.13.0",
     "@mui/x-date-pickers": "^7.12.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -20,6 +21,7 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.0",
     "react-scripts": "5.0.1",
+    "recharts": "^2.12.7",
     "styled-components": "^6.1.12",
     "web-vitals": "^2.1.4"
   },

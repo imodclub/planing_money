@@ -21,9 +21,9 @@ const savingSchema = new mongoose.Schema({
         required: true, // ต้องการค่า (required)
       },
       amount: {
-        type: String, // ใช้ String สำหรับจำนวนเงิน
+        type: Number, // ใช้ String สำหรับจำนวนเงิน
         required: false,
-        default: '', // กำหนดค่าเริ่มต้นเป็นสตริงว่าง
+        default: 0, // กำหนดค่าเริ่มต้นเป็นสตริงว่าง
       },
       comment: {
         type: String,

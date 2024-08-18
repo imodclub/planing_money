@@ -22,9 +22,9 @@ const incomeSchema = new mongoose.Schema({
         default: '', // กำหนดค่าเริ่มต้นเป็นสตริงว่าง
       },
       amount: {
-        type: String,
+        type: Number,
         required: false,
-        default: '',
+        default: 0,
       },
       comment: {
         type: String,

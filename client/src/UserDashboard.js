@@ -20,7 +20,7 @@ import { MainListItems, SecondaryListItems } from './Component/listItems';
 import IncomeForm from './Component/IncomeForm';
 import ExpensesForm from './Component/ExpensesForm';
 import SavingsForm from './Component/SavingsForm';
-import ReportVersion1 from './Component/ReportVersion1'; // นำเข้า ReportVersion1
+import MonthlyReportChart from './Component/MonthlyReportChart';
 
 const drawerWidth = 240;
 
@@ -76,7 +76,7 @@ export default function Dashboard() {
   const [showIncomeForm, setShowIncomeForm] = useState(false);
   const [showExpensesForm, setShowExpensesForm] = useState(false);
   const [showSavingsForm, setShowSavingsForm] = useState(false);
-  const [showReport, setShowReport] = useState(false); // สถานะสำหรับการแสดง ReportVersion1
+  const [showReport, setShowReport] = useState(true);
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -85,34 +85,35 @@ export default function Dashboard() {
   useEffect(() => {
     const nameFromLocalStorage = localStorage.getItem('name');
     setName(nameFromLocalStorage);
+    setShowReport(true);
   }, []);
 
   const handleUserIncomeFormClick = () => {
     setShowIncomeForm(true);
     setShowExpensesForm(false);
     setShowSavingsForm(false);
-    setShowReport(false); // ซ่อน ReportVersion1 เมื่อแสดง IncomeForm
+    setShowReport(false);
   };
 
   const handleUserExpensesFormClick = () => {
     setShowExpensesForm(true);
     setShowIncomeForm(false);
     setShowSavingsForm(false);
-    setShowReport(false); // ซ่อน ReportVersion1 เมื่อแสดง ExpensesForm
+    setShowReport(false);
   };
 
   const handleUserSavingsFormClick = () => {
     setShowSavingsForm(true);
     setShowIncomeForm(false);
     setShowExpensesForm(false);
-    setShowReport(false); // ซ่อน ReportVersion1 เมื่อแสดง SavingsForm
+    setShowReport(false);
   };
 
   const handleUserReportClick = () => {
     setShowReport(true);
     setShowIncomeForm(false);
     setShowExpensesForm(false);
-    setShowSavingsForm(false); // ซ่อนฟอร์มอื่นๆ เมื่อแสดง ReportVersion1
+    setShowSavingsForm(false);
   };
 
   return (
@@ -120,13 +121,20 @@ export default function Dashboard() {
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
         <AppBar position="absolute" open={open}>
-          <Toolbar sx={{ pr: '24px' }}>
+          <Toolbar
+            sx={{
+              pr: '24px', // keep right padding when drawer closed
+            }}
+          >
             <IconButton
               edge="start"
               color="inherit"
               aria-label="open drawer"
               onClick={toggleDrawer}
-              sx={{ marginRight: '36px', ...(open && { display: 'none' }) }}
+              sx={{
+                marginRight: '36px',
+                ...(open && { display: 'none' }),
+              }}
             >
               <MenuIcon />
             </IconButton>
@@ -139,11 +147,6 @@ export default function Dashboard() {
             >
               สวัสดี คุณ {name}
             </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
@@ -188,10 +191,15 @@ export default function Dashboard() {
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <Typography variant="h4" gutterBottom>
+                  <Typography
+                    component="h2"
+                    variant="h6"
+                    color="primary"
+                    gutterBottom
+                  >
                     ข้อมูลทางการเงินของคุณ
                   </Typography>
-                  {showReport && <ReportVersion1 />}
+                  {showReport && <MonthlyReportChart />}
                   {showIncomeForm && <IncomeForm />}
                   {showExpensesForm && <ExpensesForm />}
                   {showSavingsForm && <SavingsForm />}
