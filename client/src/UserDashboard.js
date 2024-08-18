@@ -20,9 +20,11 @@ import { MainListItems, SecondaryListItems } from './Component/listItems';
 import IncomeForm from './Component/IncomeForm';
 import ExpensesForm from './Component/ExpensesForm';
 import SavingsForm from './Component/SavingsForm';
+import SavingsRatioForm from './Component/SavingsRatioForm'; // เพิ่มการ import SavingsRatioForm
 import MonthlyReportChart from './Component/MonthlyReportChart';
+import SavingsRatioReport from './Component/SavingsRatioReport';
 
-const drawerWidth = 240;
+const drawerWidth = 260;
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -76,6 +78,7 @@ export default function Dashboard() {
   const [showIncomeForm, setShowIncomeForm] = useState(false);
   const [showExpensesForm, setShowExpensesForm] = useState(false);
   const [showSavingsForm, setShowSavingsForm] = useState(false);
+  const [showSavingsRatioForm, setShowSavingsRatioForm] = useState(false); // เพิ่มตัวแปร state สำหรับ SavingsRatioForm
   const [showReport, setShowReport] = useState(true);
 
   const toggleDrawer = () => {
@@ -92,6 +95,7 @@ export default function Dashboard() {
     setShowIncomeForm(true);
     setShowExpensesForm(false);
     setShowSavingsForm(false);
+    setShowSavingsRatioForm(false); // ซ่อน SavingsRatioForm เมื่อแสดง IncomeForm
     setShowReport(false);
   };
 
@@ -99,6 +103,7 @@ export default function Dashboard() {
     setShowExpensesForm(true);
     setShowIncomeForm(false);
     setShowSavingsForm(false);
+    setShowSavingsRatioForm(false); // ซ่อน SavingsRatioForm เมื่อแสดง ExpensesForm
     setShowReport(false);
   };
 
@@ -106,6 +111,15 @@ export default function Dashboard() {
     setShowSavingsForm(true);
     setShowIncomeForm(false);
     setShowExpensesForm(false);
+    setShowSavingsRatioForm(false); // ซ่อน SavingsRatioForm เมื่อแสดง SavingsForm
+    setShowReport(false);
+  };
+
+  const handleUserSavingsRatioFormClick = () => {
+    setShowSavingsRatioForm(true); // แสดง SavingsRatioForm
+    setShowIncomeForm(false);
+    setShowExpensesForm(false);
+    setShowSavingsForm(false);
     setShowReport(false);
   };
 
@@ -114,6 +128,7 @@ export default function Dashboard() {
     setShowIncomeForm(false);
     setShowExpensesForm(false);
     setShowSavingsForm(false);
+    setShowSavingsRatioForm(false); // ซ่อน SavingsRatioForm เมื่อแสดง Report
   };
 
   return (
@@ -123,7 +138,7 @@ export default function Dashboard() {
         <AppBar position="absolute" open={open}>
           <Toolbar
             sx={{
-              pr: '24px', // keep right padding when drawer closed
+              pr: '24px',
             }}
           >
             <IconButton
@@ -147,6 +162,11 @@ export default function Dashboard() {
             >
               สวัสดี คุณ {name}
             </Typography>
+            <IconButton color="inherit">
+              <Badge badgeContent={4} color="secondary">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
@@ -168,6 +188,7 @@ export default function Dashboard() {
               onUserIncomeFormClick={handleUserIncomeFormClick}
               onUserExpensesFormClick={handleUserExpensesFormClick}
               onUserSavingsFormClick={handleUserSavingsFormClick}
+              onUserSavingsRatioFormClick={handleUserSavingsRatioFormClick} // ส่ง prop สำหรับเรียกใช้ SavingsRatioForm
               onUserReportClick={handleUserReportClick}
             />
             <Divider sx={{ my: 1 }} />
@@ -199,10 +220,15 @@ export default function Dashboard() {
                   >
                     ข้อมูลทางการเงินของคุณ
                   </Typography>
-                  {showReport && <MonthlyReportChart />}
+                  {showReport && (
+                    <>
+                      <MonthlyReportChart /> <SavingsRatioReport />
+                    </>
+                  )}
                   {showIncomeForm && <IncomeForm />}
                   {showExpensesForm && <ExpensesForm />}
                   {showSavingsForm && <SavingsForm />}
+                  {showSavingsRatioForm && <SavingsRatioForm />}
                 </Paper>
               </Grid>
             </Grid>

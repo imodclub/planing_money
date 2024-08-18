@@ -12,7 +12,6 @@ import {
 
 const MonthlyReportChart = () => {
     const [reportData, setReportData] = useState([]);
-    console.log(reportData);
 
   useEffect(() => {
     const fetchReportData = async () => {
@@ -30,7 +29,6 @@ const MonthlyReportChart = () => {
 
         if (response.ok) {
           const data = await response.json();
-          console.log('Report data:', data); // ตรวจสอบ data ที่ได้รับ
 
           if (Array.isArray(data)) {
             setReportData(data);

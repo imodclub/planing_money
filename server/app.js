@@ -7,6 +7,7 @@ const User = require('./models/user.model'); // นำเข้า User model
 const Income = require('./models/Income');
 const Expense = require('./models/expenses.model');
 const Saving = require('./models/saving.model');
+const SavingsRatio = require('./models/savingsRatio.model');
 const cookieParser = require('cookie-parser');
 
 require('dotenv').config();
@@ -320,6 +321,43 @@ app.get('/api/monthly-report/:userId', async (req, res) => {
   } catch (error) {
     console.error('Error fetching monthly report:', error);
     res.status(500).json({ message: 'Error fetching monthly report' });
+  }
+});
+
+// Save savings ratio
+app.post('/api/save-savings-ratio', async (req, res) => {
+  try {
+    const { savingsItems, userId } = req.body;
+
+    const newSavingsRatio = new SavingsRatio({
+      userId,
+      savingsItems,
+    });
+
+    await newSavingsRatio.save();
+
+    res.status(200).json({ message: 'Savings ratio saved successfully' });
+  } catch (error) {
+    console.error('Error saving savings ratio:', error);
+    res.status(500).json({ error: 'An error occurred while saving savings ratio' });
+  }
+});
+
+// Get savings ratio by user ID
+app.get('/api/savings-ratio/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const savingsRatio = await SavingsRatio.findOne({ userId });
+
+    if (!savingsRatio) {
+      return res.status(404).json({ error: 'Savings ratio not found' });
+    }
+
+    res.status(200).json(savingsRatio);
+  } catch (error) {
+    console.error('Error retrieving savings ratio:', error);
+    res.status(500).json({ error: 'An error occurred while retrieving savings ratio' });
   }
 });
 
