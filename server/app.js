@@ -367,6 +367,76 @@ app.get('/api/savings-ratio/:userId', async (req, res) => {
 });
 
 
+app.get('/api/total-income/:userId', async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const incomes = await Income.aggregate([
+      { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+      { $unwind: '$items' },
+      {
+        $group: {
+          _id: '$items.label',
+          totalAmount: { $sum: '$items.amount' }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          label: '$_id',
+          amount: '$totalAmount'
+        }
+      }
+    ]);
+    
+    const totalIncome = incomes.reduce((acc, item) => {
+      acc[item.label] = item.amount;
+      return acc;
+    }, {});
+
+    res.json({ totalIncome });
+  } catch (error) {
+    console.error('Error fetching total income:', error);
+    res.status(500).json({ message: 'Error fetching total income' });
+  }
+});
+
+
+app.get('/api/monthly-income/:userId', async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const incomes = await Income.aggregate([
+      { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+      { $unwind: '$items' },
+      {
+        $group: {
+          _id: {
+            $dateToString: {
+              format: '%Y-%m',
+              date: '$date',
+            },
+          },
+          totalAmount: { $sum: '$items.amount' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          month: '$_id',
+          amount: '$totalAmount',
+        },
+      },
+      { $sort: { month: 1 } },
+    ]);
+    res.json(incomes);
+  } catch (error) {
+    console.error('Error fetching monthly income:', error);
+    res.status(500).json({ message: 'Error fetching monthly income' });
+  }
+});
+
+
+
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

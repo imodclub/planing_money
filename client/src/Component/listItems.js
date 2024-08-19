@@ -9,6 +9,7 @@ import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import SavingsIcon from '@mui/icons-material/Savings';
+import BarChartIcon from '@mui/icons-material/BarChart';
 
 const handleSignOut = () => {
   document.cookie.split(';').forEach((c) => {
@@ -27,6 +28,7 @@ export const MainListItems = ({
   onUserSavingsFormClick,
   onUserReportClick,
   onUserSavingsRatioFormClick,
+  onUserIncomeReportClick,
 }) => {
   return (
     <React.Fragment>
@@ -59,6 +61,12 @@ export const MainListItems = ({
           <SavingsIcon />
         </ListItemIcon>
         <ListItemText primary="เป้าหมายการออมเงิน" />
+      </ListItemButton>
+      <ListItemButton onClick={onUserIncomeReportClick}>
+        <ListItemIcon>
+          <BarChartIcon />
+        </ListItemIcon>
+        <ListItemText primary="รายงานรายรับ" />
       </ListItemButton>
     </React.Fragment>
   );

@@ -23,6 +23,7 @@ import SavingsForm from './Component/SavingsForm';
 import SavingsRatioForm from './Component/SavingsRatioForm'; // เพิ่มการ import SavingsRatioForm
 import MonthlyReportChart from './Component/MonthlyReportChart';
 import SavingsRatioReport from './Component/SavingsRatioReport';
+import IncomeReport from './Component/IncomeReport';
 
 const drawerWidth = 260;
 
@@ -80,6 +81,7 @@ export default function Dashboard() {
   const [showSavingsForm, setShowSavingsForm] = useState(false);
   const [showSavingsRatioForm, setShowSavingsRatioForm] = useState(false); // เพิ่มตัวแปร state สำหรับ SavingsRatioForm
   const [showReport, setShowReport] = useState(true);
+  const [showIncomeReport, setShowIncomeReport] = useState(false);
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -97,6 +99,7 @@ export default function Dashboard() {
     setShowSavingsForm(false);
     setShowSavingsRatioForm(false); // ซ่อน SavingsRatioForm เมื่อแสดง IncomeForm
     setShowReport(false);
+    setShowIncomeReport(false);
   };
 
   const handleUserExpensesFormClick = () => {
@@ -105,6 +108,7 @@ export default function Dashboard() {
     setShowSavingsForm(false);
     setShowSavingsRatioForm(false); // ซ่อน SavingsRatioForm เมื่อแสดง ExpensesForm
     setShowReport(false);
+    setShowIncomeReport(false);
   };
 
   const handleUserSavingsFormClick = () => {
@@ -113,6 +117,7 @@ export default function Dashboard() {
     setShowExpensesForm(false);
     setShowSavingsRatioForm(false); // ซ่อน SavingsRatioForm เมื่อแสดง SavingsForm
     setShowReport(false);
+    setShowIncomeReport(false);
   };
 
   const handleUserSavingsRatioFormClick = () => {
@@ -121,6 +126,7 @@ export default function Dashboard() {
     setShowExpensesForm(false);
     setShowSavingsForm(false);
     setShowReport(false);
+    setShowIncomeReport(false);
   };
 
   const handleUserReportClick = () => {
@@ -128,7 +134,17 @@ export default function Dashboard() {
     setShowIncomeForm(false);
     setShowExpensesForm(false);
     setShowSavingsForm(false);
-    setShowSavingsRatioForm(false); // ซ่อน SavingsRatioForm เมื่อแสดง Report
+    setShowSavingsRatioForm(false);
+    setShowIncomeReport(false);
+  };
+
+  const handleUserIncomeReportClick = () => {
+    setShowIncomeReport(true);
+    setShowIncomeForm(false);
+    setShowExpensesForm(false);
+    setShowSavingsForm(false);
+    setShowSavingsRatioForm(false);
+    setShowReport(false);
   };
 
   return (
@@ -190,6 +206,7 @@ export default function Dashboard() {
               onUserSavingsFormClick={handleUserSavingsFormClick}
               onUserSavingsRatioFormClick={handleUserSavingsRatioFormClick} // ส่ง prop สำหรับเรียกใช้ SavingsRatioForm
               onUserReportClick={handleUserReportClick}
+              onUserIncomeReportClick={handleUserIncomeReportClick}
             />
             <Divider sx={{ my: 1 }} />
             <SecondaryListItems />
@@ -229,6 +246,7 @@ export default function Dashboard() {
                   {showExpensesForm && <ExpensesForm />}
                   {showSavingsForm && <SavingsForm />}
                   {showSavingsRatioForm && <SavingsRatioForm />}
+                  {showIncomeReport && <IncomeReport />}
                 </Paper>
               </Grid>
             </Grid>
