@@ -10,6 +10,7 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Grid,
 } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -26,7 +27,9 @@ const IncomeReport = () => {
   useEffect(() => {
     const fetchTotalIncome = async () => {
       const userId = localStorage.getItem('userId');
-      const response = await fetch(`http://localhost:5002/api/total-income/${userId}`);
+      const response = await fetch(
+        `http://localhost:5002/api/total-income/${userId}`
+      );
       const data = await response.json();
       setTotalIncome(data.totalIncome);
     };
@@ -34,33 +37,21 @@ const IncomeReport = () => {
     fetchTotalIncome();
   }, []);
 
-const fetchMonthlyIncome = async () => {
-  const userId = localStorage.getItem('userId');
-  const response = await fetch(`http://localhost:5002/api/monthly-income/${userId}`);
-  const data = await response.json();
-  
-  // สร้างอาร์เรย์ที่มี 12 เดือน
-  const allMonths = Array.from({ length: 12 }, (_, i) => ({
-    month: i + 1,
-    amount: 0
-  }));
-  
-  // อัปเดตข้อมูลจาก API
-  data.forEach(item => {
-    const monthIndex = item.month - 1;
-    if (monthIndex >= 0 && monthIndex < 12) {
-      allMonths[monthIndex].amount = item.amount;
-    }
-  });
-  
-  setMonthlyIncome(allMonths);
-  setShowMonthlyIncome(true);
-};
-
+  const fetchMonthlyIncome = async () => {
+    const userId = localStorage.getItem('userId');
+    const response = await fetch(
+      `http://localhost:5002/api/monthly-income/${userId}`
+    );
+    const data = await response.json();
+    setMonthlyIncome(data);
+    setShowMonthlyIncome(true);
+  };
 
   const fetchFilteredIncome = async () => {
     const userId = localStorage.getItem('userId');
-    const response = await fetch(`http://localhost:5002/api/filtered-income/${userId}?startDate=${startDate}&endDate=${endDate}`);
+    const response = await fetch(
+      `http://localhost:5002/api/filtered-income/${userId}?startDate=${startDate}&endDate=${endDate}`
+    );
     const data = await response.json();
     setFilteredIncome(data);
   };
@@ -69,43 +60,124 @@ const fetchMonthlyIncome = async () => {
     return amount.toLocaleString('en-US');
   };
 
+  const getThaiMonth = (month) => {
+    const thaiMonths = [
+      'มกราคม',
+      'กุมภาพันธ์',
+      'มีนาคม',
+      'เมษายน',
+      'พฤษภาคม',
+      'มิถุนายน',
+      'กรกฎาคม',
+      'สิงหาคม',
+      'กันยายน',
+      'ตุลาคม',
+      'พฤศจิกายน',
+      'ธันวาคม',
+    ];
+    return thaiMonths[month - 1];
+  };
+
   return (
     <Box>
       <Typography variant="h4">รายงานรายรับ</Typography>
 
       {!showMonthlyIncome && (
-  <Box>
-    <Typography variant="h5">รายรับรวมทั้งหมดตลอดปี</Typography>
-    <TableContainer component={Paper} sx={{ mt: 2, mb: 4 }}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>รายการ</TableCell>
-            <TableCell align="right">จำนวนเงิน</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {Object.entries(totalIncome)
-            .filter(([_, amount]) => amount > 0)
-            .map(([label, amount]) => (
-              <TableRow key={label}>
-                <TableCell>{label}</TableCell>
-                <TableCell align="right">{formatAmount(amount)}</TableCell>
-              </TableRow>
-            ))}
-          <TableRow>
-            <TableCell><strong>รวมทั้งหมด</strong></TableCell>
-            <TableCell align="right"><strong>{formatAmount(Object.values(totalIncome).reduce((a, b) => a + b, 0))}</strong></TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </TableContainer>
-    <Button variant="contained" onClick={fetchMonthlyIncome}>
-      แสดงรายรับรายเดือน
-    </Button>
-  </Box>
-)}
+        <Box>
+          <Typography variant="h5">รายรับรวมทั้งหมดตลอดปี</Typography>
+          <TableContainer component={Paper} sx={{ mt: 2, mb: 2 }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>รายการ</TableCell>
+                  <TableCell align="right">จำนวนเงิน</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {Object.entries(totalIncome)
+                  .filter(([_, amount]) => amount > 0)
+                  .map(([label, amount]) => (
+                    <TableRow key={label}>
+                      <TableCell>{label}</TableCell>
+                      <TableCell align="right">
+                        {formatAmount(amount)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                <TableRow>
+                  <TableCell>
+                    <strong>รวมทั้งหมด</strong>
+                  </TableCell>
+                  <TableCell align="right">
+                    <strong>
+                      {formatAmount(
+                        Object.values(totalIncome).reduce((a, b) => a + b, 0)
+                      )}
+                    </strong>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Button variant="contained" onClick={fetchMonthlyIncome}>
+            แสดงรายรับรายเดือน
+          </Button>
+        </Box>
+      )}
 
+      {showMonthlyIncome && (
+        <Box>
+          <Typography variant="h5">รายรับรายเดือน</Typography>
+          <Grid container spacing={2}>
+            {monthlyIncome.map((monthData, index) => (
+              <Grid item xs={12} md={6} lg={4} key={index}>
+                <Paper sx={{ p: 2, mb: 2 }}>
+                  <Typography variant="h6">
+                    {getThaiMonth(monthData.month)}
+                  </Typography>
+                  <TableContainer>
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>รายการ</TableCell>
+                          <TableCell align="right">จำนวนเงิน</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {monthData.items.map((item, itemIndex) => (
+                          <TableRow key={itemIndex}>
+                            <TableCell>{item.label}</TableCell>
+                            <TableCell align="right">
+                              {formatAmount(item.amount)}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                        <TableRow>
+                          <TableCell>
+                            <strong>รวมทั้งหมด</strong>
+                          </TableCell>
+                          <TableCell align="right">
+                            <strong>
+                              {formatAmount(monthData.totalAmount)}
+                            </strong>
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
+          <Button
+            variant="contained"
+            onClick={() => setShowMonthlyIncome(false)}
+            sx={{ mt: 2 }}
+          >
+            กลับหน้าแรก
+          </Button>
+        </Box>
+      )}
 
       <Box mt={4}>
         <Typography variant="h5">ค้นหารายรับตามช่วงเวลา</Typography>
@@ -127,7 +199,7 @@ const fetchMonthlyIncome = async () => {
       </Box>
 
       {filteredIncome.length > 0 && (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} sx={{ mt: 2 }}>
           <Table>
             <TableHead>
               <TableRow>
@@ -139,11 +211,11 @@ const fetchMonthlyIncome = async () => {
             <TableBody>
               {filteredIncome.map((item) => (
                 <TableRow key={item._id}>
-                  <TableCell component="th" scope="row">
-                    {item.date}
-                  </TableCell>
+                  <TableCell>{item.date}</TableCell>
                   <TableCell>{item.label}</TableCell>
-                  <TableCell align="right">{formatAmount(item.amount)}</TableCell>
+                  <TableCell align="right">
+                    {formatAmount(item.amount)}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

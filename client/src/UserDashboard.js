@@ -82,6 +82,7 @@ export default function Dashboard() {
   const [showSavingsRatioForm, setShowSavingsRatioForm] = useState(false); // เพิ่มตัวแปร state สำหรับ SavingsRatioForm
   const [showReport, setShowReport] = useState(true);
   const [showIncomeReport, setShowIncomeReport] = useState(false);
+  const [resetIncomeReportTrigger, setResetIncomeReportTrigger] = useState(0);
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -140,11 +141,15 @@ export default function Dashboard() {
 
   const handleUserIncomeReportClick = () => {
     setShowIncomeReport(true);
+    setShowIncomeReport(true);
     setShowIncomeForm(false);
     setShowExpensesForm(false);
     setShowSavingsForm(false);
     setShowSavingsRatioForm(false);
     setShowReport(false);
+  };
+  const resetIncomeReport = () => {
+    setResetIncomeReportTrigger((prev) => prev + 1);
   };
 
   return (
@@ -207,6 +212,7 @@ export default function Dashboard() {
               onUserSavingsRatioFormClick={handleUserSavingsRatioFormClick} // ส่ง prop สำหรับเรียกใช้ SavingsRatioForm
               onUserReportClick={handleUserReportClick}
               onUserIncomeReportClick={handleUserIncomeReportClick}
+              resetIncomeReport={resetIncomeReport}
             />
             <Divider sx={{ my: 1 }} />
             <SecondaryListItems />

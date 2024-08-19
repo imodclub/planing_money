@@ -409,33 +409,54 @@ app.get('/api/monthly-income/:userId', async (req, res) => {
       { $unwind: '$items' },
       {
         $group: {
-          _id: {
-            $dateToString: {
-              format: '%Y-%m',
-              date: '$date',
+          _id: { month: { $month: '$date' }, label: '$items.label' },
+          totalAmount: { $sum: '$items.amount' },
+        },
+      },
+      {
+        $group: {
+          _id: '$_id.month',
+          items: {
+            $push: {
+              label: '$_id.label',
+              amount: '$totalAmount',
             },
           },
-          totalAmount: { $sum: '$items.amount' },
+          totalAmount: { $sum: '$totalAmount' },
         },
       },
       {
         $project: {
           _id: 0,
           month: '$_id',
-          amount: '$totalAmount',
+          items: 1,
+          totalAmount: 1,
         },
       },
       { $sort: { month: 1 } },
     ]);
-    res.json(incomes);
+
+    // สร้างอาร์เรย์ที่มี 12 เดือน
+    const allMonths = Array.from({ length: 12 }, (_, i) => ({
+      month: i + 1,
+      items: [],
+      totalAmount: 0,
+    }));
+
+    // อัปเดตข้อมูลจาก MongoDB
+    incomes.forEach((income) => {
+      const monthIndex = income.month - 1;
+      if (monthIndex >= 0 && monthIndex < 12) {
+        allMonths[monthIndex] = income;
+      }
+    });
+
+    res.json(allMonths);
   } catch (error) {
     console.error('Error fetching monthly income:', error);
     res.status(500).json({ message: 'Error fetching monthly income' });
   }
 });
-
-
-
 
 
 app.listen(PORT, () => {

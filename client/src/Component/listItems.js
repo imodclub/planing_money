@@ -29,6 +29,7 @@ export const MainListItems = ({
   onUserReportClick,
   onUserSavingsRatioFormClick,
   onUserIncomeReportClick,
+  resetIncomeReport,
 }) => {
   return (
     <React.Fragment>
@@ -62,7 +63,12 @@ export const MainListItems = ({
         </ListItemIcon>
         <ListItemText primary="เป้าหมายการออมเงิน" />
       </ListItemButton>
-      <ListItemButton onClick={onUserIncomeReportClick}>
+      <ListItemButton
+        onClick={() => {
+          onUserIncomeReportClick();
+          resetIncomeReport();
+        }}
+      >
         <ListItemIcon>
           <BarChartIcon />
         </ListItemIcon>
