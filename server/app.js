@@ -11,6 +11,7 @@ const SavingsRatio = require('./models/savingsRatio.model');
 const cookieParser = require('cookie-parser');
 
 require('dotenv').config();
+
 const connectDB = require('./config/connectDB');
 
 const app = express();
