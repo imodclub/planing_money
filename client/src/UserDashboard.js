@@ -24,6 +24,8 @@ import SavingsRatioForm from './Component/SavingsRatioForm'; // เพิ่ม�
 import MonthlyReportChart from './Component/MonthlyReportChart';
 import SavingsRatioReport from './Component/SavingsRatioReport';
 import IncomeReport from './Component/IncomeReport';
+import ExpenseReport from './Component/ExpenseReport';
+import SavingsReport from './Component/SavingsReport';
 
 const drawerWidth = 260;
 
@@ -82,7 +84,8 @@ export default function Dashboard() {
   const [showSavingsRatioForm, setShowSavingsRatioForm] = useState(false); // เพิ่มตัวแปร state สำหรับ SavingsRatioForm
   const [showReport, setShowReport] = useState(true);
   const [showIncomeReport, setShowIncomeReport] = useState(false);
-  const [resetIncomeReportTrigger, setResetIncomeReportTrigger] = useState(0);
+  const [showExpenseReport, setShowExpenseReport] = useState(false);
+  const [showSavingsReport, setShowSavingsReport] = useState(false);
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -101,6 +104,9 @@ export default function Dashboard() {
     setShowSavingsRatioForm(false); // ซ่อน SavingsRatioForm เมื่อแสดง IncomeForm
     setShowReport(false);
     setShowIncomeReport(false);
+    setShowExpenseReport(false);
+    setShowSavingsReport(false);
+
   };
 
   const handleUserExpensesFormClick = () => {
@@ -110,6 +116,10 @@ export default function Dashboard() {
     setShowSavingsRatioForm(false); // ซ่อน SavingsRatioForm เมื่อแสดง ExpensesForm
     setShowReport(false);
     setShowIncomeReport(false);
+    setShowExpenseReport(false);
+      setShowSavingsReport(false);
+
+
   };
 
   const handleUserSavingsFormClick = () => {
@@ -119,6 +129,9 @@ export default function Dashboard() {
     setShowSavingsRatioForm(false); // ซ่อน SavingsRatioForm เมื่อแสดง SavingsForm
     setShowReport(false);
     setShowIncomeReport(false);
+      setShowSavingsReport(false);
+      setShowExpenseReport(false);
+
   };
 
   const handleUserSavingsRatioFormClick = () => {
@@ -127,7 +140,10 @@ export default function Dashboard() {
     setShowExpensesForm(false);
     setShowSavingsForm(false);
     setShowReport(false);
+    setShowExpenseReport(false);
     setShowIncomeReport(false);
+      setShowSavingsReport(false);
+
   };
 
   const handleUserReportClick = () => {
@@ -136,21 +152,48 @@ export default function Dashboard() {
     setShowExpensesForm(false);
     setShowSavingsForm(false);
     setShowSavingsRatioForm(false);
+    setShowExpenseReport(false);
     setShowIncomeReport(false);
+      setShowSavingsReport(false);
+
   };
 
   const handleUserIncomeReportClick = () => {
-    setShowIncomeReport(true);
     setShowIncomeReport(true);
     setShowIncomeForm(false);
     setShowExpensesForm(false);
     setShowSavingsForm(false);
     setShowSavingsRatioForm(false);
     setShowReport(false);
+    setShowExpenseReport(false);
+    setShowSavingsReport(false);
+
   };
-  const resetIncomeReport = () => {
-    setResetIncomeReportTrigger((prev) => prev + 1);
-  };
+ 
+
+    const handleUserExpenseReportClick = () => {
+      setShowExpenseReport(true);
+      setShowIncomeForm(false);
+      setShowExpensesForm(false);
+      setShowSavingsForm(false);
+      setShowSavingsRatioForm(false);
+      setShowReport(false);
+      setShowIncomeReport(false);
+      setShowSavingsReport(false);
+
+    };
+  
+const handleUserSavingsReportClick = () => {
+  setShowSavingsReport(true);
+  setShowIncomeForm(false);
+  setShowExpensesForm(false);
+  setShowSavingsForm(false);
+  setShowSavingsRatioForm(false);
+  setShowReport(false);
+  setShowIncomeReport(false);
+  setShowExpenseReport(false);
+};
+
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -183,11 +226,9 @@ export default function Dashboard() {
             >
               สวัสดี คุณ {name}
             </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
+            <Typography variant="overline" display="block" gutterBottom>
+              version 1.0
+            </Typography>
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
@@ -212,7 +253,8 @@ export default function Dashboard() {
               onUserSavingsRatioFormClick={handleUserSavingsRatioFormClick} // ส่ง prop สำหรับเรียกใช้ SavingsRatioForm
               onUserReportClick={handleUserReportClick}
               onUserIncomeReportClick={handleUserIncomeReportClick}
-              resetIncomeReport={resetIncomeReport}
+              onUserExpenseReportClick={handleUserExpenseReportClick}
+              onUserSavingsReportClick={handleUserSavingsReportClick}
             />
             <Divider sx={{ my: 1 }} />
             <SecondaryListItems />
@@ -253,6 +295,8 @@ export default function Dashboard() {
                   {showSavingsForm && <SavingsForm />}
                   {showSavingsRatioForm && <SavingsRatioForm />}
                   {showIncomeReport && <IncomeReport />}
+                  {showExpenseReport && <ExpenseReport />}
+                  {showSavingsReport && <SavingsReport />}
                 </Paper>
               </Grid>
             </Grid>

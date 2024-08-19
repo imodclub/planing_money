@@ -16,22 +16,17 @@ const SavingsRatioReport = () => {
   useEffect(() => {
     const fetchSavingsRatio = async () => {
       const userId = localStorage.getItem('userId');
-      console.log('Fetching savings ratio for userId:', userId);
 
       try {
         const response = await fetch(`http://localhost:5002/api/savings-ratio/${userId}`);
-        console.log('Response status:', response.status);
-        console.log('Response OK:', response.ok);
 
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
 
         const data = await response.json();
-        console.log('Fetched savings ratio data:', data);
 
         if (data && data.savingsItems) {
-          console.log('Savings items:', data.savingsItems);
           setSavingsRatio(data.savingsItems);
         } else {
           console.log('No savings items found in the response');
@@ -43,14 +38,12 @@ const SavingsRatioReport = () => {
 
     const fetchTotalSavings = async () => {
       const userId = localStorage.getItem('userId');
-      console.log('Fetching total savings for userId:', userId);
       try {
         const response = await fetch(`http://localhost:5002/api/savings/${userId}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        console.log('Fetched total savings data:', data);
         if (data.length === 0) {
           console.log('No savings data found');
           setTotalSavings(0);
@@ -62,7 +55,6 @@ const SavingsRatioReport = () => {
             saving.items.reduce((itemSum, item) => itemSum + item.amount, 0),
           0
         );
-        console.log('Calculated total savings:', total);
         setTotalSavings(total);
       } catch (error) {
         console.error('Error fetching total savings:', error);
@@ -74,13 +66,10 @@ const SavingsRatioReport = () => {
   }, []);
 
   useEffect(() => {
-    console.log('savingsRatio updated:', savingsRatio);
-    console.log('totalSavings updated:', totalSavings);
   }, [savingsRatio, totalSavings]);
 
   const calculateSavingsAmount = (percentage) => {
     const amount = (totalSavings * percentage) / 100;
-    console.log(`Calculating ${percentage}% of ${totalSavings}: ${amount}`);
     return amount;
   };
 
@@ -89,7 +78,6 @@ const SavingsRatioReport = () => {
     value: calculateSavingsAmount(parseFloat(item.percentage)),
   }));
 
-  console.log('Pie chart data:', data);
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 

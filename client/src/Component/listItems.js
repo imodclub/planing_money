@@ -29,7 +29,8 @@ export const MainListItems = ({
   onUserReportClick,
   onUserSavingsRatioFormClick,
   onUserIncomeReportClick,
-  resetIncomeReport,
+  onUserExpenseReportClick,
+  onUserSavingsReportClick,
 }) => {
   return (
     <React.Fragment>
@@ -63,16 +64,23 @@ export const MainListItems = ({
         </ListItemIcon>
         <ListItemText primary="เป้าหมายการออมเงิน" />
       </ListItemButton>
-      <ListItemButton
-        onClick={() => {
-          onUserIncomeReportClick();
-          resetIncomeReport();
-        }}
-      >
+      <ListItemButton onClick={onUserIncomeReportClick}>
         <ListItemIcon>
           <BarChartIcon />
         </ListItemIcon>
         <ListItemText primary="รายงานรายรับ" />
+      </ListItemButton>
+      <ListItemButton onClick={onUserExpenseReportClick}>
+        <ListItemIcon>
+          <MoneyOffIcon />
+        </ListItemIcon>
+        <ListItemText primary="รายงานรายจ่าย" />
+      </ListItemButton>
+      <ListItemButton onClick={onUserSavingsReportClick}>
+        <ListItemIcon>
+          <SavingsIcon />
+        </ListItemIcon>
+        <ListItemText primary="รายงานเงินออม" />
       </ListItemButton>
     </React.Fragment>
   );

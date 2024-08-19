@@ -16,79 +16,79 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 
-const IncomeReport = () => {
-  const [totalIncome, setTotalIncome] = useState(0);
-  const [showMonthlyIncome, setShowMonthlyIncome] = useState(false);
-  const [monthlyIncome, setMonthlyIncome] = useState([]);
+const ExpenseReport = () => {
+  const [totalExpense, setTotalExpense] = useState(0);
+  const [showMonthlyExpense, setShowMonthlyExpense] = useState(false);
+  const [monthlyExpense, setMonthlyExpense] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [filteredIncome, setFilteredIncome] = useState([]);
+  const [filteredExpense, setFilteredExpense] = useState([]);
 
-  useEffect(() => {
-    const fetchTotalIncome = async () => {
-      const userId = localStorage.getItem('userId');
-      const response = await fetch(
-        `http://localhost:5002/api/total-income/${userId}`
-      );
-      const data = await response.json();
-      setTotalIncome(data.totalIncome);
-    };
-
-    fetchTotalIncome();
+    useEffect(() => {
+        const fetchTotalExpense = async () => {
+            const userId = localStorage.getItem('userId');
+            const response = await fetch(
+                `http://localhost:5002/api/total-expenses/${userId}`
+            );
+            const data = await response.json();
+            setTotalExpense(data.totalExpense);
+        };
+    
+    fetchTotalExpense();
   }, []);
 
-  const fetchMonthlyIncome = async () => {
+  const fetchMonthlyExpense = async () => {
     const userId = localStorage.getItem('userId');
     const response = await fetch(
-      `http://localhost:5002/api/monthly-income/${userId}`
+      `http://localhost:5002/api/monthly-expenses/${userId}`
     );
     const data = await response.json();
-    setMonthlyIncome(data);
-    setShowMonthlyIncome(true);
+    setMonthlyExpense(data);
+    setShowMonthlyExpense(true);
   };
 
-  const fetchFilteredIncome = async () => {
+  const fetchFilteredExpense = async () => {
     const userId = localStorage.getItem('userId');
     const formattedStartDate = startDate
       ? dayjs(startDate).format('YYYY-MM-DD')
       : '';
     const formattedEndDate = endDate ? dayjs(endDate).format('YYYY-MM-DD') : '';
     const response = await fetch(
-      `http://localhost:5002/api/filtered-income/${userId}?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
+      `http://localhost:5002/api/filtered-expenses/${userId}?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
     );
     const data = await response.json();
-    setFilteredIncome(data);
+    setFilteredExpense(data);
   };
 
   const formatAmount = (amount) => {
     return amount.toLocaleString('en-US');
   };
-
-  const getThaiMonth = (month) => {
-    const thaiMonths = [
-      'มกราคม',
-      'กุมภาพันธ์',
-      'มีนาคม',
-      'เมษายน',
-      'พฤษภาคม',
-      'มิถุนายน',
-      'กรกฎาคม',
-      'สิงหาคม',
-      'กันยายน',
-      'ตุลาคม',
-      'พฤศจิกายน',
-      'ธันวาคม',
-    ];
-    return thaiMonths[month - 1];
-  };
+    
+    const getThaiMonth = (month) => {
+      const thaiMonths = [
+        'มกราคม',
+        'กุมภาพันธ์',
+        'มีนาคม',
+        'เมษายน',
+        'พฤษภาคม',
+        'มิถุนายน',
+        'กรกฎาคม',
+        'สิงหาคม',
+        'กันยายน',
+        'ตุลาคม',
+        'พฤศจิกายน',
+        'ธันวาคม',
+      ];
+      return thaiMonths[month - 1];
+    };
 
   return (
     <Box>
-      <Typography variant="h4">รายงานรายรับ</Typography>
+      <Typography variant="h4">รายงานรายจ่าย</Typography>
 
-      {!showMonthlyIncome && (
+      {!showMonthlyExpense && (
         <Box>
-          <Typography variant="h5">รายรับรวมทั้งหมดตลอดปี</Typography>
+          <Typography variant="h5">รายจ่ายรวมทั้งหมดตลอดปี</Typography>
           <TableContainer component={Paper} sx={{ mt: 2, mb: 2 }}>
             <Table>
               <TableHead>
@@ -98,7 +98,7 @@ const IncomeReport = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {Object.entries(totalIncome)
+                {Object.entries(totalExpense)
                   .filter(([_, amount]) => amount > 0)
                   .map(([label, amount]) => (
                     <TableRow key={label}>
@@ -115,7 +115,7 @@ const IncomeReport = () => {
                   <TableCell align="right">
                     <strong>
                       {formatAmount(
-                        Object.values(totalIncome).reduce((a, b) => a + b, 0)
+                        Object.values(totalExpense).reduce((a, b) => a + b, 0)
                       )}
                     </strong>
                   </TableCell>
@@ -123,17 +123,17 @@ const IncomeReport = () => {
               </TableBody>
             </Table>
           </TableContainer>
-          <Button variant="contained" onClick={fetchMonthlyIncome}>
-            แสดงรายรับรายเดือน
+          <Button variant="contained" onClick={fetchMonthlyExpense}>
+            แสดงรายจ่ายรายเดือน
           </Button>
         </Box>
       )}
 
-      {showMonthlyIncome && (
+      {showMonthlyExpense && (
         <Box>
-          <Typography variant="h5">รายรับรายเดือน</Typography>
+          <Typography variant="h5">รายจ่ายรายเดือน</Typography>
           <Grid container spacing={2}>
-            {monthlyIncome.map((monthData, index) => (
+            {monthlyExpense.map((monthData, index) => (
               <Grid item xs={12} md={6} lg={4} key={index}>
                 <Paper sx={{ p: 2, mb: 2 }}>
                   <Typography variant="h6">
@@ -175,7 +175,7 @@ const IncomeReport = () => {
           </Grid>
           <Button
             variant="contained"
-            onClick={() => setShowMonthlyIncome(false)}
+            onClick={() => setShowMonthlyExpense(false)}
             sx={{ mt: 2 }}
           >
             กลับหน้าแรก
@@ -185,7 +185,7 @@ const IncomeReport = () => {
 
       <Box mt={4}>
         <Typography variant="h5" mb={2}>
-          ค้นหารายรับตามช่วงเวลา
+          ค้นหารายจ่ายตามช่วงเวลา
         </Typography>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Box display="flex" alignItems="center" mb={2}>
@@ -201,14 +201,14 @@ const IncomeReport = () => {
               onChange={(newValue) => setEndDate(newValue)}
               sx={{ mr: 2 }}
             />
-            <Button variant="contained" onClick={fetchFilteredIncome}>
+            <Button variant="contained" onClick={fetchFilteredExpense}>
               ค้นหา
             </Button>
           </Box>
         </LocalizationProvider>
       </Box>
 
-      {filteredIncome.length > 0 && (
+      {filteredExpense.length > 0 && (
         <TableContainer component={Paper} sx={{ mt: 2 }}>
           <Table>
             <TableHead>
@@ -218,7 +218,7 @@ const IncomeReport = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredIncome
+              {filteredExpense
                 .filter((item) => item.amount > 0)
                 .map((item, index) => (
                   <TableRow key={index}>
@@ -235,7 +235,10 @@ const IncomeReport = () => {
                 <TableCell align="right">
                   <strong>
                     {formatAmount(
-                      filteredIncome.reduce((sum, item) => sum + item.amount, 0)
+                      filteredExpense.reduce(
+                        (sum, item) => sum + item.amount,
+                        0
+                      )
                     )}
                   </strong>
                 </TableCell>
@@ -248,4 +251,4 @@ const IncomeReport = () => {
   );
 };
 
-export default IncomeReport;
+export default ExpenseReport;

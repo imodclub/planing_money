@@ -16,48 +16,48 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 
-const IncomeReport = () => {
-  const [totalIncome, setTotalIncome] = useState(0);
-  const [showMonthlyIncome, setShowMonthlyIncome] = useState(false);
-  const [monthlyIncome, setMonthlyIncome] = useState([]);
+const SavingsReport = () => {
+  const [totalSavings, setTotalSavings] = useState(0);
+  const [showMonthlySavings, setShowMonthlySavings] = useState(false);
+  const [monthlySavings, setMonthlySavings] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [filteredIncome, setFilteredIncome] = useState([]);
+  const [filteredSavings, setFilteredSavings] = useState([]);
 
   useEffect(() => {
-    const fetchTotalIncome = async () => {
+    const fetchTotalSavings = async () => {
       const userId = localStorage.getItem('userId');
       const response = await fetch(
-        `http://localhost:5002/api/total-income/${userId}`
+        `http://localhost:5002/api/total-savings/${userId}`
       );
       const data = await response.json();
-      setTotalIncome(data.totalIncome);
+      setTotalSavings(data.totalSavings);
     };
 
-    fetchTotalIncome();
+    fetchTotalSavings();
   }, []);
 
-  const fetchMonthlyIncome = async () => {
+  const fetchMonthlySavings = async () => {
     const userId = localStorage.getItem('userId');
     const response = await fetch(
-      `http://localhost:5002/api/monthly-income/${userId}`
+      `http://localhost:5002/api/monthly-savings/${userId}`
     );
     const data = await response.json();
-    setMonthlyIncome(data);
-    setShowMonthlyIncome(true);
+    setMonthlySavings(data);
+    setShowMonthlySavings(true);
   };
 
-  const fetchFilteredIncome = async () => {
+  const fetchFilteredSavings = async () => {
     const userId = localStorage.getItem('userId');
     const formattedStartDate = startDate
       ? dayjs(startDate).format('YYYY-MM-DD')
       : '';
     const formattedEndDate = endDate ? dayjs(endDate).format('YYYY-MM-DD') : '';
     const response = await fetch(
-      `http://localhost:5002/api/filtered-income/${userId}?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
+      `http://localhost:5002/api/filtered-savings/${userId}?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
     );
     const data = await response.json();
-    setFilteredIncome(data);
+    setFilteredSavings(data);
   };
 
   const formatAmount = (amount) => {
@@ -84,11 +84,11 @@ const IncomeReport = () => {
 
   return (
     <Box>
-      <Typography variant="h4">รายงานรายรับ</Typography>
+      <Typography variant="h4">รายงานเงินออม</Typography>
 
-      {!showMonthlyIncome && (
+      {!showMonthlySavings && (
         <Box>
-          <Typography variant="h5">รายรับรวมทั้งหมดตลอดปี</Typography>
+          <Typography variant="h5">เงินออมรวมทั้งหมดตลอดปี</Typography>
           <TableContainer component={Paper} sx={{ mt: 2, mb: 2 }}>
             <Table>
               <TableHead>
@@ -98,7 +98,7 @@ const IncomeReport = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {Object.entries(totalIncome)
+                {Object.entries(totalSavings)
                   .filter(([_, amount]) => amount > 0)
                   .map(([label, amount]) => (
                     <TableRow key={label}>
@@ -115,7 +115,7 @@ const IncomeReport = () => {
                   <TableCell align="right">
                     <strong>
                       {formatAmount(
-                        Object.values(totalIncome).reduce((a, b) => a + b, 0)
+                        Object.values(totalSavings).reduce((a, b) => a + b, 0)
                       )}
                     </strong>
                   </TableCell>
@@ -123,17 +123,17 @@ const IncomeReport = () => {
               </TableBody>
             </Table>
           </TableContainer>
-          <Button variant="contained" onClick={fetchMonthlyIncome}>
-            แสดงรายรับรายเดือน
+          <Button variant="contained" onClick={fetchMonthlySavings}>
+            แสดงเงินออมรายเดือน
           </Button>
         </Box>
       )}
 
-      {showMonthlyIncome && (
+      {showMonthlySavings && (
         <Box>
-          <Typography variant="h5">รายรับรายเดือน</Typography>
+          <Typography variant="h5">เงินออมรายเดือน</Typography>
           <Grid container spacing={2}>
-            {monthlyIncome.map((monthData, index) => (
+            {monthlySavings.map((monthData, index) => (
               <Grid item xs={12} md={6} lg={4} key={index}>
                 <Paper sx={{ p: 2, mb: 2 }}>
                   <Typography variant="h6">
@@ -175,7 +175,7 @@ const IncomeReport = () => {
           </Grid>
           <Button
             variant="contained"
-            onClick={() => setShowMonthlyIncome(false)}
+            onClick={() => setShowMonthlySavings(false)}
             sx={{ mt: 2 }}
           >
             กลับหน้าแรก
@@ -185,7 +185,7 @@ const IncomeReport = () => {
 
       <Box mt={4}>
         <Typography variant="h5" mb={2}>
-          ค้นหารายรับตามช่วงเวลา
+          ค้นหาเงินออมตามช่วงเวลา
         </Typography>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Box display="flex" alignItems="center" mb={2}>
@@ -201,14 +201,14 @@ const IncomeReport = () => {
               onChange={(newValue) => setEndDate(newValue)}
               sx={{ mr: 2 }}
             />
-            <Button variant="contained" onClick={fetchFilteredIncome}>
+            <Button variant="contained" onClick={fetchFilteredSavings}>
               ค้นหา
             </Button>
           </Box>
         </LocalizationProvider>
       </Box>
 
-      {filteredIncome.length > 0 && (
+      {filteredSavings.length > 0 && (
         <TableContainer component={Paper} sx={{ mt: 2 }}>
           <Table>
             <TableHead>
@@ -218,7 +218,7 @@ const IncomeReport = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredIncome
+              {filteredSavings
                 .filter((item) => item.amount > 0)
                 .map((item, index) => (
                   <TableRow key={index}>
@@ -235,7 +235,10 @@ const IncomeReport = () => {
                 <TableCell align="right">
                   <strong>
                     {formatAmount(
-                      filteredIncome.reduce((sum, item) => sum + item.amount, 0)
+                      filteredSavings.reduce(
+                        (sum, item) => sum + item.amount,
+                        0
+                      )
                     )}
                   </strong>
                 </TableCell>
@@ -248,4 +251,4 @@ const IncomeReport = () => {
   );
 };
 
-export default IncomeReport;
+export default SavingsReport;

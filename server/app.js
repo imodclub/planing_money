@@ -458,6 +458,312 @@ app.get('/api/monthly-income/:userId', async (req, res) => {
   }
 });
 
+app.get('/api/filtered-income/:userId', async (req, res) => {
+  const { userId } = req.params;
+  const { startDate, endDate } = req.query;
+
+  try {
+    // แปลงวันที่เป็น Date object
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // ดึงข้อมูลรายรับตามช่วงเวลาที่กำหนด
+    const filteredIncome = await Income.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId),
+          date: { $gte: start, $lte: end },
+        },
+      },
+      { $unwind: '$items' },
+      {
+        $group: {
+          _id: '$items.label',
+          totalAmount: { $sum: '$items.amount' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          label: '$_id',
+          amount: '$totalAmount',
+        },
+      },
+      { $sort: { amount: -1 } },
+    ]);
+
+    res.json(filteredExpenses);
+  } catch (error) {
+    console.error('Error fetching filtered income:', error);
+    res.status(500).json({ message: 'Error fetching filtered income' });
+  }
+});
+
+// Endpoint สำหรับดึงข้อมูลรายจ่ายทั้งหมด
+app.get('/api/total-expenses/:userId', async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const expense = await Expense.aggregate([
+      { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+      { $unwind: '$items' },
+      {
+        $group: {
+          _id: '$items.label',
+          totalAmount: { $sum: '$items.amount' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          label: '$_id',
+          amount: '$totalAmount',
+        },
+      },
+    ]);
+
+    const totalExpense = expense.reduce((acc, item) => {
+      acc[item.label] = item.amount;
+      return acc;
+    }, {});
+
+    res.json({ totalExpense });
+  } catch (error) {
+    console.error('Error fetching total income:', error);
+    res.status(500).json({ message: 'Error fetching total income' });
+  }
+});
+
+// Endpoint สำหรับดึงข้อมูลรายจ่ายรายเดือน
+app.get('/api/monthly-expenses/:userId', async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const expenses = await Expense.aggregate([
+      { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+      { $unwind: '$items' },
+      {
+        $group: {
+          _id: { month: { $month: '$date' }, label: '$items.label' },
+          totalAmount: { $sum: '$items.amount' },
+        },
+      },
+      {
+        $group: {
+          _id: '$_id.month',
+          items: {
+            $push: {
+              label: '$_id.label',
+              amount: '$totalAmount',
+            },
+          },
+          totalAmount: { $sum: '$totalAmount' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          month: '$_id',
+          items: 1,
+          totalAmount: 1,
+        },
+      },
+      { $sort: { month: 1 } },
+    ]);
+
+    // สร้างอาร์เรย์ที่มี 12 เดือน
+    const allMonths = Array.from({ length: 12 }, (_, i) => ({
+      month: i + 1,
+      items: [],
+      totalAmount: 0,
+    }));
+
+    // อัปเดตข้อมูลจาก MongoDB
+    expenses.forEach((expenses) => {
+      const monthIndex = expenses.month - 1;
+      if (monthIndex >= 0 && monthIndex < 12) {
+        allMonths[monthIndex] = expenses;
+      }
+    });
+
+    res.json(allMonths);
+  } catch (error) {
+    console.error('Error fetching monthly expenses:', error);
+    res.status(500).json({ message: 'Error fetching monthly expenses' });
+  }
+});
+
+app.get('/api/filtered-expenses/:userId', async (req, res) => {
+  const { userId } = req.params;
+  const { startDate, endDate } = req.query;
+
+  try {
+    // แปลงวันที่เป็น Date object
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // ดึงข้อมูลรายรับตามช่วงเวลาที่กำหนด
+    const filteredExpenses = await Expense.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId),
+          date: { $gte: start, $lte: end },
+        },
+      },
+      { $unwind: '$items' },
+      {
+        $group: {
+          _id: '$items.label',
+          totalAmount: { $sum: '$items.amount' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          label: '$_id',
+          amount: '$totalAmount',
+        },
+      },
+      { $sort: { amount: -1 } },
+    ]);
+
+    res.json(filteredExpenses);
+  } catch (error) {
+    console.error('Error fetching filtered expenses:', error);
+    res.status(500).json({ message: 'Error fetching filtered expenses' });
+  }
+});
+
+// Endpoint สำหรับดึงข้อมูลgเงินออม
+app.get('/api/total-savings/:userId', async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const savings = await Saving.aggregate([
+      { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+      { $unwind: '$items' },
+      {
+        $group: {
+          _id: '$items.label',
+          totalAmount: { $sum: '$items.amount' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          label: '$_id',
+          amount: '$totalAmount',
+        },
+      },
+    ]);
+
+    const totalSavings = savings.reduce((acc, item) => {
+      acc[item.label] = item.amount;
+      return acc;
+    }, {});
+
+    res.json({ totalSavings });
+  } catch (error) {
+    console.error('Error fetching total income:', error);
+    res.status(500).json({ message: 'Error fetching total income' });
+  }
+});
+
+// Endpoint สำหรับดึงข้อมูลเงินออมรายเดือน
+app.get('/api/monthly-savings/:userId', async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const savings = await Saving.aggregate([
+      { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+      { $unwind: '$items' },
+      {
+        $group: {
+          _id: { month: { $month: '$date' }, label: '$items.label' },
+          totalAmount: { $sum: '$items.amount' },
+        },
+      },
+      {
+        $group: {
+          _id: '$_id.month',
+          items: {
+            $push: {
+              label: '$_id.label',
+              amount: '$totalAmount',
+            },
+          },
+          totalAmount: { $sum: '$totalAmount' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          month: '$_id',
+          items: 1,
+          totalAmount: 1,
+        },
+      },
+      { $sort: { month: 1 } },
+    ]);
+
+    // สร้างอาร์เรย์ที่มี 12 เดือน
+    const allMonths = Array.from({ length: 12 }, (_, i) => ({
+      month: i + 1,
+      items: [],
+      totalAmount: 0,
+    }));
+
+    // อัปเดตข้อมูลจาก MongoDB
+    savings.forEach((savings) => {
+      const monthIndex = savings.month - 1;
+      if (monthIndex >= 0 && monthIndex < 12) {
+        allMonths[monthIndex] = savings;
+      }
+    });
+
+    res.json(allMonths);
+  } catch (error) {
+    console.error('Error fetching monthly savings:', error);
+    res.status(500).json({ message: 'Error fetching monthly savings' });
+  }
+});
+
+app.get('/api/filtered-savings/:userId', async (req, res) => {
+  const { userId } = req.params;
+  const { startDate, endDate } = req.query;
+
+  try {
+    // แปลงวันที่เป็น Date object
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // ดึงข้อมูลรายรับตามช่วงเวลาที่กำหนด
+    const filteredSaving = await Saving.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId),
+          date: { $gte: start, $lte: end },
+        },
+      },
+      { $unwind: '$items' },
+      {
+        $group: {
+          _id: '$items.label',
+          totalAmount: { $sum: '$items.amount' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          label: '$_id',
+          amount: '$totalAmount',
+        },
+      },
+      { $sort: { amount: -1 } },
+    ]);
+
+    res.json(filteredSaving);
+  } catch (error) {
+    console.error('Error fetching filtered savings:', error);
+    res.status(500).json({ message: 'Error fetching filtered savings' });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
