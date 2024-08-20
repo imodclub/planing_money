@@ -9,6 +9,7 @@ const Expense = require('./models/expenses.model');
 const Saving = require('./models/saving.model');
 const SavingsRatio = require('./models/savingsRatio.model');
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
 
 require('dotenv').config();
 
@@ -33,7 +34,8 @@ app.use(cookieParser());
 app.post('/api/signup', async (req, res) => {
   const { username, password } = req.body;
   try {
-    const newUser = new User({ name: username, password });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({ name: username, password : hashedPassword });
     await newUser.save();
     res.status(201).json({ message: 'ลงทะเบียนสำเร็จ' });
   } catch (error) {
@@ -52,10 +54,10 @@ app.post('/api/signin', async (req, res) => {
       return res.status(400).json({ message: 'ไม่พบผู้ใช้' });
     }
 
-    // ตรวจสอบรหัสผ่าน (ควรใช้ bcrypt ในการเข้ารหัสรหัสผ่าน)
-    if (user.password !== password) {
-      return res.status(400).json({ message: 'รหัสผ่านไม่ถูกต้อง' });
-    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+     if (!isPasswordValid) {
+       return res.status(400).json({ message: 'รหัสผ่านไม่ถูกต้อง' });
+     }
 
     // สร้าง Session Cookie
     const userId = user._id.toString();
