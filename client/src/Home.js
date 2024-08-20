@@ -16,6 +16,7 @@ import Signup from './Component/SignUp';
 import SignIn from './Component/SignIn';
 
 const Home = () => {
+  const [successMessage, setSuccessMessage] = useState('');
   const [isSignIn, setIsSignIn] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -69,6 +70,11 @@ const Home = () => {
           <CardHeader title="ลงทะเบียนผู้ใช้ใหม่" />
           <CardContent>
             <Signup onSuccess={handleSignupSuccess} />
+            {successMessage && (
+              <Typography variant="body2" color="success">
+                {successMessage}
+              </Typography>
+            )}
             <Typography
               variant="body2"
               color="textSecondary"
