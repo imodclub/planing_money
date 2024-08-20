@@ -140,7 +140,7 @@ const IncomeForm = () => {
     };
   
     fetchIncomeData();
-  }, []);
+  }, [incomeItems]);
 
   const handleCloseDialog = () => {
     setDialogOpen(false); // ปิด Dialog

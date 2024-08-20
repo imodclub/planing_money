@@ -142,7 +142,7 @@ const SavingsForm = () => {
     };
 
     fetchSavingsData();
-  }, []);
+  }, [savingsItems]);
 
   const handleCloseDialog = () => {
     setDialogOpen(false);

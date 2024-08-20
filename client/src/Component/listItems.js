@@ -2,7 +2,6 @@ import React from 'react';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import MoneyOffIcon from '@mui/icons-material/MoneyOff';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';

@@ -156,7 +156,7 @@ const ExpensesForm = () => {
     };
 
     fetchExpenseData();
-  }, []);
+  }, [expenseItems]);
 
   const handleCloseDialog = () => {
     setDialogOpen(false);

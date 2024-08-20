@@ -16,7 +16,6 @@ import Signup from './Component/SignUp';
 import SignIn from './Component/SignIn';
 
 const Home = () => {
-  const [successMessage, setSuccessMessage] = useState('');
   const [isSignIn, setIsSignIn] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
 
