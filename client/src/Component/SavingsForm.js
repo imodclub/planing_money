@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Box,
   TextField,
@@ -97,6 +97,7 @@ const SavingsForm = () => {
       ]);
     }
   };
+  const isFetched = useRef(false);
 
   useEffect(() => {
     const fetchSavingsData = async () => {
@@ -107,7 +108,7 @@ const SavingsForm = () => {
         console.error('No userId found in LocalStorage');
         return;
       }
-
+      if (!isFetched.current) {
       try {
         const response = await fetch(
           `https://planing-money.vercel.app/api/savings/${userId}`
@@ -143,6 +144,8 @@ const SavingsForm = () => {
       } catch (error) {
         console.error('Error fetching savings data:', error);
       }
+      isFetched.current = true;
+    }
     };
 
     fetchSavingsData();

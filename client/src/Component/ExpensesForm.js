@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import {
   Box,
   TextField,
@@ -39,6 +39,8 @@ const ExpensesForm = () => {
   });
   const [dialogOpen, setDialogOpen] = useState(false);
   const [successDialogOpen, setSuccessDialogOpen] = useState(false);
+
+  const isFetched = useRef(false);
 
   const handleAmountChange = (index, value) => {
     const updatedItems = [...expenseItems];
@@ -119,6 +121,7 @@ const ExpensesForm = () => {
         return;
       }
 
+      if(!isFetched.current){
       try {
         const response = await fetch(
           `https://planing-money.vercel.app/api/expense-data/${userId}`
@@ -154,6 +157,8 @@ const ExpensesForm = () => {
       } catch (error) {
         console.error('Error fetching expense data:', error);
       }
+      isFetched.current=true;
+    }
     };
 
     fetchExpenseData();

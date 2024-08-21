@@ -1,5 +1,5 @@
 // components/IncomeForm.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import {
   Box,
   TextField,
@@ -96,6 +96,8 @@ const IncomeForm = () => {
     }
   };
 
+  const isFetched = useRef(false);
+
   useEffect(() => {
     const fetchIncomeData = async () => {
     
@@ -105,7 +107,8 @@ const IncomeForm = () => {
         console.error('No userId found in LocalStorage');
         return;
       }
-  
+      
+      if(!isFetched.current){
       try {
         const response = await fetch(`https://planing-money.vercel.app/api/income-data/${userId}`); // ดึงข้อมูลตาม userId
         if (response.ok) {
@@ -139,6 +142,8 @@ const IncomeForm = () => {
       } catch (error) {
         console.error('Error fetching income data:', error);
       }
+      isFetched.current=true;
+    }
     };
   
     fetchIncomeData();
