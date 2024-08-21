@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, Typography, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import apiURL from '../config/Config';
 
 const Signup = ({ onSuccess }) => {
-  const apiURL = process.env.NODE_ENV === 'production' 
-  ? 'https://planing-money.vercel.app/api' 
-  : 'http://localhost:5002/api';
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [open, setOpen] = useState(false); // State สำหรับเปิด/ปิด Dialog

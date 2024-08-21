@@ -9,6 +9,7 @@ import {
   BarChart,
   ResponsiveContainer,
 } from 'recharts';
+import apiURL from '../config/Config';
 
 const MonthlyReportChart = () => {
   
@@ -26,9 +27,7 @@ const MonthlyReportChart = () => {
 
       try {
         
-        const response = await fetch(
-          `https://planing-money.vercel.app/api/monthly-report/${userId}`
-        );
+        const response = await fetch(`${apiURL}/monthly-report/${userId}`);
 
         if (response.ok) {
           const data = await response.json();

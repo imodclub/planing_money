@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useNavigate } from 'react';
 import {
   Box,
   TextField,
@@ -9,13 +9,10 @@ import {
   DialogContent,
   DialogActions,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import apiURL from '../config/Config';
 
 const SignIn = ({ onSuccess }) => {
-  const apiURL = process.env.NODE_ENV === 'production' 
-  ? 'https://planing-money.vercel.app/api' 
-  : 'http://localhost:5002/api';
-  
+   
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [open, setOpen] = useState(false);

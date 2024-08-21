@@ -340,6 +340,7 @@ app.post('/api/save-savings-ratio', async (req, res) => {
     const newSavingsRatio = new SavingsRatio({
       userId,
       savingsItems,
+      createdAt: new Date(),
     });
 
     await newSavingsRatio.save();
@@ -356,7 +357,9 @@ app.get('/api/savings-ratio/:userId', async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const savingsRatio = await SavingsRatio.findOne({ userId });
+    const savingsRatio = await SavingsRatio.findOne({ userId })
+      .sort({ createdAt: -1 }) // เรียงตาม createdAt จากล่าสุดไปเก่าสุด
+      .exec();
 
     if (!savingsRatio) {
       return res.status(404).json({ error: 'Savings ratio not found' });
