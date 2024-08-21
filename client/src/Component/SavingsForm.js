@@ -62,6 +62,9 @@ const SavingsForm = () => {
   };
 
   const handleSave = async () => {
+    const apiURL = process.env.NODE_ENV === 'production' 
+  ? 'https://planing-money.vercel.app/api' 
+  : 'http://localhost:5002/api';
     const userId = localStorage.getItem('userId');
 
     if (!userId) {
@@ -72,7 +75,7 @@ const SavingsForm = () => {
     const formattedDate = date.toISOString().split('T')[0];
     const timestamp = new Date().toISOString();
 
-    const response = await fetch('http://localhost:5002/api/save-savings', {
+    const response = await fetch(`${apiURL}/save-savings`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -97,6 +100,9 @@ const SavingsForm = () => {
 
   useEffect(() => {
     const fetchSavingsData = async () => {
+      const apiURL = process.env.NODE_ENV === 'production' 
+  ? 'https://planing-money.vercel.app/api' 
+  : 'http://localhost:5002/api';
       const userId = localStorage.getItem('userId');
 
       if (!userId) {
@@ -106,7 +112,7 @@ const SavingsForm = () => {
 
       try {
         const response = await fetch(
-          `http://localhost:5002/api/savings/${userId}`
+          `${apiURL}/api/savings/${userId}`
         );
         if (response.ok) {
           const data = await response.json();

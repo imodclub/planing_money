@@ -66,6 +66,9 @@ const IncomeForm = () => {
   };
 
   const handleSave = async () => {
+    const apiURL = process.env.NODE_ENV === 'production' 
+  ? 'https://planing-money.vercel.app/api' 
+  : 'http://localhost:5002/api';
     const userId = localStorage.getItem('userId'); // ดึง userId จาก LocalStorage
 
     if (!userId) {
@@ -75,7 +78,7 @@ const IncomeForm = () => {
 
     const formattedDate = date.toISOString().split('T')[0];
     const timestamp = new Date().toISOString();
-    const response = await fetch('http://localhost:5002/api/save-income', {
+    const response = await fetch(`${apiURL}/save-income`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -97,6 +100,9 @@ const IncomeForm = () => {
 
   useEffect(() => {
     const fetchIncomeData = async () => {
+      const apiURL = process.env.NODE_ENV === 'production' 
+  ? 'https://planing-money.vercel.app/api' 
+  : 'http://localhost:5002/api';
       const userId = localStorage.getItem('userId'); // ดึง userId จาก LocalStorage
   
       if (!userId) {
@@ -105,7 +111,7 @@ const IncomeForm = () => {
       }
   
       try {
-        const response = await fetch(`http://localhost:5002/api/income-data/${userId}`); // ดึงข้อมูลตาม userId
+        const response = await fetch(`${apiURL}/income-data/${userId}`); // ดึงข้อมูลตาม userId
         if (response.ok) {
           const data = await response.json();
           // แสดงค่าที่ดึงมาจาก MongoDB ใน Console
