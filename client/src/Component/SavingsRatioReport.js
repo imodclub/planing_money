@@ -10,13 +10,14 @@ import {
 import { Typography } from '@mui/material';
 
 const SavingsRatioReport = () => {
+  const apiURL = process.env.NODE_ENV === 'production' 
+  ? 'https://planing-money.vercel.app/api' 
+  : 'http://localhost:5002/api';
   const [savingsRatio, setSavingsRatio] = useState([]);
   const [totalSavings, setTotalSavings] = useState(0);
 
   useEffect(() => {
-    const apiURL = process.env.NODE_ENV === 'production' 
-  ? 'https://planing-money.vercel.app/api' 
-  : 'http://localhost:5002/api';
+  
     const fetchSavingsRatio = async () => {
       
       const userId = localStorage.getItem('userId');
@@ -41,9 +42,6 @@ const SavingsRatioReport = () => {
     };
 
     const fetchTotalSavings = async () => {
-      const apiURL = process.env.NODE_ENV === 'production' 
-  ? 'https://planing-money.vercel.app/api' 
-  : 'http://localhost:5002/api';
       const userId = localStorage.getItem('userId');
       try {
         const response = await fetch(`${apiURL}/savings/${userId}`);
