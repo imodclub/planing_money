@@ -9,10 +9,7 @@
       "use": "@vercel/static-build",
       "config": { "distDir": "build" }
     }
-  ],
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
-  ],
+  ], 
   "routes": [
     { "src": "/api/(.*)", "dest": "server/app.js" },
     { "src": "/(.*)", "dest": "/client/$1" }
