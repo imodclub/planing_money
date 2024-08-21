@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogActions,
 } from '@mui/material';
+import apiURL from '../config/Config';
 
 const SignIn = ({ onSuccess }) => {
   const [username, setUsername] = useState('');
@@ -21,7 +22,7 @@ const SignIn = ({ onSuccess }) => {
     console.log('Submitting:', { username, password });
 
     try {
-      const response = await fetch('http://localhost:5002/api/signin', {
+      const response = await fetch(`${apiURL}/signin`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

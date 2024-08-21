@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, Typography, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import apiURL from '../config/Config';
 
 const Signup = ({ onSuccess }) => {
   const [username, setUsername] = useState('');
@@ -10,7 +11,7 @@ const Signup = ({ onSuccess }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('http://localhost:5002/api/signup', {
+      const response = await fetch(`${apiURL}/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

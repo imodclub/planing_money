@@ -16,6 +16,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import dayjs from 'dayjs';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import apiURL from '../config/Config';
 
 const SavingsForm = () => {
   const [date, setDate] = useState(dayjs());
@@ -72,7 +73,7 @@ const SavingsForm = () => {
     const formattedDate = date.toISOString().split('T')[0];
     const timestamp = new Date().toISOString();
 
-    const response = await fetch('http://localhost:5002/api/save-savings', {
+    const response = await fetch(`${apiURL}/save-savings`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

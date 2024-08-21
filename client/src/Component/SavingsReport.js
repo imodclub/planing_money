@@ -15,6 +15,7 @@ import {
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import apiURL from '../config/Config';
 
 const SavingsReport = () => {
   const [totalSavings, setTotalSavings] = useState(0);
@@ -28,7 +29,7 @@ const SavingsReport = () => {
     const fetchTotalSavings = async () => {
       const userId = localStorage.getItem('userId');
       const response = await fetch(
-        `http://localhost:5002/api/total-savings/${userId}`
+        `${apiURL}/total-savings/${userId}`
       );
       const data = await response.json();
       setTotalSavings(data.totalSavings);
@@ -40,7 +41,7 @@ const SavingsReport = () => {
   const fetchMonthlySavings = async () => {
     const userId = localStorage.getItem('userId');
     const response = await fetch(
-      `http://localhost:5002/api/monthly-savings/${userId}`
+      `${apiURL}/monthly-savings/${userId}`
     );
     const data = await response.json();
     setMonthlySavings(data);
@@ -54,7 +55,7 @@ const SavingsReport = () => {
       : '';
     const formattedEndDate = endDate ? dayjs(endDate).format('YYYY-MM-DD') : '';
     const response = await fetch(
-      `http://localhost:5002/api/filtered-savings/${userId}?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
+      `${apiURL}/filtered-savings/${userId}?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
     );
     const data = await response.json();
     setFilteredSavings(data);

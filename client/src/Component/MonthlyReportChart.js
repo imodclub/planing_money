@@ -9,6 +9,7 @@ import {
   BarChart,
   ResponsiveContainer,
 } from 'recharts';
+import apiURL from '../config/Config';
 
 const MonthlyReportChart = () => {
     const [reportData, setReportData] = useState([]);
@@ -24,7 +25,7 @@ const MonthlyReportChart = () => {
 
       try {
         const response = await fetch(
-          `http://localhost:5002/api/monthly-report/${userId}`
+          `${apiURL}/monthly-report/${userId}`
         );
 
         if (response.ok) {

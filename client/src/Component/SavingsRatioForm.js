@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import apiURL from '../config/Config';
 
 const SavingsRatioForm = () => {
   const [savingsItems, setSavingsItems] = useState([
@@ -68,7 +69,7 @@ const SavingsRatioForm = () => {
 
     const userId = localStorage.getItem('userId');
     
-    const response = await fetch('http://localhost:5002/api/save-savings-ratio', {
+    const response = await fetch(`${apiURL}/save-savings-ratio`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -76,6 +77,7 @@ const SavingsRatioForm = () => {
       body: JSON.stringify({
         savingsItems,
         userId,
+        createdAt: new Date().toISOString(),
       }),
     });
 

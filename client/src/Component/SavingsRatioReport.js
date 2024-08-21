@@ -8,6 +8,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { Typography } from '@mui/material';
+import apiURL from '../config/Config';
 
 const SavingsRatioReport = () => {
   const [savingsRatio, setSavingsRatio] = useState([]);
@@ -18,7 +19,8 @@ const SavingsRatioReport = () => {
       const userId = localStorage.getItem('userId');
 
       try {
-        const response = await fetch(`http://localhost:5002/api/savings-ratio/${userId}`);
+        // Fetch ข้อมูล savings ratio ที่มี createdAt ล่าสุดของ userId
+        const response = await fetch(`${apiURL}/savings-ratio/${userId}`);
 
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -29,7 +31,7 @@ const SavingsRatioReport = () => {
         if (data && data.savingsItems) {
           setSavingsRatio(data.savingsItems);
         } else {
-          console.log('No savings items found in the response');
+          console.log('No savings ratio found in the response');
         }
       } catch (error) {
         console.error('Error fetching savings ratio:', error);
@@ -39,16 +41,11 @@ const SavingsRatioReport = () => {
     const fetchTotalSavings = async () => {
       const userId = localStorage.getItem('userId');
       try {
-        const response = await fetch(`http://localhost:5002/api/savings/${userId}`);
+        const response = await fetch(`${apiURL}/savings/${userId}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        if (data.length === 0) {
-          console.log('No savings data found');
-          setTotalSavings(0);
-          return;
-        }
         const total = data.reduce(
           (sum, saving) =>
             sum +
@@ -65,9 +62,6 @@ const SavingsRatioReport = () => {
     fetchTotalSavings();
   }, []);
 
-  useEffect(() => {
-  }, [savingsRatio, totalSavings]);
-
   const calculateSavingsAmount = (percentage) => {
     const amount = (totalSavings * percentage) / 100;
     return amount;
@@ -77,7 +71,6 @@ const SavingsRatioReport = () => {
     name: item.label,
     value: calculateSavingsAmount(parseFloat(item.percentage)),
   }));
-
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
@@ -112,7 +105,7 @@ const SavingsRatioReport = () => {
       <Typography variant="h6">รายงานสัดส่วนการออม</Typography>
       {data.length > 0 ? (
         <ResponsiveContainer width="100%" height={400}>
-          <PieChart  width={400} height={400}>
+          <PieChart width={400} height={400}>
             <Pie
               data={data}
               cx="50%"
