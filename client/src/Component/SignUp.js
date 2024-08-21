@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Box, TextField, Button, Typography, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 
 const Signup = ({ onSuccess }) => {
+  const apiURL = process.env.NODE_ENV === 'production' 
+  ? 'https://planing-money.vercel.app/api' 
+  : 'http://localhost:5002/api';
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [open, setOpen] = useState(false); // State สำหรับเปิด/ปิด Dialog
@@ -10,7 +13,7 @@ const Signup = ({ onSuccess }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('http://localhost:5002/api/signup', {
+      const response = await fetch(`${apiURL}/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

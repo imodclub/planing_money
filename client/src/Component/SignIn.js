@@ -11,6 +11,9 @@ import {
 } from '@mui/material';
 
 const SignIn = ({ onSuccess }) => {
+  const apiURL = process.env.NODE_ENV === 'production' 
+  ? 'https://planing-money.vercel.app/api' 
+  : 'http://localhost:5002/api';
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [open, setOpen] = useState(false);
@@ -20,7 +23,7 @@ const SignIn = ({ onSuccess }) => {
     event.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:5002/api/signin', {
+      const response = await fetch(`${apiURL}/signin`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
