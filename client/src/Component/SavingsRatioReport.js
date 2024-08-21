@@ -14,10 +14,11 @@ const SavingsRatioReport = () => {
   const [totalSavings, setTotalSavings] = useState(0);
 
   useEffect(() => {
-    const fetchSavingsRatio = async () => {
-      const apiURL = process.env.NODE_ENV === 'production' 
+    const apiURL = process.env.NODE_ENV === 'production' 
   ? 'https://planing-money.vercel.app/api' 
   : 'http://localhost:5002/api';
+    const fetchSavingsRatio = async () => {
+      
       const userId = localStorage.getItem('userId');
 
       try {
@@ -40,9 +41,12 @@ const SavingsRatioReport = () => {
     };
 
     const fetchTotalSavings = async () => {
+      const apiURL = process.env.NODE_ENV === 'production' 
+  ? 'https://planing-money.vercel.app/api' 
+  : 'http://localhost:5002/api';
       const userId = localStorage.getItem('userId');
       try {
-        const response = await fetch(`http://localhost:5002/api/savings/${userId}`);
+        const response = await fetch(`${apiURL}/savings/${userId}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

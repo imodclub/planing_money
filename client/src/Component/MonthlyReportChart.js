@@ -11,13 +11,13 @@ import {
 } from 'recharts';
 
 const MonthlyReportChart = () => {
-  const apiURL = process.env.NODE_ENV === 'production' 
-  ? 'https://planing-money.vercel.app/api' 
-  : 'http://localhost:5002/api';
-    const [reportData, setReportData] = useState([]);
+     const [reportData, setReportData] = useState([]);
 
   useEffect(() => {
     const fetchReportData = async () => {
+      const apiURL = process.env.NODE_ENV === 'production' 
+      ? 'https://planing-money.vercel.app/api' 
+      : 'http://localhost:5002/api';
       const userId = localStorage.getItem('userId');
 
       if (!userId) {
