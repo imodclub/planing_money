@@ -10,9 +10,7 @@ import {
 import { Typography } from '@mui/material';
 
 const SavingsRatioReport = () => {
-  const apiURL = process.env.NODE_ENV === 'production' 
-  ? 'https://planing-money.vercel.app/api' 
-  : 'http://localhost:5002/api';
+ 
   const [savingsRatio, setSavingsRatio] = useState([]);
   const [totalSavings, setTotalSavings] = useState(0);
 
@@ -23,7 +21,7 @@ const SavingsRatioReport = () => {
       const userId = localStorage.getItem('userId');
 
       try {
-        const response = await fetch(`${apiURL}/savings-ratio/${userId}`);
+        const response = await fetch(`https://planing-money.vercel.app/api/savings-ratio/${userId}`);
 
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -44,7 +42,7 @@ const SavingsRatioReport = () => {
     const fetchTotalSavings = async () => {
       const userId = localStorage.getItem('userId');
       try {
-        const response = await fetch(`${apiURL}/savings/${userId}`);
+        const response = await fetch(`https://planing-money.vercel.app/api/savings/${userId}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

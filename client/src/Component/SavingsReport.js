@@ -17,9 +17,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 
 const SavingsReport = () => {
-  const apiURL = process.env.NODE_ENV === 'production' 
-  ? 'https://planing-money.vercel.app/api' 
-  : 'http://localhost:5002/api';
+
   const [totalSavings, setTotalSavings] = useState(0);
   const [showMonthlySavings, setShowMonthlySavings] = useState(false);
   const [monthlySavings, setMonthlySavings] = useState([]);
@@ -31,7 +29,7 @@ const SavingsReport = () => {
     const fetchTotalSavings = async () => {
       const userId = localStorage.getItem('userId');
       const response = await fetch(
-        `${apiURL}/total-savings/${userId}`
+        `https://planing-money.vercel.app/api/total-savings/${userId}`
       );
       const data = await response.json();
       setTotalSavings(data.totalSavings);
@@ -43,7 +41,7 @@ const SavingsReport = () => {
   const fetchMonthlySavings = async () => {
     const userId = localStorage.getItem('userId');
     const response = await fetch(
-      `http://localhost:5002/api/monthly-savings/${userId}`
+      `https://planing-money.vercel.app/api/monthly-savings/${userId}`
     );
     const data = await response.json();
     setMonthlySavings(data);
@@ -57,7 +55,7 @@ const SavingsReport = () => {
       : '';
     const formattedEndDate = endDate ? dayjs(endDate).format('YYYY-MM-DD') : '';
     const response = await fetch(
-      `http://localhost:5002/api/filtered-savings/${userId}?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
+      `https://planing-money.vercel.app/api/filtered-savings/${userId}?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
     );
     const data = await response.json();
     setFilteredSavings(data);

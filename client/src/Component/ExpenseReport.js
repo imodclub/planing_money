@@ -17,9 +17,6 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 
 const ExpenseReport = () => {
-  const apiURL = process.env.NODE_ENV === 'production' 
-  ? 'https://planing-money.vercel.app/api' 
-  : 'http://localhost:5002/api';
   const [totalExpense, setTotalExpense] = useState(0);
   const [showMonthlyExpense, setShowMonthlyExpense] = useState(false);
   const [monthlyExpense, setMonthlyExpense] = useState([]);
@@ -31,7 +28,7 @@ const ExpenseReport = () => {
         const fetchTotalExpense = async () => {
             const userId = localStorage.getItem('userId');
             const response = await fetch(
-                `${apiURL}/total-expenses/${userId}`
+                `https://planing-money.vercel.app/api/total-expenses/${userId}`
             );
             const data = await response.json();
             setTotalExpense(data.totalExpense);
@@ -43,7 +40,7 @@ const ExpenseReport = () => {
   const fetchMonthlyExpense = async () => {
     const userId = localStorage.getItem('userId');
     const response = await fetch(
-      `http://localhost:5002/api/monthly-expenses/${userId}`
+      `https://planing-money.vercel.app/api/monthly-expenses/${userId}`
     );
     const data = await response.json();
     setMonthlyExpense(data);
@@ -57,7 +54,7 @@ const ExpenseReport = () => {
       : '';
     const formattedEndDate = endDate ? dayjs(endDate).format('YYYY-MM-DD') : '';
     const response = await fetch(
-      `http://localhost:5002/api/filtered-expenses/${userId}?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
+      `https://planing-money.vercel.app/api/filtered-expenses/${userId}?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
     );
     const data = await response.json();
     setFilteredExpense(data);

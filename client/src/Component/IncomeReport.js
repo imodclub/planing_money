@@ -25,13 +25,11 @@ const IncomeReport = () => {
   const [filteredIncome, setFilteredIncome] = useState([]);
 
   useEffect(() => {
-    const apiURL = process.env.NODE_ENV === 'production' 
-  ? 'https://planing-money.vercel.app/api' 
-  : 'http://localhost:5002/api';
+   
     const fetchTotalIncome = async () => {
       const userId = localStorage.getItem('userId');
       const response = await fetch(
-        `${apiURL}/total-income/${userId}`
+        `https://planing-money.vercel.app/api/total-income/${userId}`
       );
       const data = await response.json();
       setTotalIncome(data.totalIncome);
@@ -43,7 +41,7 @@ const IncomeReport = () => {
   const fetchMonthlyIncome = async () => {
     const userId = localStorage.getItem('userId');
     const response = await fetch(
-      `http://localhost:5002/api/monthly-income/${userId}`
+      `https://planing-money.vercel.app/api/monthly-income/${userId}`
     );
     const data = await response.json();
     setMonthlyIncome(data);
@@ -57,7 +55,7 @@ const IncomeReport = () => {
       : '';
     const formattedEndDate = endDate ? dayjs(endDate).format('YYYY-MM-DD') : '';
     const response = await fetch(
-      `http://localhost:5002/api/filtered-income/${userId}?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
+      `https://planing-money.vercel.app/api/filtered-income/${userId}?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
     );
     const data = await response.json();
     setFilteredIncome(data);

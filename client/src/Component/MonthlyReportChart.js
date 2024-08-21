@@ -16,9 +16,7 @@ const MonthlyReportChart = () => {
 
   useEffect(() => {
     const fetchReportData = async () => {
-      const apiURL = process.env.NODE_ENV === 'production' 
-      ? 'https://planing-money.vercel.app/api' 
-      : 'http://localhost:5002/api';
+     
       const userId = localStorage.getItem('userId');
 
       if (!userId) {
@@ -27,8 +25,9 @@ const MonthlyReportChart = () => {
       }
 
       try {
+        
         const response = await fetch(
-          `${apiURL}/monthly-report/${userId}`
+          `https://planing-money.vercel.app/api/monthly-report/${userId}`
         );
 
         if (response.ok) {

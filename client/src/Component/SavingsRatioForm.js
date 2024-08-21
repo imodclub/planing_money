@@ -59,9 +59,7 @@ const SavingsRatioForm = () => {
   };
 
     const handleSave = async () => {
-      const apiURL = process.env.NODE_ENV === 'production' 
-  ? 'https://planing-money.vercel.app/api' 
-  : 'http://localhost:5002/api';
+     
     const totalPercentage = savingsItems.reduce((sum, item) => sum + (item.percentage ? parseFloat(item.percentage) : 0), 0);
 
     if (totalPercentage > 100) {
@@ -71,7 +69,7 @@ const SavingsRatioForm = () => {
 
     const userId = localStorage.getItem('userId');
     
-    const response = await fetch(`${apiURL}/save-savings-ratio`, {
+    const response = await fetch(`https://planing-money.vercel.app/api/save-savings-ratio`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -100,9 +100,7 @@ const SavingsForm = () => {
 
   useEffect(() => {
     const fetchSavingsData = async () => {
-      const apiURL = process.env.NODE_ENV === 'production' 
-  ? 'https://planing-money.vercel.app/api' 
-  : 'http://localhost:5002/api';
+
       const userId = localStorage.getItem('userId');
 
       if (!userId) {
@@ -112,7 +110,7 @@ const SavingsForm = () => {
 
       try {
         const response = await fetch(
-          `${apiURL}/api/savings/${userId}`
+          `https://planing-money.vercel.app/api/savings/${userId}`
         );
         if (response.ok) {
           const data = await response.json();
