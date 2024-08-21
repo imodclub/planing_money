@@ -15,6 +15,7 @@ import {
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import apiURL from '../config/Config';
 
 const ExpenseReport = () => {
   const [totalExpense, setTotalExpense] = useState(0);
@@ -28,7 +29,7 @@ const ExpenseReport = () => {
         const fetchTotalExpense = async () => {
             const userId = localStorage.getItem('userId');
             const response = await fetch(
-                `http://localhost:5002/api/total-expenses/${userId}`
+                `${apiURL}/total-expenses/${userId}`
             );
             const data = await response.json();
             setTotalExpense(data.totalExpense);
@@ -40,7 +41,7 @@ const ExpenseReport = () => {
   const fetchMonthlyExpense = async () => {
     const userId = localStorage.getItem('userId');
     const response = await fetch(
-      `http://localhost:5002/api/monthly-expenses/${userId}`
+      `${apiURL}/monthly-expenses/${userId}`
     );
     const data = await response.json();
     setMonthlyExpense(data);
@@ -54,7 +55,7 @@ const ExpenseReport = () => {
       : '';
     const formattedEndDate = endDate ? dayjs(endDate).format('YYYY-MM-DD') : '';
     const response = await fetch(
-      `http://localhost:5002/api/filtered-expenses/${userId}?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
+      `${apiURL}/filtered-expenses/${userId}?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
     );
     const data = await response.json();
     setFilteredExpense(data);

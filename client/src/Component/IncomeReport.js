@@ -15,6 +15,7 @@ import {
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
+import apiURL from '../config/Config';
 
 const IncomeReport = () => {
   const [totalIncome, setTotalIncome] = useState(0);
@@ -28,7 +29,7 @@ const IncomeReport = () => {
     const fetchTotalIncome = async () => {
       const userId = localStorage.getItem('userId');
       const response = await fetch(
-        `http://localhost:5002/api/total-income/${userId}`
+        `${apiURL}/total-income/${userId}`
       );
       const data = await response.json();
       setTotalIncome(data.totalIncome);
@@ -40,7 +41,7 @@ const IncomeReport = () => {
   const fetchMonthlyIncome = async () => {
     const userId = localStorage.getItem('userId');
     const response = await fetch(
-      `http://localhost:5002/api/monthly-income/${userId}`
+      `${apiURL}/monthly-income/${userId}`
     );
     const data = await response.json();
     setMonthlyIncome(data);
@@ -54,7 +55,7 @@ const IncomeReport = () => {
       : '';
     const formattedEndDate = endDate ? dayjs(endDate).format('YYYY-MM-DD') : '';
     const response = await fetch(
-      `http://localhost:5002/api/filtered-income/${userId}?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
+      `${apiURL}/filtered-income/${userId}?startDate=${formattedStartDate}&endDate=${formattedEndDate}`
     );
     const data = await response.json();
     setFilteredIncome(data);
