@@ -17,6 +17,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 
 const ExpenseReport = () => {
+  const apiURL = process.env.NODE_ENV === 'production' 
+  ? 'https://planing-money.vercel.app/api' 
+  : 'http://localhost:5002/api';
   const [totalExpense, setTotalExpense] = useState(0);
   const [showMonthlyExpense, setShowMonthlyExpense] = useState(false);
   const [monthlyExpense, setMonthlyExpense] = useState([]);
@@ -28,7 +31,7 @@ const ExpenseReport = () => {
         const fetchTotalExpense = async () => {
             const userId = localStorage.getItem('userId');
             const response = await fetch(
-                `http://localhost:5002/api/total-expenses/${userId}`
+                `${apiURL}/total-expenses/${userId}`
             );
             const data = await response.json();
             setTotalExpense(data.totalExpense);

@@ -11,6 +11,9 @@ import {
 } from 'recharts';
 
 const MonthlyReportChart = () => {
+  const apiURL = process.env.NODE_ENV === 'production' 
+  ? 'https://planing-money.vercel.app/api' 
+  : 'http://localhost:5002/api';
     const [reportData, setReportData] = useState([]);
 
   useEffect(() => {
@@ -24,7 +27,7 @@ const MonthlyReportChart = () => {
 
       try {
         const response = await fetch(
-          `http://localhost:5002/api/monthly-report/${userId}`
+          `${apiURL}/monthly-report/${userId}`
         );
 
         if (response.ok) {
