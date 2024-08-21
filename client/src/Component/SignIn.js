@@ -9,15 +9,18 @@ import {
   DialogContent,
   DialogActions,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const SignIn = ({ onSuccess }) => {
   const apiURL = process.env.NODE_ENV === 'production' 
   ? 'https://planing-money.vercel.app/api' 
   : 'http://localhost:5002/api';
+  
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
+  const navigate = useNavigate(); // เรียกใช้ useNavigate()
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -35,13 +38,15 @@ const SignIn = ({ onSuccess }) => {
         const data = await response.json();
         setMessage(data.message);
         onSuccess(data.message); // ส่งข้อความสำเร็จไปยัง Home
-        window.location.href = '../UserDashboard';
 
-        // บันทึก UserId ลง LocalStorage
+        // บันทึกข้อมูลลง LocalStorage
         const userId = data.userId; // สมมติว่าเซิร์ฟเวอร์ส่งกลับ userId
         const name = data.name;
-        localStorage.setItem('userId', userId); // บันทึก UserId ลง LocalStorage
-        localStorage.setItem('name', name); // บันทึก UserId ลง LocalStorage
+        localStorage.setItem('userId', userId); 
+        localStorage.setItem('name', name);
+
+        // เปลี่ยนเส้นทางไปยัง UserDashboard
+        navigate('/userdashboard'); 
 
         setUsername(''); // เคลียร์ฟอร์ม
         setPassword('');

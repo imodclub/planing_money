@@ -91,8 +91,13 @@ export default function Dashboard() {
 
   useEffect(() => {
     const nameFromLocalStorage = localStorage.getItem('name');
-    setName(nameFromLocalStorage);
-    setShowReport(true);
+    if (!nameFromLocalStorage) {
+      // Redirect to Sign In page if no session found
+      window.location.href = '/signin';
+    } else {
+      setName(nameFromLocalStorage);
+      setShowReport(true);
+    }
   }, []);
 
   const handleUserIncomeFormClick = () => {
