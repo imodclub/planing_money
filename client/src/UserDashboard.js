@@ -24,6 +24,8 @@ import SavingsRatioReport from './Component/SavingsRatioReport';
 import IncomeReport from './Component/IncomeReport';
 import ExpenseReport from './Component/ExpenseReport';
 import SavingsReport from './Component/SavingsReport';
+import EditDeleteItems from './Component/EditDeleteItems';
+import DeleteData from './Component/DeleteData';
 
 const drawerWidth = 260;
 
@@ -84,6 +86,8 @@ export default function Dashboard() {
   const [showIncomeReport, setShowIncomeReport] = useState(false);
   const [showExpenseReport, setShowExpenseReport] = useState(false);
   const [showSavingsReport, setShowSavingsReport] = useState(false);
+  const [showEditDeleteItems, setShowEditDeleteItems] = useState(false);
+  const [showDeleteData, setShowDeleteData] = useState(false);
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -109,7 +113,7 @@ export default function Dashboard() {
     setShowIncomeReport(false);
     setShowExpenseReport(false);
     setShowSavingsReport(false);
-
+    setShowEditDeleteItems(false);
   };
 
   const handleUserExpensesFormClick = () => {
@@ -120,9 +124,9 @@ export default function Dashboard() {
     setShowReport(false);
     setShowIncomeReport(false);
     setShowExpenseReport(false);
-      setShowSavingsReport(false);
-
-
+    setShowSavingsReport(false);
+    setShowEditDeleteItems(false);
+    setShowDeleteData(false);
   };
 
   const handleUserSavingsFormClick = () => {
@@ -132,9 +136,9 @@ export default function Dashboard() {
     setShowSavingsRatioForm(false); // ซ่อน SavingsRatioForm เมื่อแสดง SavingsForm
     setShowReport(false);
     setShowIncomeReport(false);
-      setShowSavingsReport(false);
-      setShowExpenseReport(false);
-
+    setShowSavingsReport(false);
+    setShowExpenseReport(false);
+    setShowEditDeleteItems(false);
   };
 
   const handleUserSavingsRatioFormClick = () => {
@@ -145,8 +149,8 @@ export default function Dashboard() {
     setShowReport(false);
     setShowExpenseReport(false);
     setShowIncomeReport(false);
-      setShowSavingsReport(false);
-
+    setShowSavingsReport(false);
+    setShowDeleteData(false);
   };
 
   const handleUserReportClick = () => {
@@ -157,8 +161,9 @@ export default function Dashboard() {
     setShowSavingsRatioForm(false);
     setShowExpenseReport(false);
     setShowIncomeReport(false);
-      setShowSavingsReport(false);
-
+    setShowSavingsReport(false);
+    setShowEditDeleteItems(false);
+    setShowDeleteData(false);
   };
 
   const handleUserIncomeReportClick = () => {
@@ -170,7 +175,7 @@ export default function Dashboard() {
     setShowReport(false);
     setShowExpenseReport(false);
     setShowSavingsReport(false);
-
+    setShowDeleteData(false);
   };
  
 
@@ -183,7 +188,8 @@ export default function Dashboard() {
       setShowReport(false);
       setShowIncomeReport(false);
       setShowSavingsReport(false);
-
+      setShowEditDeleteItems(false);
+      setShowDeleteData(false);
     };
   
 const handleUserSavingsReportClick = () => {
@@ -195,9 +201,36 @@ const handleUserSavingsReportClick = () => {
   setShowReport(false);
   setShowIncomeReport(false);
   setShowExpenseReport(false);
+  setShowEditDeleteItems(false);
+  setShowDeleteData(false);
 };
 
-
+    const handleEditDeleteItemsClick = () => {
+      setShowEditDeleteItems(true);
+      setShowIncomeForm(false);
+      setShowExpensesForm(false);
+      setShowSavingsForm(false);
+      setShowSavingsRatioForm(false);
+      setShowReport(false);
+      setShowIncomeReport(false);
+      setShowExpenseReport(false);
+      setShowSavingsReport(false);
+      setShowDeleteData(false);
+    };
+  
+  const handleDeleteDataClick = () => {
+    setShowDeleteData(true);
+    setShowIncomeForm(false);
+    setShowExpensesForm(false);
+    setShowSavingsForm(false);
+    setShowSavingsRatioForm(false);
+    setShowReport(false);
+    setShowIncomeReport(false);
+    setShowExpenseReport(false);
+    setShowSavingsReport(false);
+    setShowEditDeleteItems(false);
+  };
+  
   return (
     <ThemeProvider theme={defaultTheme}>
       <Box sx={{ display: 'flex' }}>
@@ -258,6 +291,8 @@ const handleUserSavingsReportClick = () => {
               onUserIncomeReportClick={handleUserIncomeReportClick}
               onUserExpenseReportClick={handleUserExpenseReportClick}
               onUserSavingsReportClick={handleUserSavingsReportClick}
+              onEditDeleteItemsClick={handleEditDeleteItemsClick}
+              onDeleteDataClick={handleDeleteDataClick}
             />
             <Divider sx={{ my: 1 }} />
             <SecondaryListItems />
@@ -300,6 +335,8 @@ const handleUserSavingsReportClick = () => {
                   {showIncomeReport && <IncomeReport />}
                   {showExpenseReport && <ExpenseReport />}
                   {showSavingsReport && <SavingsReport />}
+                  {showEditDeleteItems && <EditDeleteItems />}
+                  {showDeleteData && <DeleteData />}
                 </Paper>
               </Grid>
             </Grid>

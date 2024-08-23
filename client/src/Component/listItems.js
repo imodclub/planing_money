@@ -9,6 +9,8 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import SavingsIcon from '@mui/icons-material/Savings';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const handleSignOut = () => {
   document.cookie.split(';').forEach((c) => {
@@ -30,6 +32,9 @@ export const MainListItems = ({
   onUserIncomeReportClick,
   onUserExpenseReportClick,
   onUserSavingsReportClick,
+  onEditDeleteItemsClick,
+  onClearDataClick,
+  onDeleteDataClick,
 }) => {
   return (
     <React.Fragment>
@@ -80,6 +85,18 @@ export const MainListItems = ({
           <SavingsIcon />
         </ListItemIcon>
         <ListItemText primary="รายงานเงินออม" />
+      </ListItemButton>
+      <ListItemButton onClick={onEditDeleteItemsClick}>
+        <ListItemIcon>
+          <EditIcon />
+        </ListItemIcon>
+        <ListItemText primary="แก้ไขหรือลบรายการ" />
+      </ListItemButton>
+      <ListItemButton onClick={onDeleteDataClick}>
+        <ListItemIcon>
+          <DeleteIcon />
+        </ListItemIcon>
+        <ListItemText primary="ลบข้อมูล" />
       </ListItemButton>
     </React.Fragment>
   );

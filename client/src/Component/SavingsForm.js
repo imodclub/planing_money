@@ -117,10 +117,7 @@ const SavingsForm = () => {
 
           if (data.length > 0) {
             const latestDocument = data[data.length - 1];
-            console.log(
-              'Latest document labels:',
-              latestDocument.items.map((item) => item.label)
-            );
+            
 
             const newSavingsItems = latestDocument.items.map((item) => ({
               label: item.label,

@@ -75,6 +75,46 @@ const IncomeForm = () => {
       return;
     }
 
+    //ดึงข้อมูลที่มีตามวันในฐานข้อมูลออกมาเพื่อแก้ไข
+    const fetchIncomeDataByDate = async (selectedDate) => {
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        console.error('No userId found in LocalStorage');
+        return;
+      }
+
+      try {
+        const formattedDate = selectedDate.format('YYYY-MM-DD');
+        const response = await fetch(
+          `${apiURL}/income-data/${userId}/${formattedDate}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          if (data && data.items) {
+            setIncomeItems(data.items);
+          } else {
+            // ถ้าไม่มีข้อมูลสำหรับวันที่นี้ ให้ตั้งค่าเป็นรายการว่าง
+            setIncomeItems([
+              { label: 'เงินเดือน', amount: '', comment: '' },
+              { label: 'รายได้จากขายสินค้า', amount: '', comment: '' },
+              { label: 'รายได้จากค่าเช่า', amount: '', comment: '' },
+              { label: 'ดอกเบี้ยและเงินปันผล', amount: '', comment: '' },
+            ]);
+          }
+        } else {
+          console.error('Error fetching income data:', response.status);
+        }
+      } catch (error) {
+        console.error('Error fetching income data:', error);
+      }
+    };
+
+    //แก้ไขการดึงวันที่
+    const handleDateChange = (newValue) => {
+      setDate(newValue);
+      fetchIncomeDataByDate(newValue);
+    };
+
     const formattedDate = date.toISOString().split('T')[0];
     const timestamp = new Date().toISOString();
     const response = await fetch(`${apiURL}/save-income`, {
@@ -173,7 +213,7 @@ const IncomeForm = () => {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               value={date}
-              onChange={(newValue) => setDate(newValue)}
+              onChange={(newValue) => setDate(newValue)} 
             />
           </LocalizationProvider>
         </Grid>
