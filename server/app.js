@@ -918,6 +918,32 @@ app.put('/api/update-income-item/:userId/:itemId', async (req, res) => {
   }
 });
 
+
+app.delete('/api/delete-data/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { month } = req.body;
+
+    let query = { userId };
+    if (month !== 'all') {
+      const startDate = new Date(new Date().getFullYear(), month - 1, 1);
+      const endDate = new Date(new Date().getFullYear(), month, 0);
+      query.date = { $gte: startDate, $lte: endDate };
+    }
+
+    await Income.deleteMany(query);
+    await Expense.deleteMany(query);
+    await Saving.deleteMany(query);
+
+    res.json({ success: true, message: 'ลบข้อมูลสำเร็จ' });
+  } catch (error) {
+    console.error('เกิดข้อผิดพลาดในการลบข้อมูล:', error);
+    res
+      .status(500)
+      .json({ success: false, message: 'เกิดข้อผิดพลาดในการลบข้อมูล' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

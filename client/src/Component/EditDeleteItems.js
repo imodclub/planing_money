@@ -62,12 +62,10 @@ const EditDeleteItems = () => {
           console.error('ประเภทรายการไม่ถูกต้อง');
           return;
       }
-      console.log('Fetching from:', endpoint);
 
       const response = await fetch(`${endpoint}?date=${formattedDate}`);
       if (response.ok) {
         const data = await response.json();
-        console.log('API response:', data);
 
         // ค้นหาข้อมูลสำหรับวันที่เลือก
         const selectedDateData = data.find(
@@ -77,10 +75,7 @@ const EditDeleteItems = () => {
         );
 
         if (selectedDateData && Array.isArray(selectedDateData.items)) {
-          console.log(
-            `Found ${type} items for selected date:`,
-            selectedDateData.items
-          );
+          
           setItems(selectedDateData.items);
         } else {
           console.log(`No ${type} items found for selected date`);
@@ -180,7 +175,6 @@ const EditDeleteItems = () => {
       </LocalizationProvider>
 
       <List>
-        {console.log('Rendering items:', items)}
         {items.map((item) => (
           <ListItem key={item._id}>
             <ListItemText

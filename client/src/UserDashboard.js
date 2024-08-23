@@ -25,6 +25,7 @@ import IncomeReport from './Component/IncomeReport';
 import ExpenseReport from './Component/ExpenseReport';
 import SavingsReport from './Component/SavingsReport';
 import EditDeleteItems from './Component/EditDeleteItems';
+import DeleteData from './Component/DeleteData';
 
 const drawerWidth = 260;
 
@@ -86,6 +87,7 @@ export default function Dashboard() {
   const [showExpenseReport, setShowExpenseReport] = useState(false);
   const [showSavingsReport, setShowSavingsReport] = useState(false);
   const [showEditDeleteItems, setShowEditDeleteItems] = useState(false);
+  const [showDeleteData, setShowDeleteData] = useState(false);
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -119,6 +121,7 @@ export default function Dashboard() {
     setShowExpenseReport(false);
     setShowSavingsReport(false);
     setShowEditDeleteItems(false);
+    setShowDeleteData(false);
   };
 
   const handleUserSavingsFormClick = () => {
@@ -131,7 +134,6 @@ export default function Dashboard() {
     setShowSavingsReport(false);
     setShowExpenseReport(false);
     setShowEditDeleteItems(false);
-
   };
 
   const handleUserSavingsRatioFormClick = () => {
@@ -142,8 +144,8 @@ export default function Dashboard() {
     setShowReport(false);
     setShowExpenseReport(false);
     setShowIncomeReport(false);
-      setShowSavingsReport(false);
-
+    setShowSavingsReport(false);
+    setShowDeleteData(false);
   };
 
   const handleUserReportClick = () => {
@@ -156,7 +158,7 @@ export default function Dashboard() {
     setShowIncomeReport(false);
     setShowSavingsReport(false);
     setShowEditDeleteItems(false);
-
+    setShowDeleteData(false);
   };
 
   const handleUserIncomeReportClick = () => {
@@ -168,7 +170,7 @@ export default function Dashboard() {
     setShowReport(false);
     setShowExpenseReport(false);
     setShowSavingsReport(false);
-
+    setShowDeleteData(false);
   };
  
 
@@ -182,7 +184,7 @@ export default function Dashboard() {
       setShowIncomeReport(false);
       setShowSavingsReport(false);
       setShowEditDeleteItems(false);
-
+      setShowDeleteData(false);
     };
   
 const handleUserSavingsReportClick = () => {
@@ -195,7 +197,7 @@ const handleUserSavingsReportClick = () => {
   setShowIncomeReport(false);
   setShowExpenseReport(false);
   setShowEditDeleteItems(false);
-
+  setShowDeleteData(false);
 };
 
     const handleEditDeleteItemsClick = () => {
@@ -208,8 +210,22 @@ const handleUserSavingsReportClick = () => {
       setShowIncomeReport(false);
       setShowExpenseReport(false);
       setShowSavingsReport(false);
+      setShowDeleteData(false);
     };
-
+  
+  const handleDeleteDataClick = () => {
+    setShowDeleteData(true);
+    setShowIncomeForm(false);
+    setShowExpensesForm(false);
+    setShowSavingsForm(false);
+    setShowSavingsRatioForm(false);
+    setShowReport(false);
+    setShowIncomeReport(false);
+    setShowExpenseReport(false);
+    setShowSavingsReport(false);
+    setShowEditDeleteItems(false);
+  };
+  
   return (
     <ThemeProvider theme={defaultTheme}>
       <Box sx={{ display: 'flex' }}>
@@ -271,6 +287,7 @@ const handleUserSavingsReportClick = () => {
               onUserExpenseReportClick={handleUserExpenseReportClick}
               onUserSavingsReportClick={handleUserSavingsReportClick}
               onEditDeleteItemsClick={handleEditDeleteItemsClick}
+              onDeleteDataClick={handleDeleteDataClick}
             />
             <Divider sx={{ my: 1 }} />
             <SecondaryListItems />
@@ -314,6 +331,7 @@ const handleUserSavingsReportClick = () => {
                   {showExpenseReport && <ExpenseReport />}
                   {showSavingsReport && <SavingsReport />}
                   {showEditDeleteItems && <EditDeleteItems />}
+                  {showDeleteData && <DeleteData />}
                 </Paper>
               </Grid>
             </Grid>

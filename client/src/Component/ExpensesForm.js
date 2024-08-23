@@ -128,10 +128,7 @@ const ExpensesForm = () => {
 
           if (data.length > 0) {
             const latestDocument = data[data.length - 1];
-            console.log(
-              'Latest document labels:',
-              latestDocument.items.map((item) => item.label)
-            );
+           
 
             const newExpenseItems = latestDocument.items.map((item) => ({
               label: item.label,
