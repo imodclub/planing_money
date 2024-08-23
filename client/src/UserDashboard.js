@@ -9,13 +9,11 @@ import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import Badge from '@mui/material/Badge';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import { MainListItems, SecondaryListItems } from './Component/listItems';
 import IncomeForm from './Component/IncomeForm';
 import ExpensesForm from './Component/ExpensesForm';
@@ -26,6 +24,7 @@ import SavingsRatioReport from './Component/SavingsRatioReport';
 import IncomeReport from './Component/IncomeReport';
 import ExpenseReport from './Component/ExpenseReport';
 import SavingsReport from './Component/SavingsReport';
+import EditDeleteItems from './Component/EditDeleteItems';
 
 const drawerWidth = 260;
 
@@ -86,6 +85,7 @@ export default function Dashboard() {
   const [showIncomeReport, setShowIncomeReport] = useState(false);
   const [showExpenseReport, setShowExpenseReport] = useState(false);
   const [showSavingsReport, setShowSavingsReport] = useState(false);
+  const [showEditDeleteItems, setShowEditDeleteItems] = useState(false);
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -106,7 +106,7 @@ export default function Dashboard() {
     setShowIncomeReport(false);
     setShowExpenseReport(false);
     setShowSavingsReport(false);
-
+    setShowEditDeleteItems(false);
   };
 
   const handleUserExpensesFormClick = () => {
@@ -117,9 +117,8 @@ export default function Dashboard() {
     setShowReport(false);
     setShowIncomeReport(false);
     setShowExpenseReport(false);
-      setShowSavingsReport(false);
-
-
+    setShowSavingsReport(false);
+    setShowEditDeleteItems(false);
   };
 
   const handleUserSavingsFormClick = () => {
@@ -129,8 +128,9 @@ export default function Dashboard() {
     setShowSavingsRatioForm(false); // ซ่อน SavingsRatioForm เมื่อแสดง SavingsForm
     setShowReport(false);
     setShowIncomeReport(false);
-      setShowSavingsReport(false);
-      setShowExpenseReport(false);
+    setShowSavingsReport(false);
+    setShowExpenseReport(false);
+    setShowEditDeleteItems(false);
 
   };
 
@@ -154,7 +154,8 @@ export default function Dashboard() {
     setShowSavingsRatioForm(false);
     setShowExpenseReport(false);
     setShowIncomeReport(false);
-      setShowSavingsReport(false);
+    setShowSavingsReport(false);
+    setShowEditDeleteItems(false);
 
   };
 
@@ -180,6 +181,7 @@ export default function Dashboard() {
       setShowReport(false);
       setShowIncomeReport(false);
       setShowSavingsReport(false);
+      setShowEditDeleteItems(false);
 
     };
   
@@ -192,8 +194,21 @@ const handleUserSavingsReportClick = () => {
   setShowReport(false);
   setShowIncomeReport(false);
   setShowExpenseReport(false);
+  setShowEditDeleteItems(false);
+
 };
 
+    const handleEditDeleteItemsClick = () => {
+      setShowEditDeleteItems(true);
+      setShowIncomeForm(false);
+      setShowExpensesForm(false);
+      setShowSavingsForm(false);
+      setShowSavingsRatioForm(false);
+      setShowReport(false);
+      setShowIncomeReport(false);
+      setShowExpenseReport(false);
+      setShowSavingsReport(false);
+    };
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -255,6 +270,7 @@ const handleUserSavingsReportClick = () => {
               onUserIncomeReportClick={handleUserIncomeReportClick}
               onUserExpenseReportClick={handleUserExpenseReportClick}
               onUserSavingsReportClick={handleUserSavingsReportClick}
+              onEditDeleteItemsClick={handleEditDeleteItemsClick}
             />
             <Divider sx={{ my: 1 }} />
             <SecondaryListItems />
@@ -297,6 +313,7 @@ const handleUserSavingsReportClick = () => {
                   {showIncomeReport && <IncomeReport />}
                   {showExpenseReport && <ExpenseReport />}
                   {showSavingsReport && <SavingsReport />}
+                  {showEditDeleteItems && <EditDeleteItems />}
                 </Paper>
               </Grid>
             </Grid>

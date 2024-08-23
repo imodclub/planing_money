@@ -638,7 +638,7 @@ app.get('/api/filtered-expenses/:userId', async (req, res) => {
   }
 });
 
-// Endpoint สำหรับดึงข้อมูลgเงินออม
+// Endpoint สำหรับดึงข้อมูลเงินออม
 app.get('/api/total-savings/:userId', async (req, res) => {
   const { userId } = req.params;
   try {
@@ -768,6 +768,153 @@ app.get('/api/filtered-savings/:userId', async (req, res) => {
   } catch (error) {
     console.error('Error fetching filtered savings:', error);
     res.status(500).json({ message: 'Error fetching filtered savings' });
+  }
+});
+
+//ดึงข้อมูลที่มีอยู่ในฐานข้อมูลออกมาแก้ไข
+app.get('/api/income-data/:userId/:date', async (req, res) => {
+  const { userId, date } = req.params;
+  try {
+    const income = await Income.findOne({
+      userId: userId,
+      date: new Date(date),
+    });
+    res.json(income || { items: [] });
+  } catch (error) {
+    console.error('Error fetching income data:', error);
+    res.status(500).json({ message: 'Error fetching income data' });
+  }
+});
+
+//ช่วงแก้ไขและลบข้อมูล
+app.put('/api/update-income-item/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { date, itemId, label, amount, comment } = req.body;
+
+    const result = await Income.findOneAndUpdate(
+      { userId, date, 'items._id': itemId },
+      {
+        $set: {
+          'items.$.label': label,
+          'items.$.amount': amount,
+          'items.$.comment': comment,
+        },
+      },
+      { new: true }
+    );
+
+    if (result) {
+      res.json({ success: true, message: 'รายการรายรับถูกอัปเดตแล้ว' });
+    } else {
+      res
+        .status(404)
+        .json({ success: false, message: 'ไม่พบรายการที่ต้องการอัปเดต' });
+    }
+  } catch (error) {
+    console.error('เกิดข้อผิดพลาดในการอัปเดตรายการรายรับ:', error);
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: 'เกิดข้อผิดพลาดในการอัปเดตรายการรายรับ',
+      });
+  }
+});
+
+// อัปเดตรายการรายจ่าย
+app.put('/api/update-expenses-item/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { date, itemId, label, amount, comment } = req.body;
+
+    const result = await Expense.findOneAndUpdate(
+      { userId, date, 'items._id': itemId },
+      {
+        $set: {
+          'items.$.label': label,
+          'items.$.amount': amount,
+          'items.$.comment': comment,
+        },
+      },
+      { new: true }
+    );
+
+    if (result) {
+      res.json({ success: true, message: 'รายการรายจ่ายถูกอัปเดตแล้ว' });
+    } else {
+      res
+        .status(404)
+        .json({ success: false, message: 'ไม่พบรายการที่ต้องการอัปเดต' });
+    }
+  } catch (error) {
+    console.error('เกิดข้อผิดพลาดในการอัปเดตรายการรายจ่าย:', error);
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: 'เกิดข้อผิดพลาดในการอัปเดตรายการรายจ่าย',
+      });
+  }
+});
+
+// อัปเดตรายการเงินออม
+app.put('/api/update-savings-item/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { date, itemId, label, amount, comment } = req.body;
+
+    const result = await Savings.findOneAndUpdate(
+      { userId, date, 'items._id': itemId },
+      {
+        $set: {
+          'items.$.label': label,
+          'items.$.amount': amount,
+          'items.$.comment': comment,
+        },
+      },
+      { new: true }
+    );
+
+    if (result) {
+      res.json({ success: true, message: 'รายการเงินออมถูกอัปเดตแล้ว' });
+    } else {
+      res
+        .status(404)
+        .json({ success: false, message: 'ไม่พบรายการที่ต้องการอัปเดต' });
+    }
+  } catch (error) {
+    console.error('เกิดข้อผิดพลาดในการอัปเดตรายการเงินออม:', error);
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: 'เกิดข้อผิดพลาดในการอัปเดตรายการเงินออม',
+      });
+  }
+});
+
+app.put('/api/update-income-item/:userId/:itemId', async (req, res) => {
+  try {
+    const { userId, itemId } = req.params;
+    const { amount } = req.body;
+    const result = await Income.findOneAndUpdate(
+      { userId, 'items._id': itemId },
+      { $set: { 'items.$.amount': amount } },
+      { new: true }
+    );
+    if (result) {
+      res.json({ success: true, message: 'รายการถูกอัปเดตแล้ว' });
+    } else {
+      res
+        .status(404)
+        .json({ success: false, message: 'ไม่พบรายการที่ต้องการอัปเดต' });
+    }
+  } catch (error) {
+    console.error('เกิดข้อผิดพลาดในการอัปเดตรายการ:', error);
+    res
+      .status(500)
+      .json({ success: false, message: 'เกิดข้อผิดพลาดในการอัปเดตรายการ' });
   }
 });
 

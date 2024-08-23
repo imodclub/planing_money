@@ -2,7 +2,6 @@ import React from 'react';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import MoneyOffIcon from '@mui/icons-material/MoneyOff';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
@@ -10,6 +9,7 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import SavingsIcon from '@mui/icons-material/Savings';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import EditIcon from '@mui/icons-material/Edit';
 
 const handleSignOut = () => {
   document.cookie.split(';').forEach((c) => {
@@ -31,6 +31,7 @@ export const MainListItems = ({
   onUserIncomeReportClick,
   onUserExpenseReportClick,
   onUserSavingsReportClick,
+  onEditDeleteItemsClick,
 }) => {
   return (
     <React.Fragment>
@@ -81,6 +82,12 @@ export const MainListItems = ({
           <SavingsIcon />
         </ListItemIcon>
         <ListItemText primary="รายงานเงินออม" />
+      </ListItemButton>
+      <ListItemButton onClick={onEditDeleteItemsClick}>
+        <ListItemIcon>
+          <EditIcon />
+        </ListItemIcon>
+        <ListItemText primary="แก้ไขหรือลบรายการ" />
       </ListItemButton>
     </React.Fragment>
   );
