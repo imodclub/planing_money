@@ -864,7 +864,7 @@ app.put('/api/update-savings-item/:userId', async (req, res) => {
     const { userId } = req.params;
     const { date, itemId, label, amount, comment } = req.body;
 
-    const result = await Savings.findOneAndUpdate(
+    const result = await Saving.findOneAndUpdate(
       { userId, date, 'items._id': itemId },
       {
         $set: {
