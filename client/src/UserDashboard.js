@@ -26,6 +26,7 @@ import ExpenseReport from './Component/ExpenseReport';
 import SavingsReport from './Component/SavingsReport';
 import EditDeleteItems from './Component/EditDeleteItems';
 import DeleteData from './Component/DeleteData';
+import FinancialSummary from './Component/FinancialSummary';
 
 const drawerWidth = 260;
 
@@ -325,7 +326,8 @@ const handleUserSavingsReportClick = () => {
                   </Typography>
                   {showReport && (
                     <>
-                      <MonthlyReportChart /> <SavingsRatioReport />
+                      <MonthlyReportChart /> <FinancialSummary />
+                       <SavingsRatioReport />
                     </>
                   )}
                   {showIncomeForm && <IncomeForm />}
