@@ -89,6 +89,8 @@ export default function Dashboard() {
   const [showSavingsReport, setShowSavingsReport] = useState(false);
   const [showEditDeleteItems, setShowEditDeleteItems] = useState(false);
   const [showDeleteData, setShowDeleteData] = useState(false);
+  const [iframeHeight, setIframeHeight] = useState(window.innerHeight);
+  const [iframeWidth, setIframeWidth] = useState(window.innerWidth);
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -226,120 +228,137 @@ const handleUserSavingsReportClick = () => {
     setShowSavingsReport(false);
     setShowEditDeleteItems(false);
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIframeHeight(window.innerHeight);
+      setIframeWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
   
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Box sx={{ display: 'flex' }}>
-        <CssBaseline />
-        <AppBar position="absolute" open={open}>
-          <Toolbar
-            sx={{
-              pr: '24px',
-            }}
-          >
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              onClick={toggleDrawer}
+      <div style={{ height: iframeHeight, width: iframeWidth }}>
+        <Box sx={{ display: 'flex' }}>
+          <CssBaseline />
+          <AppBar position="absolute" open={open}>
+            <Toolbar
               sx={{
-                marginRight: '36px',
-                ...(open && { display: 'none' }),
+                pr: '24px',
               }}
             >
-              <MenuIcon />
-            </IconButton>
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              sx={{ flexGrow: 1 }}
+              <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="open drawer"
+                onClick={toggleDrawer}
+                sx={{
+                  marginRight: '36px',
+                  ...(open && { display: 'none' }),
+                }}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography
+                component="h1"
+                variant="h6"
+                color="inherit"
+                noWrap
+                sx={{ flexGrow: 1 }}
+              >
+                สวัสดี คุณ {name}
+              </Typography>
+              <Typography variant="overline" display="block" gutterBottom>
+                version 1.0
+              </Typography>
+            </Toolbar>
+          </AppBar>
+          <Drawer variant="permanent" open={open}>
+            <Toolbar
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                px: [1],
+              }}
             >
-              สวัสดี คุณ {name}
-            </Typography>
-            <Typography variant="overline" display="block" gutterBottom>
-              version 1.0
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <Drawer variant="permanent" open={open}>
-          <Toolbar
+              <IconButton onClick={toggleDrawer}>
+                <ChevronLeftIcon />
+              </IconButton>
+            </Toolbar>
+            <Divider />
+            <List component="nav">
+              <MainListItems
+                onUserIncomeFormClick={handleUserIncomeFormClick}
+                onUserExpensesFormClick={handleUserExpensesFormClick}
+                onUserSavingsFormClick={handleUserSavingsFormClick}
+                onUserSavingsRatioFormClick={handleUserSavingsRatioFormClick} // ส่ง prop สำหรับเรียกใช้ SavingsRatioForm
+                onUserReportClick={handleUserReportClick}
+                onUserIncomeReportClick={handleUserIncomeReportClick}
+                onUserExpenseReportClick={handleUserExpenseReportClick}
+                onUserSavingsReportClick={handleUserSavingsReportClick}
+                onEditDeleteItemsClick={handleEditDeleteItemsClick}
+                onDeleteDataClick={handleDeleteDataClick}
+              />
+              <Divider sx={{ my: 1 }} />
+              <SecondaryListItems />
+            </List>
+          </Drawer>
+          <Box
+            component="main"
             sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              px: [1],
+              backgroundColor: (theme) =>
+                theme.palette.mode === 'light'
+                  ? theme.palette.grey[100]
+                  : theme.palette.grey[900],
+              flexGrow: 1,
+              height: '100vh',
+              overflow: 'auto',
             }}
           >
-            <IconButton onClick={toggleDrawer}>
-              <ChevronLeftIcon />
-            </IconButton>
-          </Toolbar>
-          <Divider />
-          <List component="nav">
-            <MainListItems
-              onUserIncomeFormClick={handleUserIncomeFormClick}
-              onUserExpensesFormClick={handleUserExpensesFormClick}
-              onUserSavingsFormClick={handleUserSavingsFormClick}
-              onUserSavingsRatioFormClick={handleUserSavingsRatioFormClick} // ส่ง prop สำหรับเรียกใช้ SavingsRatioForm
-              onUserReportClick={handleUserReportClick}
-              onUserIncomeReportClick={handleUserIncomeReportClick}
-              onUserExpenseReportClick={handleUserExpenseReportClick}
-              onUserSavingsReportClick={handleUserSavingsReportClick}
-              onEditDeleteItemsClick={handleEditDeleteItemsClick}
-              onDeleteDataClick={handleDeleteDataClick}
-            />
-            <Divider sx={{ my: 1 }} />
-            <SecondaryListItems />
-          </List>
-        </Drawer>
-        <Box
-          component="main"
-          sx={{
-            backgroundColor: (theme) =>
-              theme.palette.mode === 'light'
-                ? theme.palette.grey[100]
-                : theme.palette.grey[900],
-            flexGrow: 1,
-            height: '100vh',
-            overflow: 'auto',
-          }}
-        >
-          <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <Typography
-                    component="h2"
-                    variant="h6"
-                    color="primary"
-                    gutterBottom
+            <Toolbar />
+            <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <Paper
+                    sx={{ p: 2, display: 'flex', flexDirection: 'column' }}
                   >
-                    ข้อมูลทางการเงินของคุณ
-                  </Typography>
-                  {showReport && (
-                    <>
-                      <MonthlyReportChart /> <FinancialSummary />
-                       <SavingsRatioReport />
-                    </>
-                  )}
-                  {showIncomeForm && <IncomeForm />}
-                  {showExpensesForm && <ExpensesForm />}
-                  {showSavingsForm && <SavingsForm />}
-                  {showSavingsRatioForm && <SavingsRatioForm />}
-                  {showIncomeReport && <IncomeReport />}
-                  {showExpenseReport && <ExpenseReport />}
-                  {showSavingsReport && <SavingsReport />}
-                  {showEditDeleteItems && <EditDeleteItems />}
-                  {showDeleteData && <DeleteData />}
-                </Paper>
+                    <Typography
+                      component="h2"
+                      variant="h6"
+                      color="primary"
+                      gutterBottom
+                    >
+                      ข้อมูลทางการเงินของคุณ
+                    </Typography>
+                    {showReport && (
+                      <>
+                        <MonthlyReportChart /> <FinancialSummary />
+                        <SavingsRatioReport />
+                      </>
+                    )}
+                    {showIncomeForm && <IncomeForm />}
+                    {showExpensesForm && <ExpensesForm />}
+                    {showSavingsForm && <SavingsForm />}
+                    {showSavingsRatioForm && <SavingsRatioForm />}
+                    {showIncomeReport && <IncomeReport />}
+                    {showExpenseReport && <ExpenseReport />}
+                    {showSavingsReport && <SavingsReport />}
+                    {showEditDeleteItems && <EditDeleteItems />}
+                    {showDeleteData && <DeleteData />}
+                  </Paper>
+                </Grid>
               </Grid>
-            </Grid>
-          </Container>
+            </Container>
+          </Box>
         </Box>
-      </Box>
+      </div>
     </ThemeProvider>
   );
 }
