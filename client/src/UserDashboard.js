@@ -28,7 +28,7 @@ import EditDeleteItems from './Component/EditDeleteItems';
 import DeleteData from './Component/DeleteData';
 import FinancialSummary from './Component/FinancialSummary';
 
-const drawerWidth = 260;
+const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
@@ -77,7 +77,7 @@ const Drawer = styled(MuiDrawer, {
 const defaultTheme = createTheme();
 
 export default function Dashboard() {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
   const [showIncomeForm, setShowIncomeForm] = useState(false);
   const [showExpensesForm, setShowExpensesForm] = useState(false);
