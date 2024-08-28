@@ -42,7 +42,7 @@ export const MainListItems = ({
         <ListItemIcon>
           <AssessmentIcon />
         </ListItemIcon>
-        <ListItemText primary="รายงานทางการเงินของคุณ" />
+        <ListItemText primary="รายงานทางการเงิน" />
       </ListItemButton>
       <ListItemButton onClick={onUserIncomeFormClick}>
         <ListItemIcon>
