@@ -72,8 +72,11 @@ const Signup = ({ onSuccess }) => {
         sx={{ maxWidth: { xs: 345, sm: 452, md: 568 } }}
       />
       <TextField
+        margin="normal"
+        fullWidth
         label="Email"
         type="email"
+        id="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         required
