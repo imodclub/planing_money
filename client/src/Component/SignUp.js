@@ -6,6 +6,7 @@ const Signup = ({ onSuccess }) => {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
   const [open, setOpen] = useState(false); // State สำหรับเปิด/ปิด Dialog
   const [message, setMessage] = useState(''); // State สำหรับข้อความใน Dialog
 
