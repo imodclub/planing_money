@@ -27,6 +27,7 @@ import SavingsReport from './Component/SavingsReport';
 import EditDeleteItems from './Component/EditDeleteItems';
 import DeleteData from './Component/DeleteData';
 import FinancialSummary from './Component/FinancialSummary';
+import MyAd from './Component/MyAd';
 
 const drawerWidth = 240;
 
@@ -352,6 +353,10 @@ const handleUserSavingsReportClick = () => {
                     {showSavingsReport && <SavingsReport />}
                     {showEditDeleteItems && <EditDeleteItems />}
                     {showDeleteData && <DeleteData />}
+                  </Paper>
+                  <Paper
+                    sx={{ p: 2, display: 'flex', flexDirection: 'column' }}
+                  ><MyAd />
                   </Paper>
                 </Grid>
               </Grid>
