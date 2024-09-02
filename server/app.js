@@ -32,10 +32,10 @@ app.use(cookieParser());
 
 // Route สำหรับการลงทะเบียน
 app.post('/api/signup', async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, email } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ name: username, password : hashedPassword });
+    const newUser = new User({ name: username, password : hashedPassword, email:email });
     await newUser.save();
     res.status(201).json({ message: 'ลงทะเบียนสำเร็จ' });
   } catch (error) {

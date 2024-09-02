@@ -17,7 +17,7 @@ const Signup = ({ onSuccess }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password, email }),
       });
 
       if (response.ok) {
@@ -68,6 +68,14 @@ const Signup = ({ onSuccess }) => {
         id="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        sx={{ maxWidth: { xs: 345, sm: 452, md: 568 } }}
+      />
+      <TextField
+        label="Email"
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
         sx={{ maxWidth: { xs: 345, sm: 452, md: 568 } }}
       />
 
