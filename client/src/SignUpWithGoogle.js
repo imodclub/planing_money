@@ -3,12 +3,14 @@ import { GoogleLogin, googleLogout } from '@react-oauth/google';
 import { Button } from '@mui/material';
 import { jwtDecode } from 'jwt-decode'
 import apiURL from './config/Config';
+import { useNavigate } from 'react-router-dom';
 
 const SignInButton = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
 
   const onSuccess = async (credentialResponse) => {
+    const navigate = useNavigate();
     console.log('Login Success:', credentialResponse);
 
     // Decode the JWT token to get user information
@@ -56,7 +58,7 @@ const SignInButton = () => {
           alert(message);
         }
 
-        window.location.href = '/userdashboard';
+        navigate('/userdashboard');
       } else {
         console.error("No userId returned from server");
       }
