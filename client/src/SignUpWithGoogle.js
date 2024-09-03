@@ -8,9 +8,9 @@ import { useNavigate } from 'react-router-dom';
 const SignInButton = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
+  const navigate = useNavigate();
 
   const onSuccess = async (credentialResponse) => {
-    const navigate = useNavigate();
     console.log('Login Success:', credentialResponse);
 
     // Decode the JWT token to get user information
