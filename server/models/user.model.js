@@ -23,24 +23,8 @@ const userSchema = new mongoose.Schema(
       default: Date.now,
     },
   },
-<<<<<<< HEAD
-  password: {
-    type: String,
-    required: true
-  },
-  email: {
-    type: String,
-    require:true
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-},{ collection: 'users' });
-=======
   { collection: 'users' }
 );
->>>>>>> development
 
 const User = mongoose.model('User', userSchema);
 

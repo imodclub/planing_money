@@ -27,8 +27,8 @@ const SignInButton = () => {
 
     try {
       const userData = {
-        email: decoded.email,
-        name: decoded.name,
+        "email": decoded.email,
+        "name": decoded.name,
       };
 
       const response = await fetch(`${apiURL}/google-signin`, {
