@@ -50,6 +50,7 @@ const SignInButton = () => {
       if (userId) {
         localStorage.setItem("userId", userId);
         localStorage.setItem("name", decoded.name);
+        sessionStorage.setItem('name', decoded.name);
 
         if (message) {
           alert(message);
