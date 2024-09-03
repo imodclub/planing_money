@@ -944,6 +944,57 @@ app.delete('/api/delete-data/:userId', async (req, res) => {
   }
 });
 
+app.post('/api/forgot-password', async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return res.status(404).send('User not found');
+  }
+
+  const token = crypto.randomBytes(32).toString('hex');
+  user.resetPasswordToken = token;
+  user.resetPasswordExpires = Date.now() + 3 * 24 * 60 * 60 * 1000; // 3 วัน
+  await user.save();
+
+  const transporter = nodemailer.createTransport({
+    /* SMTP configuration */
+  });
+  const mailOptions = {
+    to: user.email,
+    subject: 'Password Reset',
+    text: `Click the link to reset your password: http://yourapp.com/reset-password/${token}`,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return res.status(500).send('Error sending email');
+    }
+    res.send('Email sent');
+  });
+});
+
+app.post('/api/reset-password/:token', async (req, res) => {
+  const { token } = req.params;
+  const { password } = req.body;
+
+  const user = await User.findOne({
+    resetPasswordToken: token,
+    resetPasswordExpires: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    return res.status(400).send('Invalid or expired token');
+  }
+
+  user.password = password; // ควรแฮชรหัสผ่านก่อนบันทึก
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpires = undefined;
+  await user.save();
+
+  res.send('Password updated');
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
