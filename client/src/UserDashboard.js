@@ -99,6 +99,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     const nameFromLocalStorage = localStorage.getItem('name');
+    const sessionName = sessionStorage.getItem('name');
     if (!nameFromLocalStorage) {
       // Redirect to Sign In page if no session found
       window.location.href = '/signin';
