@@ -40,7 +40,7 @@ const SignInButton = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
 
       const data = await response.json();
@@ -48,8 +48,8 @@ const SignInButton = () => {
 
       // ตรวจสอบว่ามี userId ก่อนบันทึกลง localStorage
       if (userId) {
-        localStorage.setItem('userId', userId);
-        localStorage.setItem('name', decoded.name);
+        localStorage.setItem("userId", userId);
+        localStorage.setItem("name", decoded.name);
 
         if (message) {
           alert(message);
@@ -57,22 +57,22 @@ const SignInButton = () => {
 
         window.location.href = '/userdashboard';
       } else {
-        console.error('No userId returned from server');
+        console.error("No userId returned from server");
       }
     } catch (error) {
-      console.error('Error signing in with Google:', error);
+      console.error("Error signing in with Google:", error);
     }
   };
 
 const onError = () => {
-  console.log('Login Failed');
+  console.log("Login Failed");
 };
 
 const handleSignOut = () => {
   googleLogout(); // Use googleLogout to clear the session
   setIsLoggedIn(false);
   setUserProfile(null);
-  console.log('User signed out.');
+  console.log("User signed out.");
 };
 
 return (
