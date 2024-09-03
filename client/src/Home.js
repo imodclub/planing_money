@@ -5,46 +5,38 @@ import {
   CardContent,
   CardHeader,
   Typography,
-  Button,
-  Box,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
+ 
 } from '@mui/material';
-import Signup from './Component/SignUp';
-import SignIn from './Component/SignIn';
+import { Link } from 'react-router-dom';
+import SignInButton from './SignUpWithGoogle';
 
 const Home = () => {
-  const [successMessage, setSuccessMessage] = useState('');
-  const [isSignIn, setIsSignIn] = useState(true);
-  const [dialogOpen, setDialogOpen] = useState(false);
+ 
 
-  const handleSignupSuccess = (message) => {
-    setSuccessMessage(message);
-    setDialogOpen(true); // เปิด dialog หลังจากลงทะเบียนสำเร็จ
-  };
-
-  const handleSignInSuccess = (message) => {
-    alert(message); // แสดงข้อความเมื่อการลงชื่อใช้งานสำเร็จ
-  };
-
-  const handleDialogClose = () => {
-    setDialogOpen(false);
-    setIsSignIn(true); // กลับไปที่ Card เข้าสู่ระบบ
-  };
+  
 
   return (
     <Grid
       container
       justifyContent="center"
       alignItems="center"
-      style={{ minHeight: '100vh' }}
+      style={{ minHeight: '50vh' }}
     >
-      {isSignIn ? (
-        <Card sx={{ width: 300, padding: 2 }}>
-          <CardHeader title="เข้าสู่ระบบ" />
+      <Card sx={{ width: 300, padding: 1 }}>
+        <CardHeader title="" />
+        <CardContent>
+          <SignInButton
+            justifyContent="center"
+            alignItems="center"
+            style={{ minHeight: '50vh' }}
+          />
+        </CardContent>
+      </Card>
+      <Grid container justifyContent="center" alignItems="center">
+        <Card sx={{ width: 300, padding: 1 }}>
+          <CardHeader title="สำหรับผู้ใช้งานใหม่และเก่า สามารถ Sign In ด้วย Google ได้เลย" />
           <CardContent>
+<<<<<<< HEAD
             <SignIn onSuccess={handleSignInSuccess} />
             <Box mt={2}>
               <Typography
@@ -75,30 +67,30 @@ const Home = () => {
                 {successMessage}
               </Typography>
             )}
+=======
+>>>>>>> development
             <Typography
               variant="body2"
               color="textSecondary"
               align="center"
-              mt={2}
+              mt={1}
             >
-              <Button color="secondary" onClick={() => setIsSignIn(true)}>
-                กลับไปหน้าหลัก
-              </Button>
+              ระบบจัดเก็บข้อมูล Email และ ชื่อ ไว้เพื่อการเข้าใช้งานระบบเท่านั้น
+            </Typography>
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              align="center"
+              mt={1}
+            >
+              ลิงค์สำหรับเข้าระบบบัญชีแบบเดิม{' '}
+              <nav>
+                <Link to="/oldsignin">เข้าระบบแบบเดิม</Link>
+              </nav>
             </Typography>
           </CardContent>
         </Card>
-      )}
-      <Dialog open={dialogOpen} onClose={handleDialogClose}>
-        <DialogTitle>ลงทะเบียนสำเร็จ</DialogTitle>
-        <DialogContent>
-          <Typography>คุณได้ลงทะเบียนสำเร็จแล้ว</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose} color="primary">
-            ตกลง
-          </Button>
-        </DialogActions>
-      </Dialog>
+      </Grid>
     </Grid>
   );
 };

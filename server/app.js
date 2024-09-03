@@ -10,6 +10,9 @@ const Saving = require('./models/saving.model');
 const SavingsRatio = require('./models/savingsRatio.model');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
+require('dotenv').config();
+
 
 require('dotenv').config();
 
@@ -941,6 +944,36 @@ app.delete('/api/delete-data/:userId', async (req, res) => {
     res
       .status(500)
       .json({ success: false, message: 'เกิดข้อผิดพลาดในการลบข้อมูล' });
+  }
+});
+
+app.post('/api/google-signin', async (req, res) => {
+  const { email, name } = req.body;
+  console.log("Received data from client:", req.body);
+
+  try {
+    let user = await User.findOne({ email });
+
+    if (user) {
+      return res.status(200).json({ userId: user._id, message: null });
+    } else {
+      const newUser = new User({
+        name,
+        email,
+        userId: new mongoose.Types.ObjectId(),
+      }); // สร้าง ObjectId ใหม่
+      await newUser.save();
+      return res
+        .status(201)
+        .json({
+          userId: newUser._id,
+          message:
+            'คุณได้สร้าง user ใหม่ในระบบ ระบบจะทำการจัดเก็บ ชื่อ และ email ของคุณเพื่อใช้ในการเข้าใช้งานครั้งต่อไป',
+        });
+    }
+  } catch (error) {
+    console.error('Error during Google sign-in:', error);
+    res.status(500).json({ message: 'เกิดข้อผิดพลาดในการลงชื่อใช้งานด้วย Google' });
   }
 });
 

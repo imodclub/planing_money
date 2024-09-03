@@ -11,6 +11,7 @@ import SavingsIcon from '@mui/icons-material/Savings';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { googleLogout } from '@react-oauth/google';
 
 const handleSignOut = () => {
   document.cookie.split(';').forEach((c) => {
@@ -20,6 +21,7 @@ const handleSignOut = () => {
   });
   localStorage.removeItem('userId');
   localStorage.removeItem('name');
+  googleLogout(); // Use googleLogout to clear the session
   window.location.href = '/';
 };
 
