@@ -10,6 +10,8 @@ const Saving = require('./models/saving.model');
 const SavingsRatio = require('./models/savingsRatio.model');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
+const cryptoRandomString = require('crypto-random-string');
+
 
 require('dotenv').config();
 
@@ -952,7 +954,7 @@ app.post('/api/forgot-password', async (req, res) => {
     return res.status(404).send('User not found');
   }
 
-  const token = crypto.randomBytes(32).toString('hex');
+  const token = cryptoRandomString({ length: 32 });
   user.resetPasswordToken = token;
   user.resetPasswordExpires = Date.now() + 3 * 24 * 60 * 60 * 1000; // 3 วัน
   await user.save();

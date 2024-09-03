@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button, Typography } from '@mui/material';
+import apiURL from './config/Config';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -7,7 +8,7 @@ const ForgotPassword = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     // ส่งข้อมูลอีเมลไปยัง backend
-    await fetch('/api/forgot-password', {
+    await fetch(`${apiURL}/forgot-password`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email }),

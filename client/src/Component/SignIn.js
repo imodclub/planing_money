@@ -19,7 +19,6 @@ const SignIn = ({ onSuccess }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log('Submitting:', { username, password });
 
     try {
       const response = await fetch(`${apiURL}/signin`, {
