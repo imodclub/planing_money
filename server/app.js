@@ -10,7 +10,9 @@ const Saving = require('./models/saving.model');
 const SavingsRatio = require('./models/savingsRatio.model');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
-const cryptoRandomString = require('crypto-random-string');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
+require('dotenv').config();
 
 
 require('dotenv').config();
@@ -946,55 +948,24 @@ app.delete('/api/delete-data/:userId', async (req, res) => {
   }
 });
 
-app.post('/api/forgot-password', async (req, res) => {
-  const { email } = req.body;
-  const user = await User.findOne({ email });
+app.post('/api/google-signin', async (req, res) => {
+  const { email, name } = req.body;
+  console.log("Received data from client:", req.body);
 
-  if (!user) {
-    return res.status(404).send('User not found');
-  }
+  try {
+    let user = await User.findOne({ email });
 
-  const token = cryptoRandomString({ length: 32 });
-  user.resetPasswordToken = token;
-  user.resetPasswordExpires = Date.now() + 3 * 24 * 60 * 60 * 1000; // 3 วัน
-  await user.save();
-
-  const transporter = nodemailer.createTransport({
-    /* SMTP configuration */
-  });
-  const mailOptions = {
-    to: user.email,
-    subject: 'Password Reset',
-    text: `Click the link to reset your password: http://yourapp.com/reset-password/${token}`,
-  };
-
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      return res.status(500).send('Error sending email');
+    if (user) {
+      return res.status(200).json({ userId: user._id, message: null });
+    } else {
+      user = new User({ name, email });
+      await user.save();
+      return res.status(201).json({ userId: user._id, message: 'คุณได้สร้าง user ใหม่ในระบบ ระบบจะทำการจัดเก็บ ชื่อ และ email ของคุณเพื่อใช้ในการเข้าใช้งานครั้งต่อไป' });
     }
-    res.send('Email sent');
-  });
-});
-
-app.post('/api/reset-password/:token', async (req, res) => {
-  const { token } = req.params;
-  const { password } = req.body;
-
-  const user = await User.findOne({
-    resetPasswordToken: token,
-    resetPasswordExpires: { $gt: Date.now() },
-  });
-
-  if (!user) {
-    return res.status(400).send('Invalid or expired token');
+  } catch (error) {
+    console.error('Error during Google sign-in:', error);
+    res.status(500).json({ message: 'เกิดข้อผิดพลาดในการลงชื่อใช้งานด้วย Google' });
   }
-
-  user.password = password; // ควรแฮชรหัสผ่านก่อนบันทึก
-  user.resetPasswordToken = undefined;
-  user.resetPasswordExpires = undefined;
-  await user.save();
-
-  res.send('Password updated');
 });
 
 app.listen(PORT, () => {
