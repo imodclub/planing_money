@@ -28,7 +28,7 @@ const SignInButton = () => {
     try {
       const userData = {
         email: decoded.email,
-        name: decoded.name
+        name: decoded.name,
       };
 
       const response = await fetch(`${apiURL}/google-signin`, {
@@ -39,7 +39,6 @@ const SignInButton = () => {
         body: JSON.stringify(userData),
       });
 
-      // ตรวจสอบการตอบกลับจากเซิร์ฟเวอร์
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -47,15 +46,19 @@ const SignInButton = () => {
       const data = await response.json();
       const { userId, message } = data;
 
-      // บันทึก userId ลงใน localStorage หลังจากได้รับการตอบกลับจากเซิร์ฟเวอร์
-      localStorage.setItem('userId', userId);
-      localStorage.setItem('name', decoded.name);
+      // ตรวจสอบว่ามี userId ก่อนบันทึกลง localStorage
+      if (userId) {
+        localStorage.setItem('userId', userId);
+        localStorage.setItem('name', decoded.name);
 
-      if (message) {
-        alert(message);
+        if (message) {
+          alert(message);
+        }
+
+        window.location.href = '/userdashboard';
+      } else {
+        console.error('No userId returned from server');
       }
-
-      window.location.href = '/userdashboard';
     } catch (error) {
       console.error('Error signing in with Google:', error);
     }

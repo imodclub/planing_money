@@ -10,7 +10,6 @@ const Saving = require('./models/saving.model');
 const SavingsRatio = require('./models/savingsRatio.model');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
-const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 
@@ -958,9 +957,19 @@ app.post('/api/google-signin', async (req, res) => {
     if (user) {
       return res.status(200).json({ userId: user._id, message: null });
     } else {
-      user = new User({ name, email });
-      await user.save();
-      return res.status(201).json({ userId: user._id, message: 'คุณได้สร้าง user ใหม่ในระบบ ระบบจะทำการจัดเก็บ ชื่อ และ email ของคุณเพื่อใช้ในการเข้าใช้งานครั้งต่อไป' });
+      const newUser = new User({
+        name,
+        email,
+        userId: new mongoose.Types.ObjectId(),
+      }); // สร้าง ObjectId ใหม่
+      await newUser.save();
+      return res
+        .status(201)
+        .json({
+          userId: newUser._id,
+          message:
+            'คุณได้สร้าง user ใหม่ในระบบ ระบบจะทำการจัดเก็บ ชื่อ และ email ของคุณเพื่อใช้ในการเข้าใช้งานครั้งต่อไป',
+        });
     }
   } catch (error) {
     console.error('Error during Google sign-in:', error);

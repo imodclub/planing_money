@@ -5,10 +5,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import Home from './Home';
 import UserDashboard from './UserDashboard';
-import ForgotPassword from './ForgotPassword';
-import ResetPassword from './ResetPassword';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import SignUpWithGoogle from './SignUpWithGoogle';
+import OldSignin from './OldSignin';
 
 const App = () => {
   return (
@@ -18,9 +17,8 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/userdashboard" element={<UserDashboard />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route pate="/reset-password" element={<ResetPassword />} /> 
-          <Route path="/signupwithgoogle" element={<SignUpWithGoogle />} />
+            <Route path="/signupwithgoogle" element={<SignUpWithGoogle />} />
+            <Route path='/oldsignin' element={<OldSignin />} />
         </Routes>
       </LocalizationProvider>
     </Router>
