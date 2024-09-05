@@ -51,8 +51,13 @@ const Home = () => {
           </CardContent>
         </Card>
       </Grid>
-      <Grid container justifyContent="center" alignItems="center">
-        <Paper>
+      <Grid
+        container
+        justifyContent="center"
+        alignItems="center"
+        style={{ minHeight: '50vh' }}
+      >
+        <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
           <SignInButton
             justifyContent="center"
             alignItems="center"
