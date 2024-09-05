@@ -25,14 +25,6 @@ const Home = () => {
       alignItems="center"
       style={{ minHeight: '50vh' }}
     >
-      
-        <Paper>
-          <SignInButton
-            justifyContent="center"
-            alignItems="center"
-            style={{ minHeight: '50vh' }}
-          />
-        </Paper>
       <Grid container justifyContent="center" alignItems="center">
         <Card sx={{ width: 300, padding: 1 }}>
           <CardHeader title="สำหรับผู้ใช้งานใหม่และเก่า สามารถ Sign In ด้วย Google ได้เลย" />
@@ -58,6 +50,15 @@ const Home = () => {
             </Typography>
           </CardContent>
         </Card>
+      </Grid>
+      <Grid container justifyContent="center" alignItems="center">
+        <Paper>
+          <SignInButton
+            justifyContent="center"
+            alignItems="center"
+            style={{ minHeight: '50vh' }}
+          />
+        </Paper>
       </Grid>
       <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
         <MyAd />
