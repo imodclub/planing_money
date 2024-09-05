@@ -14,16 +14,12 @@ import MyAd from './Component/MyAd';
 
 
 const Home = () => {
- 
-
-  
-
   return (
     <Grid
       container
       justifyContent="center"
       alignItems="center"
-      style={{ minHeight: '50vh' }}
+      style={{ minHeight: '50vh', position: 'relative' }}
     >
       <Grid container justifyContent="center" alignItems="center">
         <Card sx={{ width: 300, padding: 1 }}>
@@ -65,9 +61,24 @@ const Home = () => {
           />
         </Paper>
       </Grid>
-      
-      <footer style={{ position: 'absolute', bottom: 0, width: '100%' }}>
-        <MyAd />
+
+      <footer
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          width: '100%',
+          textAlign: 'center',
+        }}
+      >
+        <div
+          style={{
+            display: 'inline-block',
+            maxWidth: '300px',
+            margin: '0 auto',
+          }}
+        >
+          <MyAd />
+        </div>
       </footer>
     </Grid>
   );
