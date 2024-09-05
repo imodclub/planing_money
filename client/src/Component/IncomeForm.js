@@ -1,6 +1,5 @@
 // components/IncomeForm.js
-import React, { useState, useEffect, useRef } from 'react';
-import '../CSS/IncomeForm.css';
+import React, { useState, useEffect,useRef } from 'react';
 import {
   Box,
   TextField,
@@ -200,7 +199,7 @@ const IncomeForm = () => {
   };
 
   return (
-    <Box className="income-form-container">
+    <Box sx={{ padding: 2 }}>
       <Typography variant="h6" gutterBottom>
         บันทึกรายได้
       </Typography>
