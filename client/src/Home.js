@@ -5,10 +5,13 @@ import {
   CardContent,
   CardHeader,
   Typography,
+  Paper,
  
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import SignInButton from './SignUpWithGoogle';
+import MyAd from './Component/MyAd';
+
 
 const Home = () => {
  
@@ -22,16 +25,14 @@ const Home = () => {
       alignItems="center"
       style={{ minHeight: '50vh' }}
     >
-      <Card sx={{ width: 300, padding: 1 }}>
-        <CardHeader title="" />
-        <CardContent>
+      
+        <Paper>
           <SignInButton
             justifyContent="center"
             alignItems="center"
             style={{ minHeight: '50vh' }}
           />
-        </CardContent>
-      </Card>
+        </Paper>
       <Grid container justifyContent="center" alignItems="center">
         <Card sx={{ width: 300, padding: 1 }}>
           <CardHeader title="สำหรับผู้ใช้งานใหม่และเก่า สามารถ Sign In ด้วย Google ได้เลย" />
@@ -58,6 +59,9 @@ const Home = () => {
           </CardContent>
         </Card>
       </Grid>
+      <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+        <MyAd />
+      </Paper>
     </Grid>
   );
 };
