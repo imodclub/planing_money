@@ -1,0 +1,39 @@
+/* IncomeForm.css */
+
+/* จัดการการแสดงผลของฟอร์มให้เป็นคอลัมน์บนมือถือ */
+.income-form-container {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+}
+
+@media (min-width: 768px) {
+
+    /* จัดการการแสดงผลของฟอร์มให้เป็นแถวเมื่อหน้าจอใหญ่ขึ้น */
+    .income-form-container {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
+
+.text-field {
+    margin-bottom: 16px;
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .text-field {
+        width: 48%;
+    }
+}
+
+.button {
+    width: 100%;
+    margin-top: 16px;
+}
+
+@media (min-width: 768px) {
+    .button {
+        width: auto;
+    }
+}
