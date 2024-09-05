@@ -65,9 +65,10 @@ const Home = () => {
           />
         </Paper>
       </Grid>
-      <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+      
+      <footer style={{ position: 'absolute', bottom: 0, width: '100%' }}>
         <MyAd />
-      </Paper>
+      </footer>
     </Grid>
   );
 };
