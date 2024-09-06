@@ -25,10 +25,7 @@ const PORT = process.env.PORT || 5002;
 connectDB();
 
 app.use(
-  cors({
-    origin: '*', // หรือ URL ของ client ของคุณ
-    credentials: true,
-  })
+  cors()
 );
 app.use(express.json());
 app.use(bodyParser.json());
