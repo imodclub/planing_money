@@ -48,7 +48,7 @@ app.post('/api/signup', async (req, res) => {
 // server/app.js
 app.post('/api/signin', async (req, res) => {
   const { username, password } = req.body;
-  console.log('Cookie จาก sigin api', req.cookies);
+  console.log('Cookie จาก sigin api บน server : ', req.cookies);
 
   try {
     const user = await User.findOne({ name: username });
@@ -72,8 +72,8 @@ app.post('/api/signin', async (req, res) => {
     res.cookie('session', sessionId, {
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // หมดอายุใน 7 วัน
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // ใช้ secure ใน production
-      sameSite: 'lax',
+      secure: true, // ใช้ secure ใน production
+      sameSite: 'none',
     });
 
     res.status(200).json({
