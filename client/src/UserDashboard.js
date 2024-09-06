@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -113,46 +113,29 @@ export default function Dashboard() {
   }, []);
   /----------Code เดิม---------*/
 
-  const fetchUserData = useCallback(async (sessionId) => {
-    try {
-      const response = await fetch(`${apiURL}/session`, {
-        method: 'GET',
-        credentials: 'include', // เพื่อให้ cookies ถูกส่งไปด้วย
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setName(data.name); // ตั้งค่าชื่อผู้ใช้จากข้อมูลที่ดึงมาได้
-      } else {
-        console.error('Session not found');
-        navigate('/signin');
-      }
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-      navigate('/signin');
-    }
-  }, [navigate]);
-
   useEffect(() => {
-    // ดึงข้อมูลจาก Cookie
-    const cookies = document.cookie.split('; ').reduce((acc, cookie) => {
-      const [key, value] = cookie.split('=');
-      acc[key] = value;
-      return acc;
-    }, {});
+    const fetchSession = async () => {
+      try {
+        const response = await fetch(`${apiURL}/session`, {
+          method: 'GET',
+          credentials: 'include', // เพื่อให้ cookies ถูกส่งไปด้วย
+        });
 
-    const sessionId = cookies['session']; // ตรวจสอบค่า session ID
-    console.log('Session ID:', sessionId);
+        if (response.ok) {
+          const data = await response.json();
+          setName(data.name); // ตั้งค่าชื่อผู้ใช้จาก session
+        } else {
+          console.error('Session not found');
+          navigate('/'); // ถ้าไม่มี session ให้เปลี่ยนเส้นทางไปที่หน้า Sign In
+        }
+      } catch (error) {
+        console.error('Error fetching session:', error);
+        navigate('/');
+      }
+    };
 
-    if (!sessionId) {
-      // ถ้าไม่มี session ID ให้เปลี่ยนเส้นทางไปที่หน้า Sign In
-      navigate('/signin');
-    } else {
-      // ดึงข้อมูลผู้ใช้จากเซิร์ฟเวอร์โดยใช้ session ID
-      fetchUserData(sessionId);
-    }
-  }, [fetchUserData, navigate]); // เพิ่ม fetchUserData ใน dependency array
-
+    fetchSession();
+  }, [navigate]);
 
   const handleUserIncomeFormClick = () => {
     setShowIncomeForm(true);
