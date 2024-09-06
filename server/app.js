@@ -26,7 +26,7 @@ connectDB();
 
 app.use(
   cors({
-    origin: 'http://localhost:3000', // หรือ URL ของ client ของคุณ
+    origin: '*', // หรือ URL ของ client ของคุณ
     credentials: true,
   })
 );
