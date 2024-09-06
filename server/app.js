@@ -25,7 +25,7 @@ const PORT = process.env.PORT || 5002;
 connectDB();
 
 app.use(
-  cors()
+  cors({origin:'https://planningmoney.visitors-it.com',credentials:'true'})
 );
 app.use(express.json());
 app.use(bodyParser.json());
