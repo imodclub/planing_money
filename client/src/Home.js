@@ -61,6 +61,17 @@ const Home = () => {
           />
         </Paper>
       </Grid>
+      
+      <Grid
+        container
+        justifyContent="center"
+        alignItems="center"
+        style={{ minHeight: '50vh' }}
+      >
+        <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+          <Typography variant='H1'> ขณะนี้อยู่ในระหว่างแก้ไขระบบ Sign IN</Typography>
+        </Paper>
+      </Grid>
 
       <footer
         style={{
