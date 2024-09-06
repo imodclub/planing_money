@@ -152,11 +152,10 @@ export default function Dashboard() {
     if (!session) {
       navigate('/'); // เปลี่ยนเส้นทางไปยังหน้าแรกหรือหน้าเข้าสู่ระบบหากไม่มี session
     }
+    
   }, [session, navigate]);
 
-  if (!session) {
-    return <div>Loading...</div>; // แสดงข้อความโหลดขณะตรวจสอบ session
-  }
+ 
 
   const handleUserIncomeFormClick = () => {
     setShowIncomeForm(true);
