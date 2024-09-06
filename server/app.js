@@ -26,7 +26,7 @@ connectDB();
 
 app.use(
   cors({
-    origin: '*', // หรือ URL ของ client ของคุณ
+    origin: 'https://planningmoney.visitors-it.com', // หรือ URL ของ client ของคุณ
     credentials: true,
   })
 );
