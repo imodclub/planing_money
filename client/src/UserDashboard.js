@@ -116,7 +116,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchSession = async () => {
       try {
-        const response = await fetch(`${apiURL}/session`, {
+        const response = await fetch(`${apiURL}/api/session`, {
           method: 'GET',
           credentials: 'include', // เพื่อให้ cookies ถูกส่งไปด้วย
         });
@@ -126,11 +126,11 @@ export default function Dashboard() {
           setName(data.name); // ตั้งค่าชื่อผู้ใช้จาก session
         } else {
           console.error('Session not found');
-          navigate('/'); // ถ้าไม่มี session ให้เปลี่ยนเส้นทางไปที่หน้า Sign In
+          navigate('/signin'); // ถ้าไม่มี session ให้เปลี่ยนเส้นทางไปที่หน้า Sign In
         }
       } catch (error) {
         console.error('Error fetching session:', error);
-        navigate('/');
+        navigate('/signin');
       }
     };
 
