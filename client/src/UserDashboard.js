@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
@@ -27,6 +28,7 @@ import SavingsReport from './Component/SavingsReport';
 import EditDeleteItems from './Component/EditDeleteItems';
 import DeleteData from './Component/DeleteData';
 import FinancialSummary from './Component/FinancialSummary';
+import apiURL from './config/Config';
 
 const drawerWidth = 240;
 
@@ -91,11 +93,13 @@ export default function Dashboard() {
   const [showDeleteData, setShowDeleteData] = useState(false);
   const [iframeHeight, setIframeHeight] = useState(window.innerHeight);
   const [iframeWidth, setIframeWidth] = useState(window.innerWidth);
+  const navigate = useNavigate();
 
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
+  /*----------Code เดิม---------/
   useEffect(() => {
     const nameFromLocalStorage = localStorage.getItem('name');
     const sessionName = sessionStorage.getItem('name');
@@ -107,6 +111,31 @@ export default function Dashboard() {
       setShowReport(true);
     }
   }, []);
+  /----------Code เดิม---------*/
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      try {
+        const response = await fetch(`${apiURL}/session`, {
+          method: 'GET',
+          credentials: 'include', // เพื่อให้ cookies ถูกส่งไปด้วย
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setName(data.name); // ตั้งค่าชื่อผู้ใช้จาก session
+        } else {
+          console.error('Session not found');
+          navigate('/'); // ถ้าไม่มี session ให้เปลี่ยนเส้นทางไปที่หน้า Sign In
+        }
+      } catch (error) {
+        console.error('Error fetching session:', error);
+        navigate('/');
+      }
+    };
+
+    fetchSession();
+  }, [navigate]);
 
   const handleUserIncomeFormClick = () => {
     setShowIncomeForm(true);

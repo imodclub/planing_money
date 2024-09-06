@@ -15,12 +15,13 @@ const SavingsRatioReport = () => {
   const [savingsRatio, setSavingsRatio] = useState([]);
   const [totalSavings, setTotalSavings] = useState(0);
 
+  /*-----Code เดิม --------/
   useEffect(() => {
   
     const fetchSavingsRatio = async () => {
       
       const userId = localStorage.getItem('userId');
-
+   
       try {
         // Fetch ข้อมูล savings ratio ที่มี createdAt ล่าสุดของ userId
         const response = await fetch(`${apiURL}/savings-ratio/${userId}`);
@@ -65,6 +66,55 @@ const SavingsRatioReport = () => {
     fetchSavingsRatio();
     fetchTotalSavings();
   }, []);
+     /----------Code เดิม -----*/
+
+     /* แก้ไข fetch session */
+     useEffect(() => {
+      const fetchSessionData = async () => {
+        try {
+          const response = await fetch(`${apiURL}/session`, {
+            method: 'GET',
+            credentials: 'include', // เพื่อให้ cookies ถูกส่งไปด้วย
+          });
+  
+          if (response.ok) {
+            const sessionData = await response.json();
+            const userId = sessionData.userId; // ดึง userId จาก session
+  
+            // Fetch ข้อมูล savings ratio ที่มี createdAt ล่าสุดของ userId
+            const savingsResponse = await fetch(`${apiURL}/savings-ratio/${userId}`);
+            if (savingsResponse.ok) {
+              const savingsData = await savingsResponse.json();
+              if (savingsData && savingsData.savingsItems) {
+                setSavingsRatio(savingsData.savingsItems);
+              } else {
+                console.log('No savings ratio found in the response');
+              }
+            }
+  
+            // Fetch ข้อมูล total savings
+            const totalSavingsResponse = await fetch(`${apiURL}/savings/${userId}`);
+            if (totalSavingsResponse.ok) {
+              const totalSavingsData = await totalSavingsResponse.json();
+              const total = totalSavingsData.reduce(
+                (sum, saving) =>
+                  sum +
+                  saving.items.reduce((itemSum, item) => itemSum + item.amount, 0),
+                0
+              );
+              setTotalSavings(total);
+            }
+          } else {
+            console.error('Session not found');
+          }
+        } catch (error) {
+          console.error('Error fetching session data:', error);
+        }
+      };
+  
+      fetchSessionData();
+    }, []);
+    /*-----แก้ไข fetch session ----*/
 
   const calculateSavingsAmount = (percentage) => {
     const amount = (totalSavings * percentage) / 100;

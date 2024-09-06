@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -20,6 +20,7 @@ const SignIn = ({ onSuccess }) => {
   const [message, setMessage] = useState('');
   const navigate = useNavigate(); // เรียกใช้ useNavigate()
 
+ 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -30,18 +31,22 @@ const SignIn = ({ onSuccess }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ username, password }),
+        credentials: 'include'
       });
 
       if (response.ok) {
         const data = await response.json();
+        console.log('Sign in successful, cookies set:', document.cookie);
         setMessage(data.message);
         onSuccess(data.message); // ส่งข้อความสำเร็จไปยัง Home
 
+       /*--------- ทดสอบการใช้งาน session บน MongoDb
         // บันทึกข้อมูลลง LocalStorage
         const userId = data.userId; // สมมติว่าเซิร์ฟเวอร์ส่งกลับ userId
         const name = data.name;
         localStorage.setItem('userId', userId); 
         localStorage.setItem('name', name);
+       ---------------ปิด ทดสอบการใช้งาน session บน MongoDb */
 
         // เปลี่ยนเส้นทางไปยัง UserDashboard
         navigate('/userdashboard'); 

@@ -39,6 +39,7 @@ const SignInButton = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(userData),
+        credentials:'include',
       });
 
       if (!response.ok) {
@@ -48,11 +49,7 @@ const SignInButton = () => {
       const data = await response.json();
       const { userId, message } = data;
 
-      // ตรวจสอบว่ามี userId ก่อนบันทึกลง localStorage
       if (userId) {
-        localStorage.setItem("userId", userId);
-        localStorage.setItem("name", decoded.name);
-        sessionStorage.setItem('name', decoded.name);
 
         if (message) {
           alert(message);

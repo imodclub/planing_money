@@ -10,8 +10,9 @@ const Saving = require('./models/saving.model');
 const SavingsRatio = require('./models/savingsRatio.model');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
-const nodemailer = require('nodemailer');
 require('dotenv').config();
+const Session = require('./models/session.model');
+const crypto = require('crypto');
 
 
 require('dotenv').config();
@@ -25,7 +26,7 @@ connectDB();
 
 app.use(
   cors({
-    origin: '*', // หรือ URL ของ client ของคุณ
+    origin: 'http://localhost:3000', // หรือ URL ของ client ของคุณ
     credentials: true,
   })
 );
@@ -50,6 +51,7 @@ app.post('/api/signup', async (req, res) => {
 // server/app.js
 app.post('/api/signin', async (req, res) => {
   const { username, password } = req.body;
+  console.log('Cookie ', req.cookies);
 
   try {
     const user = await User.findOne({ name: username });
@@ -58,20 +60,27 @@ app.post('/api/signin', async (req, res) => {
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-     if (!isPasswordValid) {
-       return res.status(400).json({ message: 'รหัสผ่านไม่ถูกต้อง' });
-     }
+    if (!isPasswordValid) {
+      return res.status(400).json({ message: 'รหัสผ่านไม่ถูกต้อง' });
+    }
+
+    // สร้าง Session ID
+    const sessionId = crypto.randomUUID();
+
+    // บันทึกข้อมูล Session ลงใน MongoDB
+    const sessionData = { userId: user._id.toString(), name: user.name };
+    await Session.create({ sessionId, data: sessionData });
 
     // สร้าง Session Cookie
-    const userId = user._id.toString();
-    res.cookie('session', userId, {
+    res.cookie('session', sessionId, {
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       httpOnly: true,
-    }); // สร้าง Cookie ที่หมดอายุใน 7 วัน และตั้งค่า httpOnly
+    });
+
     res.status(200).json({
       message: 'ลงชื่อใช้งานสำเร็จ',
-      userId, //ส่งค่า userID กลับไปยัง Client
-      name: user.name, // ส่งค่า name กลับไปด้วย
+      userId: user._id,
+      name: user.name,
     });
   } catch (error) {
     res.status(500).json({ message: 'เกิดข้อผิดพลาดในการลงชื่อใช้งาน' });
@@ -954,26 +963,57 @@ app.post('/api/google-signin', async (req, res) => {
   try {
     let user = await User.findOne({ email });
 
-    if (user) {
-      return res.status(200).json({ userId: user._id, message: null });
-    } else {
-      const newUser = new User({
+    if (!user) {
+      // สร้างผู้ใช้ใหม่ถ้ายังไม่มี
+      user = new User({
         name,
         email,
         userId: new mongoose.Types.ObjectId(),
-      }); // สร้าง ObjectId ใหม่
-      await newUser.save();
-      return res
-        .status(201)
-        .json({
-          userId: newUser._id,
-          message:
-            'คุณได้สร้าง user ใหม่ในระบบ ระบบจะทำการจัดเก็บ ชื่อ และ email ของคุณเพื่อใช้ในการเข้าใช้งานครั้งต่อไป',
-        });
+      });
+      await user.save();
     }
+
+    // สร้าง Session ID
+    const sessionId = crypto.randomUUID();
+
+    // บันทึกข้อมูล Session ลงใน MongoDB
+    const sessionData = { userId: user._id.toString(), name: user.name };
+    await Session.create({ sessionId, data: sessionData });
+
+    // สร้าง Session Cookie
+    res.cookie('session', sessionId, {
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // หมดอายุใน 7 วัน
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // ใช้ secure ใน production
+      sameSite: 'lax', // ป้องกัน CSRF
+    });
+
+    res.status(200).json({
+      message: user ? null : 'คุณได้สร้าง user ใหม่ในระบบ ระบบจะทำการจัดเก็บ ชื่อ และ email ของคุณเพื่อใช้ในการเข้าใช้งานครั้งต่อไป',
+      userId: user._id,
+    });
   } catch (error) {
     console.error('Error during Google sign-in:', error);
     res.status(500).json({ message: 'เกิดข้อผิดพลาดในการลงชื่อใช้งานด้วย Google' });
+  }
+});
+
+app.get('/api/session', async (req, res) => {
+  const sessionId = req.cookies.session;
+  if (!sessionId) {
+    return res.status(401).json({ message: 'Session not found' });
+  }
+
+  try {
+    const session = await Session.findOne({ sessionId });
+    if (!session) {
+      return res.status(404).json({ message: 'Session not found' });
+    }
+
+    res.status(200).json(session.data);
+  } catch (error) {
+    res.status(500).json({ message: 'Error retrieving session' });
+    console.error(error);
   }
 });
 

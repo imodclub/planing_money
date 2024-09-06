@@ -10,36 +10,52 @@ const FinancialSummary = () => {
   const [balance, setBalance] = useState(0);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const userId = localStorage.getItem('userId');
-      const incomeResponse = await fetch(`${apiURL}/total-income/${userId}`);
-      const expenseResponse = await fetch(`${apiURL}/total-expenses/${userId}`);
-      const savingsResponse = await fetch(`${apiURL}/total-savings/${userId}`);
+    const fetchSessionData = async () => {
+      try {
+        const response = await fetch(`${apiURL}/session`, {
+          method: 'GET',
+          credentials: 'include', // เพื่อให้ cookies ถูกส่งไปด้วย
+        });
 
-      const incomeData = await incomeResponse.json();
-      const expenseData = await expenseResponse.json();
-      const savingsData = await savingsResponse.json();
+        if (response.ok) {
+          const sessionData = await response.json();
+          const userId = sessionData.userId; // ดึง userId จาก session
 
-      const totalInc = Object.values(incomeData.totalIncome).reduce(
-        (a, b) => a + b,
-        0
-      );
-      const totalExp = Object.values(expenseData.totalExpense).reduce(
-        (a, b) => a + b,
-        0
-      );
-      const totalSav = Object.values(savingsData.totalSavings).reduce(
-        (a, b) => a + b,
-        0
-      );
+          // Fetch ข้อมูลการเงินที่เกี่ยวข้องกับ userId
+          const incomeResponse = await fetch(`${apiURL}/total-income/${userId}`);
+          const expenseResponse = await fetch(`${apiURL}/total-expenses/${userId}`);
+          const savingsResponse = await fetch(`${apiURL}/total-savings/${userId}`);
 
-      setTotalIncome(totalInc);
-      setTotalExpense(totalExp);
-      setTotalSavings(totalSav);
-      setBalance(totalInc - totalExp - totalSav);
+          const incomeData = await incomeResponse.json();
+          const expenseData = await expenseResponse.json();
+          const savingsData = await savingsResponse.json();
+
+          const totalInc = Object.values(incomeData.totalIncome).reduce(
+            (a, b) => a + b,
+            0
+          );
+          const totalExp = Object.values(expenseData.totalExpense).reduce(
+            (a, b) => a + b,
+            0
+          );
+          const totalSav = Object.values(savingsData.totalSavings).reduce(
+            (a, b) => a + b,
+            0
+          );
+
+          setTotalIncome(totalInc);
+          setTotalExpense(totalExp);
+          setTotalSavings(totalSav);
+          setBalance(totalInc - totalExp - totalSav);
+        } else {
+          console.error('Session not found');
+        }
+      } catch (error) {
+        console.error('Error fetching session data:', error);
+      }
     };
 
-    fetchData();
+    fetchSessionData();
   }, []);
 
   const formatAmount = (amount) => {

@@ -12,38 +12,43 @@ import {
 import apiURL from '../config/Config';
 
 const MonthlyReportChart = () => {
-  
-     const [reportData, setReportData] = useState([]);
+  const [reportData, setReportData] = useState([]);
 
   useEffect(() => {
     const fetchReportData = async () => {
-     
-      const userId = localStorage.getItem('userId');
-
-      if (!userId) {
-        console.error('User ID not found in localStorage');
-        return;
-      }
-
       try {
-        
-        const response = await fetch(`${apiURL}/monthly-report/${userId}`);
+        const sessionResponse = await fetch(`${apiURL}/session`, {
+          method: 'GET',
+          credentials: 'include', // เพื่อให้ cookies ถูกส่งไปด้วย
+        });
 
-        if (response.ok) {
-          const data = await response.json();
+        if (sessionResponse.ok) {
+          const sessionData = await sessionResponse.json();
+          const userId = sessionData.userId; // ดึง userId จาก session
 
-          if (Array.isArray(data)) {
-            setReportData(data);
+          if (!userId) {
+            console.error('User ID not found in session');
+            return;
+          }
+
+          const response = await fetch(`${apiURL}/monthly-report/${userId}`);
+
+          if (response.ok) {
+            const data = await response.json();
+
+            if (Array.isArray(data)) {
+              setReportData(data);
+            } else {
+              console.error('Unexpected data format. Expected an array.');
+            }
           } else {
-            console.error('Unexpected data format. Expected an array.');
+            console.error('Error fetching report data. Status:', response.status);
           }
         } else {
-          console.error('Error fetching report data. Status:', response.status);
-          // แสดง error message ให้ผู้ใช้ทราบ
+          console.error('Session not found');
         }
       } catch (error) {
         console.error('Error fetching report data', error);
-        // แสดง error message ให้ผู้ใช้ทราบ
       }
     };
 
