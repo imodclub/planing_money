@@ -116,7 +116,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchSession = async () => {
       try {
-        const response = await fetch(`${apiURL}/api/session`, {
+        const response = await fetch(`${apiURL}/session`, {
           method: 'GET',
           credentials: 'include', // เพื่อให้ cookies ถูกส่งไปด้วย
         });
