@@ -73,7 +73,7 @@ const Home = () => {
         </Paper>
       </Grid>
 
-      <footer
+      {/* <footer
         style={{
           position: 'absolute',
           bottom: 0,
@@ -90,7 +90,7 @@ const Home = () => {
         >
           <MyAd />
         </div>
-      </footer>
+      </footer> */}
     </Grid>
   );
 };

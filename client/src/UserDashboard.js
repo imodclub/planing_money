@@ -133,7 +133,10 @@ export default function Dashboard() {
       navigate('/');
     }
   };
-  fetchSession();
+  
+  useEffect(() => {
+    fetchSession();
+  }, []);
 
   const handleUserIncomeFormClick = () => {
     setShowIncomeForm(true);
