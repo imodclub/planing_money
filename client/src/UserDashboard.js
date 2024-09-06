@@ -129,7 +129,7 @@ export default function Dashboard() {
         const data = await response.json();
         setName(data.name); // ตั้งค่าชื่อผู้ใช้จาก session
         setUserId(data.userId);
-        console.log('มีค่า session ID Email โผล่มา ชื่อว่า ', data.email);
+        localStorage.setItem('session', data.sessionId);
       } else {
         console.error('Session not found');
         
