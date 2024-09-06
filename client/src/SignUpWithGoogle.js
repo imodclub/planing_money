@@ -11,11 +11,9 @@ const SignInButton = () => {
   const navigate = useNavigate();
 
   const onSuccess = async (credentialResponse) => {
-    console.log('Login Success:', credentialResponse);
 
     // Decode the JWT token to get user information
     const decoded = jwtDecode(credentialResponse.credential);
-    console.log('Decoded User Info:', decoded);
 
     // Set user profile state
     setUserProfile({

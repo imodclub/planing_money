@@ -128,10 +128,11 @@ export default function Dashboard() {
       if (response.ok) {
         const data = await response.json();
         setName(data.name); // ตั้งค่าชื่อผู้ใช้จาก session
-        setUserId(data.userId)
+        setUserId(data.userId);
+        console.log('มีค่า session ID โผล่มา ชื่อว่า ', data.name);
       } else {
         console.error('Session not found');
-        console.log('ไม่มีค่า session ID โผล่มา')
+        
         navigate('/'); // ถ้าไม่มี session ให้เปลี่ยนเส้นทางไปที่หน้า Sign In
       }
     } catch (error) {
