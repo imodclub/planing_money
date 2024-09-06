@@ -113,29 +113,26 @@ export default function Dashboard() {
   }, []);
   /----------Code เดิม---------*/
 
-  useEffect(() => {
-    const fetchSession = async () => {
-      try {
-        const response = await fetch(`${apiURL}/session`, {
-          method: 'GET',
-          credentials: 'include', // เพื่อให้ cookies ถูกส่งไปด้วย
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setName(data.name); // ตั้งค่าชื่อผู้ใช้จาก session
-        } else {
-          console.error('Session not found');
-          navigate('/oldsignin'); // ถ้าไม่มี session ให้เปลี่ยนเส้นทางไปที่หน้า Sign In
-        }
-      } catch (error) {
-        console.error('Error fetching session:', error);
-        navigate('/oldsignin');
+  const fetchSession = async () => {
+    try {
+      const response = await fetch(`${apiURL}/session`, {
+        method: 'GET',
+        credentials: 'include', // สำคัญสำหรับการส่ง cookies
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        setName(data.name); // ตั้งค่าชื่อผู้ใช้จาก session
+      } else {
+        console.error('Session not found');
+        navigate('/'); // ถ้าไม่มี session ให้เปลี่ยนเส้นทางไปที่หน้า Sign In
       }
-    };
-
-    fetchSession();
-  }, [navigate]);
+    } catch (error) {
+      console.error('Error fetching session:', error);
+      navigate('/');
+    }
+  };
+  fetchSession();
 
   const handleUserIncomeFormClick = () => {
     setShowIncomeForm(true);

@@ -73,8 +73,10 @@ app.post('/api/signin', async (req, res) => {
 
     // สร้าง Session Cookie
     res.cookie('session', sessionId, {
-      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // หมดอายุใน 7 วัน
       httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // ใช้ secure ใน production
+      sameSite: 'lax',
     });
 
     res.status(200).json({
