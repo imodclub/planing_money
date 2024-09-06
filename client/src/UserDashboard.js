@@ -81,6 +81,7 @@ const defaultTheme = createTheme();
 export default function Dashboard() {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
+  const [userId, setUserId] = useState('');
   const [showIncomeForm, setShowIncomeForm] = useState(false);
   const [showExpensesForm, setShowExpensesForm] = useState(false);
   const [showSavingsForm, setShowSavingsForm] = useState(false);
@@ -114,17 +115,12 @@ export default function Dashboard() {
   /----------Code เดิม---------*/
 
   const fetchSession = async () => {
-    const sessionId = localStorage.getItem('session');
-    if (!sessionId) {
-      console.log('Session ID not found');
-    }
 
     try {
       const response = await fetch(`${apiURL}/session`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization':`Bearer ${sessionId}`,
         },
         credentials: 'include', // สำคัญสำหรับการส่ง cookies
       });
@@ -132,6 +128,7 @@ export default function Dashboard() {
       if (response.ok) {
         const data = await response.json();
         setName(data.name); // ตั้งค่าชื่อผู้ใช้จาก session
+        setUserId(data.userId)
       } else {
         console.error('Session not found');
         console.log('ไม่มีค่า session ID โผล่มา')

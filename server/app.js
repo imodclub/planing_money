@@ -1009,6 +1009,7 @@ app.get('/api/session', async (req, res) => {
     }
 
     res.status(200).json(session.data);
+    console.log('นี่คือ ข้อมูล จาก /apisession ', session.data);
   } catch (error) {
     res.status(500).json({ message: 'Error retrieving session' });
     console.error(error);
