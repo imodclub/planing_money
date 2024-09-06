@@ -1,6 +1,6 @@
 const apiURL =
   process.env.NODE_ENV === 'production'
-    ? 'https://planing-money-git-main-imodclubs-projects.vercel.app/api'
+    ? 'https://planningmoney.visitors-it.com/'
     : 'http://localhost:5002/api';
 
 export default apiURL;

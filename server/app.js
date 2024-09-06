@@ -26,7 +26,7 @@ connectDB();
 
 app.use(
   cors({
-    origin: 'https://planing-money-git-main-imodclubs-projects.vercel.app', // หรือ URL ของ client ของคุณ
+    origin: 'https://planningmoney.visitors-it.com/', // หรือ URL ของ client ของคุณ
     credentials: true,
   })
 );
