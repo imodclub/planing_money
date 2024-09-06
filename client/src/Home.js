@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Grid,
   Card,
@@ -66,7 +66,7 @@ const Home = () => {
         container
         justifyContent="center"
         alignItems="center"
-        style={{ minHeight: '50vh' }}
+        style={{ minHeight: '5vh' }}
       >
         <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
           <Typography variant='H1'> ขณะนี้อยู่ในระหว่างแก้ไขระบบ Sign IN</Typography>
