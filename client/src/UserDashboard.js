@@ -114,9 +114,18 @@ export default function Dashboard() {
   /----------Code เดิม---------*/
 
   const fetchSession = async () => {
+    const sessionId = localStorage.getItem('session');
+    if (!sessionId) {
+      console.log('Session ID not found');
+    }
+
     try {
       const response = await fetch(`${apiURL}/session`, {
         method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization':`Bearer ${sessionId}`,
+        },
         credentials: 'include', // สำคัญสำหรับการส่ง cookies
       });
   

@@ -39,6 +39,7 @@ const SignIn = ({ onSuccess }) => {
         console.log('Sign in successful, cookies set:', document.cookie);
         setMessage(data.message);
         onSuccess(data.message); // ส่งข้อความสำเร็จไปยัง Home
+        localStorage.setItem('session', data.sessionId);
 
        /*--------- ทดสอบการใช้งาน session บน MongoDb
         // บันทึกข้อมูลลง LocalStorage
