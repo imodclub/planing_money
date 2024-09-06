@@ -26,7 +26,7 @@ connectDB();
 
 app.use(
   cors({
-    origin: 'https://planing-money.vercel.app/api', // หรือ URL ของ client ของคุณ
+    origin: '*', // หรือ URL ของ client ของคุณ
     credentials: true,
   })
 );
