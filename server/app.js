@@ -51,7 +51,7 @@ app.post('/api/signup', async (req, res) => {
 // server/app.js
 app.post('/api/signin', async (req, res) => {
   const { username, password } = req.body;
-  console.log('Cookie ', req.cookies);
+  console.log('Cookie จาก sigin api', req.cookies);
 
   try {
     const user = await User.findOne({ name: username });
