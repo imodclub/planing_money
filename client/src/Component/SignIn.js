@@ -36,7 +36,6 @@ const SignIn = ({ onSuccess }) => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Sign in successful, cookies set:', document.cookie);
         setMessage(data.message);
         onSuccess(data.message); // ส่งข้อความสำเร็จไปยัง Home
 

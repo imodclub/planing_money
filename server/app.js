@@ -79,6 +79,7 @@ app.post('/api/signin', async (req, res) => {
       message: 'ลงชื่อใช้งานสำเร็จ',
       userId: user._id,
       name: user.name,
+      email: user.email,
     });
   } catch (error) {
     res.status(500).json({ message: 'เกิดข้อผิดพลาดในการลงชื่อใช้งาน' });
@@ -1009,7 +1010,6 @@ app.get('/api/session', async (req, res) => {
     }
 
     res.status(200).json(session.data);
-    console.log('นี่คือ ข้อมูล จาก /apisession ', session.data);
   } catch (error) {
     res.status(500).json({ message: 'Error retrieving session' });
     console.error(error);
