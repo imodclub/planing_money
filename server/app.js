@@ -73,11 +73,8 @@ app.post('/api/signin', async (req, res) => {
 
     // สร้าง Session Cookie
     res.cookie('session', sessionId, {
-      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 วัน
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-      path: '/',
     });
 
     res.status(200).json({
@@ -985,11 +982,10 @@ app.post('/api/google-signin', async (req, res) => {
 
     // สร้าง Session Cookie
     res.cookie('session', sessionId, {
-      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 วัน
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // หมดอายุใน 7 วัน
       httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
-      path: '/',
+      secure: process.env.NODE_ENV === 'production', // ใช้ secure ใน production
+      sameSite: 'lax', // ป้องกัน CSRF
     });
 
     res.status(200).json({
