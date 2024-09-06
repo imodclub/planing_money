@@ -125,6 +125,7 @@ export default function Dashboard() {
         setName(data.name); // ตั้งค่าชื่อผู้ใช้จาก session
       } else {
         console.error('Session not found');
+        console.log('ไม่มีค่า session ID โผล่มา')
         navigate('/'); // ถ้าไม่มี session ให้เปลี่ยนเส้นทางไปที่หน้า Sign In
       }
     } catch (error) {
