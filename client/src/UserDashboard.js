@@ -29,6 +29,7 @@ import EditDeleteItems from './Component/EditDeleteItems';
 import DeleteData from './Component/DeleteData';
 import FinancialSummary from './Component/FinancialSummary';
 import apiURL from './config/Config';
+import { SessionContext } from './utils/SessionContext';
 
 const drawerWidth = 240;
 
@@ -95,6 +96,7 @@ export default function Dashboard() {
   const [iframeHeight, setIframeHeight] = useState(window.innerHeight);
   const [iframeWidth, setIframeWidth] = useState(window.innerWidth);
   const navigate = useNavigate();
+  const session = useContext(SessionContext);
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -114,8 +116,8 @@ export default function Dashboard() {
   }, []);
   /----------Code เดิม---------*/
 
+  /*   ก่อนแก้ session context ---/
   const fetchSession = async () => {
-
     try {
       const response = await fetch(`${apiURL}/session`, {
         method: 'GET',
@@ -124,7 +126,7 @@ export default function Dashboard() {
         },
         credentials: 'include', // สำคัญสำหรับการส่ง cookies
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         setName(data.name); // ตั้งค่าชื่อผู้ใช้จาก session
@@ -132,7 +134,7 @@ export default function Dashboard() {
         localStorage.setItem('session', data.sessionId);
       } else {
         console.error('Session not found');
-        
+
         navigate('/'); // ถ้าไม่มี session ให้เปลี่ยนเส้นทางไปที่หน้า Sign In
       }
     } catch (error) {
@@ -140,10 +142,21 @@ export default function Dashboard() {
       navigate('/');
     }
   };
-  
+
   useEffect(() => {
     fetchSession();
   }, []);
+   /---  ก่อนแก้ session context */
+
+  useEffect(() => {
+    if (!session) {
+      navigate('/'); // เปลี่ยนเส้นทางไปยังหน้าแรกหรือหน้าเข้าสู่ระบบหากไม่มี session
+    }
+  }, [session, navigate]);
+
+  if (!session) {
+    return <div>Loading...</div>; // แสดงข้อความโหลดขณะตรวจสอบ session
+  }
 
   const handleUserIncomeFormClick = () => {
     setShowIncomeForm(true);
@@ -218,47 +231,46 @@ export default function Dashboard() {
     setShowSavingsReport(false);
     setShowDeleteData(false);
   };
- 
 
-    const handleUserExpenseReportClick = () => {
-      setShowExpenseReport(true);
-      setShowIncomeForm(false);
-      setShowExpensesForm(false);
-      setShowSavingsForm(false);
-      setShowSavingsRatioForm(false);
-      setShowReport(false);
-      setShowIncomeReport(false);
-      setShowSavingsReport(false);
-      setShowEditDeleteItems(false);
-      setShowDeleteData(false);
-    };
-  
-const handleUserSavingsReportClick = () => {
-  setShowSavingsReport(true);
-  setShowIncomeForm(false);
-  setShowExpensesForm(false);
-  setShowSavingsForm(false);
-  setShowSavingsRatioForm(false);
-  setShowReport(false);
-  setShowIncomeReport(false);
-  setShowExpenseReport(false);
-  setShowEditDeleteItems(false);
-  setShowDeleteData(false);
-};
+  const handleUserExpenseReportClick = () => {
+    setShowExpenseReport(true);
+    setShowIncomeForm(false);
+    setShowExpensesForm(false);
+    setShowSavingsForm(false);
+    setShowSavingsRatioForm(false);
+    setShowReport(false);
+    setShowIncomeReport(false);
+    setShowSavingsReport(false);
+    setShowEditDeleteItems(false);
+    setShowDeleteData(false);
+  };
 
-    const handleEditDeleteItemsClick = () => {
-      setShowEditDeleteItems(true);
-      setShowIncomeForm(false);
-      setShowExpensesForm(false);
-      setShowSavingsForm(false);
-      setShowSavingsRatioForm(false);
-      setShowReport(false);
-      setShowIncomeReport(false);
-      setShowExpenseReport(false);
-      setShowSavingsReport(false);
-      setShowDeleteData(false);
-    };
-  
+  const handleUserSavingsReportClick = () => {
+    setShowSavingsReport(true);
+    setShowIncomeForm(false);
+    setShowExpensesForm(false);
+    setShowSavingsForm(false);
+    setShowSavingsRatioForm(false);
+    setShowReport(false);
+    setShowIncomeReport(false);
+    setShowExpenseReport(false);
+    setShowEditDeleteItems(false);
+    setShowDeleteData(false);
+  };
+
+  const handleEditDeleteItemsClick = () => {
+    setShowEditDeleteItems(true);
+    setShowIncomeForm(false);
+    setShowExpensesForm(false);
+    setShowSavingsForm(false);
+    setShowSavingsRatioForm(false);
+    setShowReport(false);
+    setShowIncomeReport(false);
+    setShowExpenseReport(false);
+    setShowSavingsReport(false);
+    setShowDeleteData(false);
+  };
+
   const handleDeleteDataClick = () => {
     setShowDeleteData(true);
     setShowIncomeForm(false);
@@ -284,7 +296,7 @@ const handleUserSavingsReportClick = () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-  
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <div style={{ height: iframeHeight, width: iframeWidth }}>
@@ -315,7 +327,7 @@ const handleUserSavingsReportClick = () => {
                 noWrap
                 sx={{ flexGrow: 1 }}
               >
-                สวัสดี คุณ {name}
+                สวัสดี คุณ {session.name}
               </Typography>
               <Typography variant="overline" display="block" gutterBottom>
                 version 1.0
@@ -396,7 +408,6 @@ const handleUserSavingsReportClick = () => {
                     {showEditDeleteItems && <EditDeleteItems />}
                     {showDeleteData && <DeleteData />}
                   </Paper>
-                  
                 </Grid>
               </Grid>
             </Container>

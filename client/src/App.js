@@ -8,20 +8,23 @@ import UserDashboard from './UserDashboard';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import SignUpWithGoogle from './SignUpWithGoogle';
 import OldSignin from './OldSignin';
+import { SessionProvider } from './utils/SessionContext';
 
 const App = () => {
   return (
-    <GoogleOAuthProvider clientId='744798245558-bt7nsjoigdetib55o9ra0ghddbigkp1a.apps.googleusercontent.com'>
-    <Router>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/userdashboard" element={<UserDashboard />} />
-            <Route path="/signupwithgoogle" element={<SignUpWithGoogle />} />
-            <Route path='/oldsignin' element={<OldSignin />} />
-        </Routes>
-      </LocalizationProvider>
-    </Router>
+    <GoogleOAuthProvider clientId="744798245558-bt7nsjoigdetib55o9ra0ghddbigkp1a.apps.googleusercontent.com">
+      <SessionProvider>
+        <Router>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/userdashboard" element={<UserDashboard />} />
+              <Route path="/signupwithgoogle" element={<SignUpWithGoogle />} />
+              <Route path="/oldsignin" element={<OldSignin />} />
+            </Routes>
+          </LocalizationProvider>
+        </Router>
+      </SessionProvider>
     </GoogleOAuthProvider>
   );
 };
