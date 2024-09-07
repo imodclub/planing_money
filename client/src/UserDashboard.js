@@ -102,7 +102,7 @@ export default function Dashboard() {
     setOpen(!open);
   };
 
-  
+  /*-----------
   useEffect(() => {
     const nameFromLocalStorage = localStorage.getItem('name');
     const sessionName = sessionStorage.getItem('name');
@@ -114,7 +114,7 @@ export default function Dashboard() {
       setShowReport(true);
     }
   }, []);
-  
+  */
 
   /*   ก่อนแก้ session context ---/
   const fetchSession = async () => {
