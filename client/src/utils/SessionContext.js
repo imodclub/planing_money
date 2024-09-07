@@ -8,7 +8,6 @@ export const SessionProvider = ({ children }) => {
   const [session, setSession] = useState(null);
   const [name, setName] = useState(''); // กำหนด state สำหรับ name
   const [userId, setUserId] = useState(''); // กำหนด state สำหรับ userId
-  const navigate = useNavigate(); // ใช้ useNavigate
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -26,10 +25,7 @@ export const SessionProvider = ({ children }) => {
           setName(data.name || ''); // ตรวจสอบว่ามีค่า name หรือไม่
           setUserId(data.userId || '');
           localStorage.setItem('session', data.sessionId || '');
-        } else {
-          console.error('Session not found');
-          navigate('/'); // ถ้าไม่มี session ให้เปลี่ยนเส้นทางไปที่หน้า Sign In
-        }
+        } 
       } catch (error) {
         console.error('Error fetching session:', error);
       }
