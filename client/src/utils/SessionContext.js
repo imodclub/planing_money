@@ -1,13 +1,11 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import apiURL from '../config/Config';
 
 export const SessionContext = createContext();
 
 export const SessionProvider = ({ children }) => {
   const [session, setSession] = useState(null);
-  const [name, setName] = useState(''); // กำหนด state สำหรับ name
-  const [userId, setUserId] = useState(''); // กำหนด state สำหรับ userId
+  
 
   useEffect(() => {
     const fetchSession = async () => {
