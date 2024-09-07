@@ -12,9 +12,6 @@ export const SessionProvider = ({ children }) => {
       try {
         const response = await fetch(`${apiURL}/session`, {
           method: 'GET',
-          headers: {
-            'Contene-Type': 'application/json',
-          },
           credentials: 'include',
         });
         if (response.ok) {
