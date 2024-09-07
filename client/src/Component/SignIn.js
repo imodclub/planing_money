@@ -39,13 +39,13 @@ const SignIn = ({ onSuccess }) => {
         setMessage(data.message);
         onSuccess(data.message); // ส่งข้อความสำเร็จไปยัง Home
 
-       /*--------- ทดสอบการใช้งาน session บน MongoDb
+       
         // บันทึกข้อมูลลง LocalStorage
         const userId = data.userId; // สมมติว่าเซิร์ฟเวอร์ส่งกลับ userId
         const name = data.name;
         localStorage.setItem('userId', userId); 
         localStorage.setItem('name', name);
-       ---------------ปิด ทดสอบการใช้งาน session บน MongoDb */
+       
 
         // เปลี่ยนเส้นทางไปยัง UserDashboard
         navigate('/userdashboard'); 
