@@ -22,9 +22,7 @@ export const SessionProvider = ({ children }) => {
         if (response.ok) {
           const data = await response.json();
           setSession(data);
-          setName(data.name || ''); // ตรวจสอบว่ามีค่า name หรือไม่
-          setUserId(data.userId || '');
-          localStorage.setItem('session', data.sessionId || '');
+         
         } 
       } catch (error) {
         console.error('Error fetching session:', error);
