@@ -46,6 +46,8 @@ const SignInButton = () => {
 
       const data = await response.json();
       const { userId, message } = data;
+       localStorage.setItem('userId', data.userId || ''); // บันทึก userId ลงใน localStorage
+       localStorage.setItem('name', data.name || '');
 
       if (userId) {
 
