@@ -69,15 +69,15 @@ const Home = () => {
         style={{ minHeight: '5vh' }}
       >
         <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-          <Typography variant='H1'> ขณะนี้อยู่ในระหว่างแก้ไขระบบ Sign IN</Typography>
+          <Typography variant='H1'> ขณะนี้อยู่ในระหว่างแก้ไขระบบ Sign IN ในการใช้งานอาจจะมีปัญหาในเรื่องของการ reload หน้าเพจ อยู่ในระหว่างแก้ไขและอัพเดตเวอร์ชัน ในบางครั้งอาจจะใช้ไม่ได้ในบางอุปกรณ์ แต่ใช้งานบน PC ได้ ขออภัยในความไม่สะดวกครับ</Typography>
         </Paper>
       </Grid>
 
-      {/* <footer
+       <footer
         style={{
           position: 'absolute',
           bottom: 0,
-          width: '100%',
+          width: '50%',
           textAlign: 'center',
         }}
       >
@@ -90,7 +90,7 @@ const Home = () => {
         >
           <MyAd />
         </div>
-      </footer> */}
+      </footer> 
     </Grid>
   );
 };

@@ -957,7 +957,6 @@ app.delete('/api/delete-data/:userId', async (req, res) => {
 
 app.post('/api/google-signin', async (req, res) => {
   const { email, name } = req.body;
-  console.log("Received data from client:", req.body);
 
   try {
     let user = await User.findOne({ email });
