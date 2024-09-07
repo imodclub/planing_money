@@ -16,11 +16,7 @@ export const SessionProvider = ({ children }) => {
         if (response.ok) {
           const data = await response.json();
           setSession(data);
-          // Store userId and name in localStorage
-          localStorage.setItem('userId', data.userId || '');
-          localStorage.setItem('name', data.name || '');
-        } else {
-          console.error('Session not found');
+          
         }
       } catch (error) {
         console.error('Error fetching session:', error);
