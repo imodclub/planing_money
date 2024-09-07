@@ -43,8 +43,8 @@ const SignIn = ({ onSuccess }) => {
         // บันทึกข้อมูลลง LocalStorage
         const userId = data.userId; // สมมติว่าเซิร์ฟเวอร์ส่งกลับ userId
         const name = data.name;
-         localStorage.setItem('userId', data.userId || ''); // บันทึก userId ลงใน localStorage
-         localStorage.setItem('name', data.name || '');
+         localStorage.setItem('userId', data.userId); // บันทึก userId ลงใน localStorage
+         localStorage.setItem('name', data.name);
        
 
         // เปลี่ยนเส้นทางไปยัง UserDashboard
