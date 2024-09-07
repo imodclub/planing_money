@@ -10,13 +10,21 @@ export const SessionProvider = ({ children }) => {
     const fetchSession = async () => {
       try {
         const response = await fetch(`${apiURL}/session`, {
-          method: 'GET',
+            method: 'GET',
+            headers: {
+                'Contene-Type':'application/json',
+            },
           credentials: 'include',
         });
         if (response.ok) {
           const data = await response.json();
           setSession(data);
-          
+          setName(data.name || ''); // ตรวจสอบว่ามีค่า name หรือไม่
+          setUserId(data.userId || '');
+          localStorage.setItem('session', data.sessionId || '');
+        } else {
+          console.error('Session not found');
+          navigate('/'); // ถ้าไม่มี session ให้เปลี่ยนเส้นทางไปที่หน้า Sign In
         }
       } catch (error) {
         console.error('Error fetching session:', error);
