@@ -18,8 +18,8 @@ export const SessionProvider = ({ children }) => {
         if (response.ok) {
           const data = await response.json();
             setSession(data);
-            localStorage.getItem('userId', userId);
-            localStorage.getItem('name', name);
+            localStorage.getItem('userId', localUserId);
+            localStorage.getItem('name', localName);
         }
       } catch (error) {
         console.error('Error fetching session:', error);
