@@ -4,7 +4,9 @@ import apiURL from '../config/Config';
 export const SessionContext = createContext();
 
 export const SessionProvider = ({ children }) => {
-  const [session, setSession] = useState(null);
+    const [session, setSession] = useState(null);
+    const [localUserId, setLocalUserId] = useState('');
+    const [localName, setLocalName] = useState('');
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -15,7 +17,9 @@ export const SessionProvider = ({ children }) => {
         });
         if (response.ok) {
           const data = await response.json();
-          setSession(data);
+            setSession(data);
+            localStorage.getItem('userId', userId);
+            localStorage.getItem('name', name);
         }
       } catch (error) {
         console.error('Error fetching session:', error);
